@@ -1,6 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Navbar from "./Navbar";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom"; // Import useLocation to track current route
 import Home from "./Home";
 import AboutUs from "./AboutUs";
 import Services from "./Services";
@@ -12,27 +11,65 @@ import IssuerHome from "./IssuerHome";
 import AdminHome from "./AdminHome";
 import CertificateView from "./CertificateView";
 import ReportIssue from "./ReportIssue";
-import ComplaintsPage from "./ComplaintsPage"; // Import the ComplaintsPage component
+import ComplaintsPage from "./ComplaintsPage";
+import Guidelines from "./Guidelines";
+import IssuerNavbar from "./IssuerNavbar"; // Import IssuerNavbar
+import './App.css';  // Import your App's CSS file
 
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
+
+  const handleLogout = () => {
+    setIsLoggedIn(false); // Set logged in state to false
+  };
+
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/user-home" element={<UserHome />} />
-        <Route path="/issuer-home" element={<IssuerHome />} />
-        <Route path="/admin-home" element={<AdminHome />} />
-        <Route path="/certificate-view/:id" element={<CertificateView />} />
-        <Route path="/report-issue/:id" element={<ReportIssue />} />
-        <Route path="/complaints" element={<ComplaintsPage />} /> {/* Add the complaints route */}
-      </Routes>
+    <Router> {/* Ensure App is wrapped with Router */}
+      <AppWithRouter 
+        isLoggedIn={isLoggedIn} 
+        onLogout={handleLogout} 
+        setIsLoggedIn={setIsLoggedIn} 
+      />
     </Router>
+  );
+};
+
+const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
+  const location = useLocation(); // Get current location (pathname)
+
+  return (
+    <>
+      {/* Conditionally render IssuerNavbar only when logged in and on /issuer-home route */}
+      {isLoggedIn && location.pathname === "/issuer-home" && (
+        <IssuerNavbar onLogout={onLogout} handleQuery={() => {}} />
+      )}
+
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login onLogin={() => setIsLoggedIn(true)} />} />
+          <Route path="/signup" element={<Signup />} />
+
+          {/* These routes are accessible after logging in */}
+          <Route path="/user-home" element={<UserHome onLogout={onLogout} />} />
+          <Route path="/issuer-home" element={<IssuerHome onLogout={onLogout} />} />
+          <Route path="/admin-home" element={<AdminHome />} />
+
+          <Route path="/certificate-view/:id" element={<CertificateView />} />
+          <Route path="/report-issue/:id" element={<ReportIssue />} />
+          <Route path="/complaints" element={<ComplaintsPage />} />
+          <Route path="/guidelines" element={<Guidelines />} />
+        </Routes>
+      </div>
+
+      {/* Footer */}
+      <footer>
+        <p>Footer Content</p>
+      </footer>
+    </>
   );
 };
 

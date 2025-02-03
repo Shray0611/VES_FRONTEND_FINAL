@@ -18,9 +18,9 @@ const Signup = () => {
   };
 
   return (
-    <div style={containerStyle}>
+    <div className="container">
       <h1>Signup</h1>
-      <form onSubmit={handleSignup} style={formStyle}>
+      <form onSubmit={handleSignup} className="form">
         <label>
           Username:
           <input
@@ -28,7 +28,7 @@ const Signup = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-            style={inputStyle}
+            className="input"
           />
         </label>
         <label>
@@ -36,45 +36,17 @@ const Signup = () => {
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            style={inputStyle}
+            className="input"
           >
             <option value="user">User</option>
             <option value="issuer">Issuer</option>
             <option value="admin">Admin</option>
           </select>
         </label>
-        <button type="submit" style={buttonStyle}>Signup</button>
+        <button type="submit" className="button">Signup</button>
       </form>
     </div>
   );
-};
-
-const containerStyle = {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  height: "100vh",
-};
-
-const formStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "10px",
-};
-
-const inputStyle = {
-  padding: "10px",
-  width: "300px",
-  marginTop: "5px",
-};
-
-const buttonStyle = {
-  padding: "10px 20px",
-  backgroundColor: "#007bff",
-  color: "#fff",
-  border: "none",
-  cursor: "pointer",
 };
 
 export default Signup;

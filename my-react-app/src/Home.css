@@ -1,4 +1,4 @@
-.home-page {
+/* .home-page {
     text-align: center;
     background-color: #f0f8ff;
     padding: 20px;
@@ -8,9 +8,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #004080;
+    background-color:white;
     padding: 10px 20px;
-    color: white;
+    color:black;
   }
   
   .navbar-links {
@@ -20,7 +20,7 @@
   }
   
   .navbar-links button {
-    background: #00b894;
+    background: #015f4c;
     color: white;
     border: none;
     padding: 5px 10px;
@@ -29,7 +29,7 @@
   }
   
   .navbar-links button:hover {
-    background: #019870;
+    background:#015f4c;
   }
   
   .welcome-section {
@@ -45,4 +45,4 @@
     font-size: 1.2rem;
     color: #333;
   }
-  
+    */

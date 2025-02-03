@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+
 const CertificateView = () => {
   const { id } = useParams();  // Extract the certificate ID from the URL
   const navigate = useNavigate();
@@ -11,14 +12,17 @@ const CertificateView = () => {
 
   return (
     <div className="certificate-view">
-      <h1>Certificate View</h1>
+      <h1 className="certificate-title">Certificate View</h1>
       <img
         src={`/certificates/demo_certificate_${id}.webp`}
         alt={`Certificate ${id}`}
-        style={{ width: '100%', height: 'auto' }}
+        className="certificate-image"
       />
-      <div>
-        <button onClick={handleReportIssue} style={{ marginTop: '20px' }}>
+      <div className="report-issue-button-container">
+        <button 
+          onClick={handleReportIssue} 
+          className="report-issue-button"
+        >
           Is There Any Issue?
         </button>
       </div>

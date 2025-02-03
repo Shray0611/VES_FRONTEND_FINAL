@@ -1,63 +1,37 @@
-// UserHome.js
 import React from "react";
-import { Link } from "react-router-dom";
-import './UserHome.css';
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import UserNavbar from "./UserNavbar"; // Import UserNavbar component
 
 const UserHome = ({ onLogout }) => {
-  const certificates = [
-    { id: 1, event: "Tech Fest 2023", certificateName: "Participation Certificate" },
-    { id: 2, event: "Hackathon 2023", certificateName: "Winner Certificate" },
-    { id: 3, event: "AI Workshop", certificateName: "Completion Certificate" },
-  ];
-
-  const handleViewCertificate = (id) => {
-    window.location.href = `/certificate-view/${id}`;
-  };
-
-  const handleDownloadCertificate = (id) => {
-    const certificateUrl = `/certificates/demo_certificate_${id}.png`;
-    const link = document.createElement('a');
-    link.href = certificateUrl;
-    link.download = `certificate_${id}.png`;
-    link.click();
-  };
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   return (
-    <div className="user-home">
-      <nav className="navbar">
-        <div className="navbar-logo">VESIT</div>
-        <ul className="navbar-links">
-          <li><button>Home Page</button></li>
-          <li><Link to="/complaints"><button>View Complaints</button></Link></li>
-        </ul>
-        <div className="user-info">
-          <span className="user-name">Name</span>
-          <button className="logout-btn" onClick={onLogout}>Log Out</button>
-        </div>
-      </nav>
-      <h1>Welcome, User!</h1>
-      <h2>Your Certificates</h2>
-      <table className="certificates-table">
+    <div className="user-home-container p-6 pt-24"> {/* Added pt-24 to add padding on top */}
+      {/* Use UserNavbar and remove the old Navbar */}
+      <UserNavbar onLogout={onLogout} />
+
+      <h1 className="text-white text-3xl font-bold mb-4">Welcome, User!</h1>
+      <h2 className="text-white text-2xl font-semibold mb-3">Your Certificates</h2>
+
+      <table className="certificates-table w-full bg-white rounded-lg shadow-md">
         <thead>
-          <tr>
-            <th>Event</th>
-            <th>Certificate</th>
-            <th>Actions</th>
+          <tr className="bg-gray-200">
+            <th className="p-3 text-left">Event</th>
+            <th className="p-3 text-left">Certificate</th>
+            <th className="p-3 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {certificates.map(cert => (
-            <tr key={cert.id}>
-              <td>{cert.event}</td>
-              <td>{cert.certificateName}</td>
-              <td>
-                <div className="actions">
-                  <button onClick={() => handleViewCertificate(cert.id)}>View</button>
-                  <button onClick={() => handleDownloadCertificate(cert.id)}>Download</button>
-                </div>
-              </td>
-            </tr>
-          ))}
+          <tr className="border-t">
+            <td className="p-3"></td>
+            <td className="p-3"></td>
+            <td className="p-3"></td>
+          </tr>
+          <tr className="border-t">
+            <td className="p-3"></td>
+            <td className="p-3"></td>
+            <td className="p-3"></td>
+          </tr>
         </tbody>
       </table>
     </div>
