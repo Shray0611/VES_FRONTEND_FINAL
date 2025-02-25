@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom"; // Import useLocation to track current route
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom"; // Import useLocation to track current route
 import Home from "./Home";
 import AboutUs from "./AboutUs";
 import Services from "./Services";
@@ -14,7 +19,8 @@ import ReportIssue from "./ReportIssue";
 import ComplaintsPage from "./ComplaintsPage";
 import Guidelines from "./Guidelines";
 import IssuerNavbar from "./IssuerNavbar"; // Import IssuerNavbar
-import './App.css';  // Import your App's CSS file
+import "./App.css"; // Import your App's CSS file
+import ForgotPassword from "./ForgotPassword";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
@@ -24,11 +30,13 @@ const App = () => {
   };
 
   return (
-    <Router> {/* Ensure App is wrapped with Router */}
-      <AppWithRouter 
-        isLoggedIn={isLoggedIn} 
-        onLogout={handleLogout} 
-        setIsLoggedIn={setIsLoggedIn} 
+    <Router>
+      {" "}
+      {/* Ensure App is wrapped with Router */}
+      <AppWithRouter
+        isLoggedIn={isLoggedIn}
+        onLogout={handleLogout}
+        setIsLoggedIn={setIsLoggedIn}
       />
     </Router>
   );
@@ -50,12 +58,19 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login onLogin={() => setIsLoggedIn(true)} />} />
+          <Route
+            path="/login"
+            element={<Login onLogin={() => setIsLoggedIn(true)} />}
+          />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
           <Route path="/signup" element={<Signup />} />
 
           {/* These routes are accessible after logging in */}
           <Route path="/user-home" element={<UserHome onLogout={onLogout} />} />
-          <Route path="/issuer-home" element={<IssuerHome onLogout={onLogout} />} />
+          <Route
+            path="/issuer-home"
+            element={<IssuerHome onLogout={onLogout} />}
+          />
           <Route path="/admin-home" element={<AdminHome />} />
 
           <Route path="/certificate-view/:id" element={<CertificateView />} />

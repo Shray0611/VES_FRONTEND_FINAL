@@ -96,7 +96,18 @@ const Login = ({ onLogin }) => {
               </button>
             </div>
           </div>
-
+          <div className="text-center ">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/forgotPassword");
+              }}
+              className="text-sm text-[#64748b] hover:text-[#475569] transition-colors"
+            >
+              Forgot Password?
+            </a>
+          </div>
           <button
             type="submit"
             className="w-full bg-[#334155] text-white py-3 px-6 rounded-lg 
