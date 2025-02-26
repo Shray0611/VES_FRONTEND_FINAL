@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import IssuerNavbar from "./IssuerNavbar";
 
 const Guidelines = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">
+      <IssuerNavbar></IssuerNavbar>
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-light text-[#1e293b] text-center mb-8">
           Certificate Issuance Guidelines

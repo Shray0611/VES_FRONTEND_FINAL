@@ -1,4 +1,5 @@
 import React from "react";
+import IssuerNavbar from "./IssuerNavbar";
 import { useNavigate } from "react-router-dom";
 
 const IssuerHome = ({ onLogout }) => {
@@ -11,6 +12,7 @@ const IssuerHome = ({ onLogout }) => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">
+      <IssuerNavbar></IssuerNavbar>
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="mb-12 text-center">
