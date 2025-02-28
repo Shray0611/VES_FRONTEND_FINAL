@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import logo from "/assets/VES-logo.png"; // adjust the path as needed
 
 const IssuerNavbar = ({ onLogout, handleQuery }) => {
   const navigate = useNavigate();
@@ -8,14 +9,16 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
     <nav className="bg-[#f5f1e6] fixed top-0 left-0 w-full shadow-md z-50 border-b-2 border-[#e0c9a9]">
       <div className="max-w-screen-xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Left Section */}
-        <div className="flex items-center space-x-6 ml-4">
-          <div
+        <div className="flex items-center space-x-6 ml-4 ">
+          
+          <img 
+            src={logo}
+            alt="Logo"
+            className="h-14 w-auto cursor-pointer"
             onClick={() => navigate("/issuer-home")}
-            className="text-[#5f4b32] font-bold text-lg cursor-pointer hover:text-[#7d6954] transition-colors"
-          >
-            VESIT Certificates
-          </div>
-
+          />
+          <div className="text-[#5f4b32] font-bold text-lg">
+          <b>VESIT</b></div>
           <div className="hidden md:flex items-center space-x-6">
             <span
               onClick={() => navigate("/issuer-home")}

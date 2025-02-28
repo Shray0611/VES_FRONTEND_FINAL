@@ -12,14 +12,17 @@ const IssuerHome = ({ onLogout }) => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">
-      <IssuerNavbar></IssuerNavbar>
+      {/* Top Navbar */}
+      <IssuerNavbar />
+
+      {/* Main Container */}
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
-        <div className="mb-12 text-center">
-          <h1 className="text-3xl font-light text-[#1e293b] mb-2">
+        <div className="flex flex-col items-center justify-center mb-12">
+          <h1 className="issuer-home-header text-4xl font-bold text-[#1e293b] mb-2 transition-all duration-300 hover:text-[#0f172a]">
             Welcome, Issuer!
           </h1>
-          <p className="text-[#64748b]">
+          <p className="text-[#64748b] text-lg transition-colors duration-300 hover:text-[#475569]">
             Manage your certificate events and activities
           </p>
         </div>
@@ -31,25 +34,24 @@ const IssuerHome = ({ onLogout }) => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-left">
               <thead className="bg-[#f8fafc]">
                 <tr>
                   {["No.", "Event Name", "Date", "Actions"].map((header) => (
                     <th
                       key={header}
-                      className="px-6 py-4 text-left text-sm font-medium text-[#64748b]"
+                      className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide"
                     >
                       {header}
                     </th>
                   ))}
                 </tr>
               </thead>
-
               <tbody className="divide-y divide-[#edf2f7]">
                 {events.map((event, index) => (
                   <tr
                     key={event.id}
-                    className="hover:bg-[#f8fafc] transition-colors"
+                    className="transition-colors duration-200 hover:bg-[#e2e8f0] hover:shadow-md"
                   >
                     <td className="px-6 py-4 text-[#475569]">{index + 1}</td>
                     <td className="px-6 py-4 font-medium text-[#1e293b]">
@@ -60,7 +62,7 @@ const IssuerHome = ({ onLogout }) => {
                       <div className="flex gap-2">
                         <button
                           onClick={() => navigate(`/event-view/${event.id}`)}
-                          className="text-[#334155] hover:text-[#475569] flex items-center gap-1"
+                          className="text-[#334155] hover:text-[#1e293b] flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -75,11 +77,11 @@ const IssuerHome = ({ onLogout }) => {
                               clipRule="evenodd"
                             />
                           </svg>
-                          View
+                          <span>View</span>
                         </button>
                         <button
                           onClick={() => console.log(`Delete ${event.id}`)}
-                          className="text-red-600 hover:text-red-700 flex items-center gap-1"
+                          className="text-red-600 hover:text-red-700 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +95,7 @@ const IssuerHome = ({ onLogout }) => {
                               clipRule="evenodd"
                             />
                           </svg>
-                          Delete
+                          <span>Delete</span>
                         </button>
                       </div>
                     </td>
