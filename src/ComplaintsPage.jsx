@@ -1,4 +1,5 @@
 import React from "react";
+import UserNavbar from "./UserNavbar";
 
 const ComplaintsPage = () => {
   const complaints = [
@@ -11,13 +12,13 @@ const ComplaintsPage = () => {
         <h1 className="text-3xl font-light text-[#1e293b] mb-8">
           Complaints History
         </h1>
-
+        <UserNavbar></UserNavbar>
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-[#edf2f7]">
           <table className="w-full">
             <thead className="bg-[#f8fafc]">
               <tr>
                 {["Sr.No", "Complaint ID", "Date", "Status"].map((header) => (
-                  <th
+                  <th 
                     key={header}
                     className="px-6 py-4 text-left text-sm font-normal text-[#64748b]"
                   >
