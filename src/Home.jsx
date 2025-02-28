@@ -11,17 +11,17 @@ const Home = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8e5c5] to-[#f1d5a4]">
+
       <div className="flex-1 max-w-7xl mx-auto px-4 py-8 grid gap-8">
-        <Navbar onLogout={handleLogout} />
+      <Navbar onLogout={handleLogout} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white/50 backdrop-blur-sm rounded-2xl shadow-lg p-8 border border-[#e0c9a9]">
             <h1 className="text-4xl font-bold text-[#5f4b32] mb-6">
               Create Professional Certificates Effortlessly
             </h1>
             <p className="text-[#7d6954] text-lg mb-8">
-              Transform your recognition process with our seamless
-              e-certification platform for education, awards, and special
-              occasions.
+              Transform your recognition process with our seamless e-certification
+              platform for education, awards, and special occasions.
             </p>
           </div>
 
@@ -36,11 +36,11 @@ const Home = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className=" flex items-center justify-center">
-            <img
-              src="/assets/excel_pic.png"
-              alt="Excel type image"
-              className="max-w-full max-h-[250px] object-contain rounded-lg"
-            />
+          <img
+            src="/assets/excel_pic.png"
+            alt="Excel type image"
+            className="max-w-full max-h-[250px] object-contain rounded-lg"
+          />
           </div>
 
           <div className="bg-white/50 backdrop-blur-sm rounded-2xl shadow-lg p-8 border border-[#e0c9a9]">
@@ -74,10 +74,7 @@ const Home = () => {
 
       <footer className="bg-[#5f4b32] text-white py-4 mt-auto">
         <div className="max-w-7xl mx-auto px-7 text-center">
-          <p>
-            &copy; {new Date().getFullYear()} VESIT-ECertificate. All rights
-            reserved.
-          </p>
+          <p>&copy; {new Date().getFullYear()} VESIT-ECertificate. All rights reserved.</p>
         </div>
       </footer>
     </div>
