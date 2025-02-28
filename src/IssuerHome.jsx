@@ -2,7 +2,6 @@ import React from "react";
 import IssuerNavbar from "./IssuerNavbar";
 import { useNavigate } from "react-router-dom";
 
-/*new*/
 const IssuerHome = ({ onLogout }) => {
   const navigate = useNavigate();
 
