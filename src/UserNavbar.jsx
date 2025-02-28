@@ -15,7 +15,7 @@ const UserNavbar = () => {
         {/* Left Section - Logo & Links */}
         <div className="flex items-center space-x-6 ml-4">
           {/* Logo */}
-          <img src="/vesit-logo.png" alt="Logo" className="h-8 w-auto" />
+          <img src="./assets/VES-logo.png" alt="Logo" className="h-8 w-auto" />
           <span className="text-[#5f4b32] font-bold text-lg">
             {" "}
             <b>VESIT</b>{" "}
