@@ -15,10 +15,9 @@ const UserNavbar = () => {
         {/* Left Section - Logo & Links */}
         <div className="flex items-center space-x-6 ml-4">
           {/* Logo */}
-          <img src="./assets/VES-logo.png" alt="Logo" className="h-8 w-auto" />
+          <img src="./assets/VES-logo.png" alt="Logo" className="h-14 w-auto" />
           <span className="text-[#5f4b32] font-bold text-lg">
-            {" "}
-            <b>VESIT</b>{" "}
+            <b>VESIT</b>
           </span>
 
           {/* Home Page Link */}
@@ -39,18 +38,21 @@ const UserNavbar = () => {
         </div>
 
         {/* Right Section - User Info & Logout */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           {/* User Icon & Name */}
-          <img src="/user-icon.png" alt="User Icon" className="h-6 w-6" />
-          <span className="text-[#5f4b32] font-bold text-lg">
-            {" "}
-            <b>Name</b>{" "}
-          </span>
+          <div className="flex items-center space-x-2">
+            <img
+              src="./assets/usericon.jpg"
+              alt="User Icon"
+              className="h-10 w-10 rounded-full border-2 border-[#e0c9a9] shadow-sm"
+            />
+            <span className="text-[#5f4b32] font-semibold text-lg">Name</span>
+          </div>
 
-          {/* Log Out Link */}
+          {/* Log Out Button */}
           <span
             onClick={handleLogout}
-            className="text-[#5f4b32] hover:bg-[#e0c9a9] border border-[#e0c9a9] px-4 py-2 rounded-lg cursor-pointer transition-colors"
+            className="text-[#5f4b32] hover:bg-[#e0c9a9] border border-[#e0c9a9] px-4 py-2 rounded-lg cursor-pointer transition-all duration-200"
           >
             Log Out
           </span>
