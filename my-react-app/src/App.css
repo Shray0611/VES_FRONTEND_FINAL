@@ -1,0 +1,106 @@
+/* Navbar container */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 2px solid black;;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 0 20px; /* Reduced padding to prevent overflow */
+    height: 70px;
+}
+
+/* Navbar content container */
+nav > .max-w-screen-xl {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px; /* Prevents elements from sticking to the edge */
+}
+
+/* Left-side items (Logo & Buttons) */
+.left-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Right-side items (User & Logout Button) */
+.right-section {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduced gap to keep buttons within the navbar */
+}
+
+/* Style for Home Page & View Complaints Buttons */
+button.deep-sea-blue {
+    background-color:#77b6b0;
+    color: white;
+    border: 2px solid black;
+    padding: 8px 16px; /* Slightly reduced padding */
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button.deep-sea-blue:hover {
+    background-color:#77b6b0;
+}
+
+/* Log Out Button */
+button.logout-btn {
+    padding: 8px 16px; /* Reduced padding to fit within navbar */
+    border-radius: 30px;
+    font-size: 1rem;
+    background-color: white;
+    color: #d9534f;
+    border: 2px solid #d9534f;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+button.logout-btn:hover {
+    background-color: #d9534f;
+    color: white;
+}
+
+/* User Icon */
+.right-section img {
+    height: 24px;
+    width: 24px;
+    object-fit: contain;
+}
+
+/* App.css */
+.user-home-container {
+    background-color:rgb(227, 237, 247); /* Aqua Green */
+    min-height: 100vh; /* Ensure the content covers full height of the screen */
+  }
+  
+  /* Assuming the navbar has a fixed position or height */
+.user-home-container {
+    margin-top: 80px; /* Adjust this value based on your navbar height */
+  }
+  
+  /* Alternatively, you can apply padding to the top if preferred */
+  .user-home-container {
+    padding-top: 80px; /* Adjust based on your navbar height */
+  }
+  
+  /* Optionally, if you want to shift only the text down */
+  .user-home-container h1, .user-home-container h2 {
+    margin-top: 20px; /* Adds space between navbar and heading */
+  }
+  
