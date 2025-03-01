@@ -21,6 +21,7 @@ import Guidelines from "./Guidelines";
 import IssuerNavbar from "./IssuerNavbar"; // Import IssuerNavbar
 import "./App.css"; // Import your App's CSS file
 import ForgotPassword from "./ForgotPassword";
+import ViewTemplate from "./ViewTemplate";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
@@ -71,6 +72,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
             path="/issuer-home"
             element={<IssuerHome onLogout={onLogout} />}
           />
+          <Route path="/view-template" element={<ViewTemplate />} />
           <Route path="/admin-home" element={<AdminHome />} />
 
           <Route path="/certificate-view/:id" element={<CertificateView />} />
