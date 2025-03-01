@@ -22,7 +22,7 @@ const UserNavbar = () => {
 
           {/* Home Page Link */}
           <span
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/user-home")}
             className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer transition-colors"
           >
             Home Page
