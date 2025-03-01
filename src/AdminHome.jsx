@@ -15,7 +15,9 @@ const AdminHome = () => (
       </div>
 
       <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#edf2f7]">
-        <h2 className="text-xl font-normal text-[#1e293b] mb-6">Recent Activity</h2>
+        <h2 className="text-xl font-normal text-[#1e293b] mb-6">
+          Recent Activity
+        </h2>
         <div className="space-y-4 text-[#475569]">
           <ActivityItem text="New certificate issued" time="2h ago" />
           <ActivityItem text="User registration completed" time="5h ago" />
@@ -27,7 +29,9 @@ const AdminHome = () => (
 );
 
 const MetricCard = ({ title, value, color }) => (
-  <div className={`bg-white p-6 rounded-xl shadow-sm border-l-4 border-${color}-200`}>
+  <div
+    className={`bg-white p-6 rounded-xl shadow-sm border-l-4 border-${color}-200`}
+  >
     <h3 className="text-sm text-[#64748b] mb-2">{title}</h3>
     <p className={`text-3xl font-light text-${color}-600`}>{value}</p>
   </div>

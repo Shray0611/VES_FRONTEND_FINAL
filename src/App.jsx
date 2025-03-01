@@ -21,6 +21,7 @@ import Guidelines from "./Guidelines";
 import IssuerNavbar from "./IssuerNavbar"; // Import IssuerNavbar
 import "./App.css"; // Import your App's CSS file
 import ForgotPassword from "./ForgotPassword";
+import EventView from "./EventView";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
@@ -77,6 +78,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route path="/report-issue/:id" element={<ReportIssue />} />
           <Route path="/complaints" element={<ComplaintsPage />} />
           <Route path="/guidelines" element={<Guidelines />} />
+          <Route path="/event-view" element={<EventView />} />
         </Routes>
       </div>
 

@@ -61,7 +61,7 @@ const IssuerHome = ({ onLogout }) => {
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
                         <button
-                          onClick={() => navigate(`/event-view/${event.id}`)}
+                          onClick={() => navigate("/event-view")}
                           className="text-[#334155] hover:text-[#1e293b] flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                         >
                           <svg
