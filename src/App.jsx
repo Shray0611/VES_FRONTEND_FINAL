@@ -23,6 +23,7 @@ import "./App.css"; // Import your App's CSS file
 import ForgotPassword from "./ForgotPassword";
 import EventView from "./EventView";
 import ViewTemplate from "./ViewTemplate";
+import ComplaintView from "./ComplaintView";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
@@ -81,6 +82,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route path="/complaints" element={<ComplaintsPage />} />
           <Route path="/guidelines" element={<Guidelines />} />
           <Route path="/event-view" element={<EventView />} />
+          <Route path="/complaints-view" element={<ComplaintView />} />
         </Routes>
       </div>
 

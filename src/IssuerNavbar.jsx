@@ -21,7 +21,6 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
           </div>
           <div className="hidden md:flex items-center space-x-6">
             <span
-              onClick={() => navigate("/issuer-home")}
               className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer transition-colors"
             >
               Home
@@ -31,6 +30,12 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
               className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer transition-colors"
             >
               Templates
+            </span>
+            <span
+              onClick={() => navigate("/issuer-home")}
+              className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer transition-colors"
+            >
+              Records
             </span>
             <span
               onClick={() => navigate("/guidelines")}
@@ -44,7 +49,7 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
         {/* Right Section */}
         <div className="flex items-center space-x-4">
           <span
-            onClick={handleQuery}
+            onClick={()=>navigate("/complaints-view")}
             className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer relative p-2 rounded-full hover:bg-[#e0c9a9] transition-colors"
           >
             <svg
