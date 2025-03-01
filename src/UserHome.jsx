@@ -37,7 +37,7 @@ const UserHome = ({ onLogout }) => {
 
   const handleComplaint = (certificate) => {
     console.log("Raising complaint for:", certificate);
-    navigate("/raise-complaint");
+    navigate("/report-issue/id");
   };
 
   return (
