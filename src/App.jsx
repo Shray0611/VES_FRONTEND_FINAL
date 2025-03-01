@@ -22,6 +22,7 @@ import IssuerNavbar from "./IssuerNavbar"; // Import IssuerNavbar
 import "./App.css"; // Import your App's CSS file
 import ForgotPassword from "./ForgotPassword";
 import EventView from "./EventView";
+import ViewTemplate from "./ViewTemplate";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
