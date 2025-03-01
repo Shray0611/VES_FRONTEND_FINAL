@@ -6,7 +6,7 @@ import {
   FiClock,
   FiAlertCircle,
 } from "react-icons/fi";
-
+import UserNavbar from "./UserNavbar";
 const ComplaintsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -54,7 +54,8 @@ const ComplaintsPage = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
-      <div className="max-w-7xl mx-auto">
+      <UserNavbar />
+      <div className="max-w-7xl mx-auto mt-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">
@@ -94,21 +95,24 @@ const ComplaintsPage = () => {
 
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full table-fixed">
               <thead className="bg-gray-50">
                 <tr>
-                  {["Sr.No", "Complaint ID", "Date", "Status"].map((header) => (
+                  {[
+                    { label: "Sr.No", key: "id", width: "10%" },
+                    { label: "Complaint ID", key: "complaintId", width: "30%" },
+                    { label: "Date", key: "date", width: "20%" },
+                    { label: "Status", key: "status", width: "20%" },
+                  ].map((column) => (
                     <th
-                      key={header}
-                      className="px-6 py-4 text-left text-sm font-medium text-gray-600 cursor-pointer"
-                      onClick={() =>
-                        handleSort(header === "Date" ? "date" : "id")
-                      }
+                      key={column.key}
+                      className="px-6 py-4 text-left text-sm font-medium text-gray-600 cursor-pointer w-auto"
+                      onClick={() => handleSort(column.key)}
+                      style={{ width: column.width }}
                     >
                       <div className="flex items-center gap-1.5">
-                        {header}
-                        {sortConfig.key ===
-                          (header === "Date" ? "date" : "id") && (
+                        {column.label}
+                        {sortConfig.key === column.key && (
                           <FiChevronDown
                             className={`text-gray-500 transition-transform ${
                               sortConfig.direction === "asc" ? "rotate-180" : ""
@@ -126,20 +130,20 @@ const ComplaintsPage = () => {
                     key={complaint.id}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="px-6 py-4 text-gray-600 text-sm">
+                    <td className="px-6 py-4 text-gray-600 text-sm text-left">
                       {complaint.id}
                     </td>
-                    <td className="px-6 py-4 text-gray-900 text-sm font-medium">
+                    <td className="px-6 py-4 text-gray-900 text-sm font-medium text-left">
                       {complaint.complaintId}
                     </td>
-                    <td className="px-6 py-4 text-gray-600 text-sm whitespace-nowrap">
+                    <td className="px-6 py-4 text-gray-600 text-sm text-left whitespace-nowrap">
                       {new Date(complaint.date).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
                       })}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-left">
                       <StatusBadge status={complaint.status} />
                     </td>
                   </tr>

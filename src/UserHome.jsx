@@ -53,10 +53,10 @@ const UserHome = ({ onLogout }) => {
         <table className="w-full bg-white rounded-lg shadow-md border border-gray-200">
           <thead>
             <tr className="bg-gray-200">
-              <th className="p-4 text-left text-gray-700">Event</th>
-              <th className="p-4 text-left text-gray-700">Council</th>
-              <th className="p-4 text-left text-gray-700">Event Date</th>
-              <th className="p-4 text-left text-gray-700">Actions</th>
+              <th className="p-4 text-center text-gray-700">Event</th>
+              <th className="p-4 text-center text-gray-700">Council</th>
+              <th className="p-4 text-center text-gray-700">Event Date</th>
+              <th className="p-4 text-center text-gray-700">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -65,11 +65,15 @@ const UserHome = ({ onLogout }) => {
                 key={index}
                 className="border-t border-gray-300 hover:bg-gray-50"
               >
-                <td className="p-4 text-gray-600 font-medium">{cert.event}</td>
-                <td className="p-4 text-gray-600">{cert.council}</td>
-                <td className="p-4 text-gray-600">{cert.date}</td>
-                <td className="p-4">
-                  <div className="flex gap-2">
+                <td className="p-4 text-center text-gray-600 font-medium">
+                  {cert.event}
+                </td>
+                <td className="p-4 text-center text-gray-600">
+                  {cert.council}
+                </td>
+                <td className="p-4 text-center text-gray-600">{cert.date}</td>
+                <td className="p-4 text-center">
+                  <div className="flex justify-center gap-2">
                     <button
                       onClick={() => handleView(cert)}
                       className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition-colors"
