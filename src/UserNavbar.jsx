@@ -15,7 +15,7 @@ const UserNavbar = () => {
         {/* Left Section - Logo & Links */}
         <div className="flex items-center space-x-6 ml-4">
           {/* Logo */}
-          <img src="./assets/VES-logo.png" alt="Logo" className="h-14 w-auto" />
+          <img src="/assets/VES-logo.png" alt="Logo" className="h-14 w-auto" />
           <span className="text-[#5f4b32] font-bold text-lg">
             <b>VESIT</b>
           </span>
@@ -42,7 +42,7 @@ const UserNavbar = () => {
           {/* User Icon & Name */}
           <div className="flex items-center space-x-2">
             <img
-              src="./assets/usericon.jpg"
+              src="/assets/usericon.jpg"
               alt="User Icon"
               className="h-10 w-10 rounded-full border-2 border-[#e0c9a9] shadow-sm"
             />

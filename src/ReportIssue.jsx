@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import UserNavbar from "./UserNavbar";
 
 const ReportIssue = () => {
   const [issueDescription, setIssueDescription] = useState("");
@@ -14,6 +15,7 @@ const ReportIssue = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-lg w-full border border-gray-200">
+        <UserNavbar></UserNavbar>
         <h1 className="text-2xl font-semibold text-gray-800 mb-4 border-b pb-2">
           Issue Reporting Form
         </h1>
