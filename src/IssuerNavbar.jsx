@@ -10,15 +10,15 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
       <div className="max-w-screen-xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center space-x-6 ml-4 ">
-          
-          <img 
+          <img
             src={logo}
             alt="Logo"
             className="h-14 w-auto cursor-pointer"
             onClick={() => navigate("/issuer-home")}
           />
           <div className="text-[#5f4b32] font-bold text-lg">
-          <b>VESIT</b></div>
+            <b>VESIT</b>
+          </div>
           <div className="hidden md:flex items-center space-x-6">
             <span
               onClick={() => navigate("/issuer-home")}
@@ -59,24 +59,20 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
           </span>
 
           <div className="flex items-center space-x-4">
-            <span className="text-[#5f4b32] text-sm">Council Name</span>
-            <div className="h-8 w-px bg-[#e0c9a9]"></div>
+            <div className="flex items-center space-x-2">
+              <img
+                src="/assets/usericon.jpg"
+                alt="User Icon"
+                className="h-10 w-10 rounded-full border-2 border-[#e0c9a9] shadow-sm"
+              />
+              <span className="text-[#5f4b32] font-semibold text-lg">
+                Council Name
+              </span>
+            </div>{" "}
             <span
-              onClick={onLogout}
-              className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors"
+              // onClick={handleLogout}
+              className="text-[#5f4b32] hover:bg-[#e0c9a9] border border-[#e0c9a9] px-4 py-2 rounded-lg cursor-pointer transition-all duration-200"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
               Log Out
             </span>
           </div>

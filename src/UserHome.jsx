@@ -49,8 +49,8 @@ const UserHome = ({ onLogout }) => {
         Your Certificates
       </h2>
 
-      <div className="w-full max-w-6xl">
-        <table className="w-full bg-white rounded-lg shadow-md border border-gray-200">
+      <div className="w-full max-w-6xl bg-gray-100 p-4 rounded-lg shadow-md border border-gray-200">
+        <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-200">
               <th className="p-4 text-center text-gray-700">Event</th>
@@ -63,7 +63,7 @@ const UserHome = ({ onLogout }) => {
             {certificates.map((cert, index) => (
               <tr
                 key={index}
-                className="border-t border-gray-300 hover:bg-gray-50"
+                className="border-t border-gray-300 hover:bg-gray-200"
               >
                 <td className="p-4 text-center text-gray-600 font-medium">
                   {cert.event}
