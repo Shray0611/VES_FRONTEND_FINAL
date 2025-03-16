@@ -2,7 +2,7 @@ import React from "react";
 import IssuerNavbar from "./IssuerNavbar";
 import { useNavigate } from "react-router-dom";
 
-const IssuerHome = ({ onLogout }) => {
+const IssuerRecords = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const events = [
@@ -110,4 +110,4 @@ const IssuerHome = ({ onLogout }) => {
   );
 };
 
-export default IssuerHome;
+export default IssuerRecords;
