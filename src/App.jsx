@@ -12,7 +12,7 @@ import Contact from "./Contact";
 import Login from "./Login";
 import Signup from "./Signup";
 import UserHome from "./UserHome";
-import IssuerHome from "./IssuerHome";
+import IssuerRecords from "./IssuerRecords";
 import AdminHome from "./AdminHome";
 import CertificateView from "./CertificateView";
 import ReportIssue from "./ReportIssue";
@@ -71,8 +71,8 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           {/* These routes are accessible after logging in */}
           <Route path="/user-home" element={<UserHome onLogout={onLogout} />} />
           <Route
-            path="/issuer-home"
-            element={<IssuerHome onLogout={onLogout} />}
+            path="/issuer-records"
+            element={<IssuerRecords onLogout={onLogout} />}
           />
           <Route path="/view-template" element={<ViewTemplate />} />
           <Route path="/admin-home" element={<AdminHome />} />

@@ -32,7 +32,7 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
               Templates
             </span>
             <span
-              onClick={() => navigate("/issuer-home")}
+              onClick={() => navigate("/issuer-records")}
               className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer transition-colors"
             >
               Records
