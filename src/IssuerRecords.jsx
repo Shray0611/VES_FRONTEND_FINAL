@@ -40,7 +40,9 @@ const IssuerRecords = ({ onLogout }) => {
                   {["No.", "Event Name", "Date", "Actions"].map((header) => (
                     <th
                       key={header}
-                      className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide"
+                      className={`px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide ${
+                        header === "Actions" ? "text-center" : ""
+                      }`}
                     >
                       {header}
                     </th>
@@ -59,10 +61,11 @@ const IssuerRecords = ({ onLogout }) => {
                     </td>
                     <td className="px-6 py-4 text-[#475569]">{event.date}</td>
                     <td className="px-6 py-4">
-                      <div className="flex gap-2">
+                      <div className="flex justify-center ml-8 gap-3">
                         <button
                           onClick={() => navigate("/event-view")}
-                          className="text-[#334155] hover:text-[#1e293b] flex items-center gap-1 transition-transform duration-200 hover:scale-105"
+                          className="text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
+                          title="View Details"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -80,8 +83,28 @@ const IssuerRecords = ({ onLogout }) => {
                           <span>View</span>
                         </button>
                         <button
+                          onClick={() => console.log(`Download ${event.id}`)}
+                          className="text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
+                          title="Download"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          <span>Download</span>
+                        </button>
+                        <button
                           onClick={() => console.log(`Delete ${event.id}`)}
                           className="text-red-600 hover:text-red-700 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
+                          title="Delete"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
