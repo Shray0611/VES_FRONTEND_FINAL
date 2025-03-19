@@ -5,7 +5,6 @@ import UserNavbar from "./UserNavbar";
 const UserHome = ({ onLogout }) => {
   const navigate = useNavigate();
 
-  // Dummy data for demonstration
   const certificates = [
     {
       event: "Annual Tech Symposium 2024",
@@ -41,54 +40,67 @@ const UserHome = ({ onLogout }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pt-24 flex flex-col items-center">
+    <div className="min-h-screen bg-gradient-to-br from-[#f4e3d7] to-[#d2b48c] p-6 pt-24 flex flex-col items-center">
       <UserNavbar onLogout={onLogout} />
 
-      <h1 className="text-gray-800 text-3xl font-bold mb-4">Welcome, User!</h1>
-      <h2 className="text-gray-700 text-2xl font-semibold mb-8">
-        Your Certificates
-      </h2>
+      <div className="mb-8 text-center">
+        <h1 className="text-[#5a3d2b] text-4xl font-extrabold mb-2">
+          Welcome, <span className="text-[#a67c52]">User!</span>
+        </h1>
+        <h2 className="text-[#7d5a44] text-xl font-medium">
+          Your Certificates
+        </h2>
+      </div>
 
-      <div className="w-full max-w-6xl bg-gray-100 p-4 rounded-lg shadow-md border border-gray-200">
+      <div className="w-full max-w-6xl bg-[#f9f3ef] rounded-2xl shadow-lg overflow-hidden border border-[#d2b48c]">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-gray-200">
-              <th className="p-4 text-center text-gray-700">Event</th>
-              <th className="p-4 text-center text-gray-700">Council</th>
-              <th className="p-4 text-center text-gray-700">Event Date</th>
-              <th className="p-4 text-center text-gray-700">Actions</th>
+            <tr className="bg-[#a67c52] text-white">
+              <th className="p-5 text-center text-sm font-semibold">Event</th>
+              <th className="p-5 text-center text-sm font-semibold">Council</th>
+              <th className="p-5 text-center text-sm font-semibold">
+                Event Date
+              </th>
+              <th className="p-5 text-center text-sm font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
             {certificates.map((cert, index) => (
               <tr
                 key={index}
-                className="border-t border-gray-300 hover:bg-gray-200"
+                className="border-t border-[#e4cbb6] hover:bg-[#f0e1d0] transition-all duration-200"
               >
-                <td className="p-4 text-center text-gray-600 font-medium">
+                <td className="p-4 text-center text-[#5a3d2b] font-medium">
                   {cert.event}
                 </td>
-                <td className="p-4 text-center text-gray-600">
+                <td className="p-4 text-center text-[#7d5a44]">
                   {cert.council}
                 </td>
-                <td className="p-4 text-center text-gray-600">{cert.date}</td>
+                <td className="p-4 text-center text-[#7d5a44]">
+                  {cert.date}
+                </td>
                 <td className="p-4 text-center">
-                  <div className="flex justify-center gap-2">
+                  <div className="flex justify-center gap-3">
+                    {/* View Button */}
                     <button
                       onClick={() => handleView(cert)}
-                      className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition-colors"
+                      className="bg-[#d2a679] hover:bg-[#c1905d] text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all duration-200"
                     >
                       View
                     </button>
+
+                    {/* Download Button */}
                     <button
                       onClick={() => handleDownload(cert)}
-                      className="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded transition-colors"
+                      className="bg-[#8b5e3c] hover:bg-[#6f4e37] text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all duration-200"
                     >
                       Download
                     </button>
+
+                    {/* Raise Complaint Button */}
                     <button
                       onClick={() => handleComplaint(cert)}
-                      className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition-colors"
+                      className="bg-[#b35a30] hover:bg-[#9a4b24] text-white font-medium py-2 px-4 rounded-lg shadow-md transition-all duration-200"
                     >
                       Raise Complaint
                     </button>
