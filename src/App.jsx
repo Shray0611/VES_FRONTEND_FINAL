@@ -19,6 +19,7 @@ import ReportIssue from "./ReportIssue";
 import ComplaintsPage from "./ComplaintsPage";
 import Guidelines from "./Guidelines";
 import IssuerNavbar from "./IssuerNavbar"; // Import IssuerNavbar
+import IssuerHome from "./IssuerHome"; // Import IssuerHome
 import "./App.css"; // Import your App's CSS file
 import ForgotPassword from "./ForgotPassword";
 import EventView from "./EventView";
@@ -50,8 +51,11 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
 
   return (
     <>
-      {/* Conditionally render IssuerNavbar only when logged in and on /issuer-home route */}
-      {isLoggedIn && location.pathname === "/issuer-home" && (
+      {/* Conditionally render IssuerNavbar on issuer routes (temporarily without login check for testing) */}
+      {(location.pathname === "/issuer-home" ||
+        location.pathname === "/issuer-records" ||
+        location.pathname === "/view-template" ||
+        location.pathname === "/complaints-view") && (
         <IssuerNavbar onLogout={onLogout} handleQuery={() => {}} />
       )}
 
@@ -70,6 +74,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
 
           {/* These routes are accessible after logging in */}
           <Route path="/user-home" element={<UserHome onLogout={onLogout} />} />
+          <Route path="/issuer-home" element={<IssuerHome />} />
           <Route
             path="/issuer-records"
             element={<IssuerRecords onLogout={onLogout} />}

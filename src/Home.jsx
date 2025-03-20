@@ -23,6 +23,16 @@ const Home = () => {
               e-certification platform for education, awards, and special
               occasions.
             </p>
+
+            {/* Test buttons for navigation */}
+            <div className="flex flex-wrap gap-4 mt-4">
+              <button
+                onClick={() => navigate("/issuer-home")}
+                className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-2 px-6 rounded-lg transition-colors"
+              >
+                Go to Issuer Dashboard
+              </button>
+            </div>
           </div>
 
           <div className="relative w-full h-full overflow-hidden rounded-2xl">
