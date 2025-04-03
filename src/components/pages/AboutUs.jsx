@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "./Navbar";
+import Navbar from "../layout/Navbar";
 
 const AboutUs = () => {
   return (
@@ -15,19 +15,21 @@ const AboutUs = () => {
           <div className="space-y-20">
             <Section title="Our Mission">
               <p>
-                At Vivekanand Education Society of Technology (VESIT), our mission is to 
-                revolutionize the certification process by providing a secure, efficient, 
-                and globally recognized platform. We aim to ensure that every credential 
-                issued maintains the highest level of authenticity and reliability.
+                At Vivekanand Education Society of Technology (VESIT), our
+                mission is to revolutionize the certification process by
+                providing a secure, efficient, and globally recognized platform.
+                We aim to ensure that every credential issued maintains the
+                highest level of authenticity and reliability.
               </p>
             </Section>
 
             <Section title="Our Vision">
               <p>
-                To be a global leader in digital certification, fostering trust and 
-                transparency in academic and professional credentials. Our vision is to 
-                empower individuals and institutions with seamless access to verified 
-                credentials, driving growth and global recognition.
+                To be a global leader in digital certification, fostering trust
+                and transparency in academic and professional credentials. Our
+                vision is to empower individuals and institutions with seamless
+                access to verified credentials, driving growth and global
+                recognition.
               </p>
             </Section>
 
@@ -38,15 +40,16 @@ const AboutUs = () => {
                 "Intuitive and responsive user interface.",
                 "Real-time status updates and tracking.",
                 "Secure storage and easy retrieval of certificates.",
-                "Global recognition and acceptance."
+                "Global recognition and acceptance.",
               ]}
             />
 
             <Section title="Our Values">
               <p>
-                We are driven by a commitment to excellence, transparency, and 
-                user-centric innovation. Our platform ensures equal access and 
-                recognition for all users, fostering trust and continuous improvement.
+                We are driven by a commitment to excellence, transparency, and
+                user-centric innovation. Our platform ensures equal access and
+                recognition for all users, fostering trust and continuous
+                improvement.
               </p>
             </Section>
           </div>

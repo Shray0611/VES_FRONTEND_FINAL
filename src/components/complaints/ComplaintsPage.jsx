@@ -6,7 +6,8 @@ import {
   FiClock,
   FiAlertCircle,
 } from "react-icons/fi";
-import UserNavbar from "./UserNavbar";
+import UserNavbar from "../layout/UserNavbar";
+
 const ComplaintsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");

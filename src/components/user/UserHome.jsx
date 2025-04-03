@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import UserNavbar from "./UserNavbar";
+import UserNavbar from "../layout/UserNavbar";
 
 const UserHome = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -44,7 +44,9 @@ const UserHome = ({ onLogout }) => {
       <UserNavbar onLogout={onLogout} />
 
       <div className="mb-6 text-center">
-        <h1 className="text-[#5a3d2b] text-3xl font-bold">Welcome, <span className="text-[#a67c52]">User!</span></h1>
+        <h1 className="text-[#5a3d2b] text-3xl font-bold">
+          Welcome, <span className="text-[#a67c52]">User!</span>
+        </h1>
         <h2 className="text-[#7d5a44] text-lg">Your Certificates</h2>
       </div>
 
@@ -54,15 +56,22 @@ const UserHome = ({ onLogout }) => {
             <tr className="bg-[#a67c52] text-white">
               <th className="p-3 text-center text-sm font-semibold">Event</th>
               <th className="p-3 text-center text-sm font-semibold">Council</th>
-              <th className="p-3 text-center text-sm font-semibold">Event Date</th>
+              <th className="p-3 text-center text-sm font-semibold">
+                Event Date
+              </th>
               <th className="p-3 text-center text-sm font-semibold">Actions</th>
             </tr>
           </thead>
           <tbody>
             {certificates.map((cert, index) => (
-              <tr key={index} className="border-t border-gray-300 hover:bg-[#f0e1d0]">
+              <tr
+                key={index}
+                className="border-t border-gray-300 hover:bg-[#f0e1d0]"
+              >
                 <td className="p-3 text-center text-[#5a3d2b]">{cert.event}</td>
-                <td className="p-3 text-center text-[#7d5a44]">{cert.council}</td>
+                <td className="p-3 text-center text-[#7d5a44]">
+                  {cert.council}
+                </td>
                 <td className="p-3 text-center text-[#7d5a44]">{cert.date}</td>
                 <td className="p-3 text-center">
                   <div className="flex justify-center gap-2">

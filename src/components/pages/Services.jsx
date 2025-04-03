@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "./Navbar";
+import Navbar from "../layout/Navbar";
 import { BadgeCheck, ShieldCheck, Bell, FileText } from "lucide-react";
 
 const Services = () => {
@@ -11,7 +11,8 @@ const Services = () => {
           Our Services
         </h1>
         <p className="text-lg text-gray-600 mb-10 text-center leading-relaxed">
-          Empowering educational institutions, students, and employers with secure and seamless digital certification solutions.
+          Empowering educational institutions, students, and employers with
+          secure and seamless digital certification solutions.
         </p>
 
         {/* Certificate Issuance */}
@@ -25,7 +26,9 @@ const Services = () => {
                 Certificate Issuance
               </h2>
               <p className="text-gray-600">
-                Generate and distribute certificates quickly and securely. Ideal for course completion, event participation, and professional achievements.
+                Generate and distribute certificates quickly and securely. Ideal
+                for course completion, event participation, and professional
+                achievements.
               </p>
             </div>
           </div>
@@ -40,7 +43,9 @@ const Services = () => {
                 Certificate Verification
               </h2>
               <p className="text-gray-600">
-                Instantly verify certificate authenticity. Our secure system ensures fast, fraud-proof verification for employers and institutions.
+                Instantly verify certificate authenticity. Our secure system
+                ensures fast, fraud-proof verification for employers and
+                institutions.
               </p>
             </div>
           </div>
@@ -55,7 +60,8 @@ const Services = () => {
                 Real-Time Notifications
               </h2>
               <p className="text-gray-600">
-                Stay updated with real-time notifications for certificate status and verification requests. Never miss an important update.
+                Stay updated with real-time notifications for certificate status
+                and verification requests. Never miss an important update.
               </p>
             </div>
           </div>
@@ -70,7 +76,8 @@ const Services = () => {
                 Secure and Reliable
               </h2>
               <p className="text-gray-600">
-                We use advanced encryption and security protocols to protect certificates from tampering and unauthorized access.
+                We use advanced encryption and security protocols to protect
+                certificates from tampering and unauthorized access.
               </p>
             </div>
           </div>
