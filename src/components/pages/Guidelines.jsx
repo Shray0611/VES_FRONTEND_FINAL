@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import IssuerNavbar from "./IssuerNavbar";
+import IssuerNavbar from "../layout/IssuerNavbar";
 
 const Guidelines = () => {
   return (

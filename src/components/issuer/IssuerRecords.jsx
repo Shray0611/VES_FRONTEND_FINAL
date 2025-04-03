@@ -1,5 +1,5 @@
-import React from "react";
-import IssuerNavbar from "./IssuerNavbar";
+import React, { useState } from "react";
+import IssuerNavbar from "../layout/IssuerNavbar";
 import { useNavigate } from "react-router-dom";
 
 const IssuerRecords = ({ onLogout }) => {

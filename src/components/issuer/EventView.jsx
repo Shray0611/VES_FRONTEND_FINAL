@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import IssuerNavbar from "./IssuerNavbar";
+import IssuerNavbar from "../layout/IssuerNavbar";
 
 const EventView = () => {
   const { id } = useParams();

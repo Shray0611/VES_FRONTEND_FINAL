@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import UserNavbar from "./UserNavbar";
+import UserNavbar from "../layout/UserNavbar";
 
 const ReportIssue = () => {
   const [issueDescription, setIssueDescription] = useState("");

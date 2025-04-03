@@ -1,5 +1,5 @@
-import React from "react";
-import IssuerNavbar from "./IssuerNavbar";
+import React, { useState } from "react";
+import IssuerNavbar from "../layout/IssuerNavbar";
 import { FiPlus } from "react-icons/fi";
 
 const ViewTemplate = () => {

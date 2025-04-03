@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import IssuerNavbar from "./IssuerNavbar";
+import IssuerNavbar from "../layout/IssuerNavbar";
 
 const ComplaintsView = () => {
   // Dummy complaints data for demonstration
@@ -26,7 +26,8 @@ const ComplaintsView = () => {
       email: "user3@example.com",
       date: "2023-07-19",
       status: "Resolved",
-      report: "Certificate generated with wrong serial number and typos in name.",
+      report:
+        "Certificate generated with wrong serial number and typos in name.",
     },
   ];
 
@@ -138,9 +139,7 @@ const ComplaintsView = () => {
                               : "bg-blue-500 hover:bg-blue-600 text-white"
                           }`}
                         >
-                          {updatedStatuses[complaint.id]
-                            ? "Updated"
-                            : "Update"}
+                          {updatedStatuses[complaint.id] ? "Updated" : "Update"}
                         </button>
                       </div>
                     </td>
@@ -166,9 +165,7 @@ const ComplaintsView = () => {
             <h2 className="text-xl font-semibold text-[#1e293b] mb-4">
               Complaint Report {selectedComplaint.complaintId}
             </h2>
-            <p className="text-[#475569] mb-4">
-              {selectedComplaint.report}
-            </p>
+            <p className="text-[#475569] mb-4">{selectedComplaint.report}</p>
             <button
               onClick={closeModal}
               className="bg-[#334155] text-white px-4 py-2 rounded-lg hover:bg-[#475569] transition-colors"
