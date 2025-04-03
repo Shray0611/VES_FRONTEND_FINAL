@@ -1,7 +1,8 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%; /* Ensure full width instead of max-width */
+  min-height: 100vh; /* Ensure full height */
+  margin: 0; /* Remove centering to allow full-width content */
+  padding: 0; /* Remove padding to let Home component handle spacing */
   text-align: center;
 }
 
