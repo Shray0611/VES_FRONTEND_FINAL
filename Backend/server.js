@@ -5,9 +5,9 @@ const connectDB = require('./config/db');
 const bcrypt = require('bcryptjs'); 
 const auth = require('./middlewares/auth');
 const authController = require('./controllers/authcontroller');
-// const certificateController = require('./controllers/certificatecontroller');
-// const collectionController = require('./controllers/collectionController');
-// const templateController = require('./controllers/templateController');
+const certificateController = require('./controllers/certificatecontroller');
+const collectionController = require('./controllers/collectionController');
+const templateController = require('./controllers/templateController');
 const userController = require('./controllers/userController');
 
 const app = express();
@@ -27,14 +27,14 @@ app.post('/api/login', authController.login);
 app.post('/api/register', authController.register);
 
 // Template Routes
-// app.post("/api/templates", auth(["admin"]), templateController.createTemplate);
+app.post("/api/templates", auth(["admin"]), templateController.createTemplate);
 
 // // Certificate Routes
-// app.get('/api/certificates/:id', auth(), certificateController.generateCertificateImage);
-// app.get('/api/verify/:code', certificateController.verifyCertificate);
-// app.get("/api/certificates", auth(), certificateController.getUserCertificates);
-// app.put("/api/certificates/:id", auth(["admin"]), certificateController.updateCertificate);
-// app.get('/api/admin/certificates', auth(['admin']), certificateController.getAdminCertificates);
+app.get('/api/certificates/:id', auth(), certificateController.generateCertificateImage);
+app.get('/api/verify/:code', certificateController.verifyCertificate);
+app.get("/api/certificates", auth(), certificateController.getUserCertificates);
+app.put("/api/certificates/:id", auth(["admin"]), certificateController.updateCertificate);
+app.get('/api/admin/certificates', auth(['admin']), certificateController.getAdminCertificates);
 
 // // Collection Routes
 
