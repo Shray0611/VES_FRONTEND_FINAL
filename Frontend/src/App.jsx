@@ -20,6 +20,7 @@ import ComplaintsPage from "./components/complaints/ComplaintsPage";
 import Guidelines from "./components/pages/Guidelines";
 import IssuerNavbar from "./components/layout/IssuerNavbar"; // Import IssuerNavbar
 import IssuerHome from "./components/issuer/IssuerHome"; // Import IssuerHome
+import CertificateGenerator from "./components/issuer/CertificateGenerator"; // Import CertificateGenerator
 import "./App.css"; // Import your App's CSS file
 import ForgotPassword from "./components/auth/ForgotPassword";
 import EventView from "./components/issuer/EventView";
@@ -55,7 +56,8 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
       {(location.pathname === "/issuer-home" ||
         location.pathname === "/issuer-records" ||
         location.pathname === "/view-template" ||
-        location.pathname === "/complaints-view") && (
+        location.pathname === "/complaints-view" ||
+        location.pathname === "/generate") && (
         <IssuerNavbar onLogout={onLogout} handleQuery={() => {}} />
       )}
 
@@ -80,6 +82,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
             element={<IssuerRecords onLogout={onLogout} />}
           />
           <Route path="/view-template" element={<ViewTemplate />} />
+          <Route path="/generate" element={<CertificateGenerator />} />
           <Route path="/superadmin/login" element={<AdminHome />} />
 
           <Route path="/certificate-view/:id" element={<CertificateView />} />
