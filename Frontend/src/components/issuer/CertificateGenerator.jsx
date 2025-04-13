@@ -27,19 +27,16 @@ const CertificateGenerator = () => {
     height: 100, // in pixels
   });
   const [qrDataUrl, setQrDataUrl] = useState(null);
+
+  // State for drag functionality
+  const [isDragging, setIsDragging] = useState(false);
+  const [currentDragIndex, setCurrentDragIndex] = useState(null);
+  const [isDraggingQR, setIsDraggingQR] = useState(false);
+  const [startDragPos, setStartDragPos] = useState({ x: 0, y: 0 });
+
   const imgRef = useRef(null);
+  const containerRef = useRef(null);
   const navigate = useNavigate();
-
-  // Static positioning instead of Draggable components
-  const handleElementPositionChange = (index, xPercent, yPercent) => {
-    setVariables((prev) =>
-      prev.map((v, i) => (i === index ? { ...v, x: xPercent, y: yPercent } : v))
-    );
-  };
-
-  const handleQrPositionChange = (xPercent, yPercent) => {
-    setQrConfig((prev) => ({ ...prev, x: xPercent, y: yPercent }));
-  };
 
   const fontOptions = [
     "Arial",
@@ -75,6 +72,100 @@ const CertificateGenerator = () => {
         });
     }
   }, [qrEnabled]);
+
+  // Setup mouse event listeners for drag
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isDragging && !isDraggingQR) return;
+
+      if (!containerRef.current) return;
+
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const mouseX = e.clientX - containerRect.left;
+      const mouseY = e.clientY - containerRect.top;
+
+      // Calculate delta from the start position
+      const deltaX = mouseX - startDragPos.x;
+      const deltaY = mouseY - startDragPos.y;
+
+      if (isDragging && currentDragIndex !== null) {
+        const currentVar = variables[currentDragIndex];
+        const newX = Math.max(
+          0,
+          Math.min(100, (mouseX / containerRect.width) * 100)
+        );
+        const newY = Math.max(
+          0,
+          Math.min(100, (mouseY / containerRect.height) * 100)
+        );
+
+        setVariables((prev) =>
+          prev.map((v, i) =>
+            i === currentDragIndex ? { ...v, x: newX, y: newY } : v
+          )
+        );
+      } else if (isDraggingQR) {
+        const newX = Math.max(
+          0,
+          Math.min(100, (mouseX / containerRect.width) * 100)
+        );
+        const newY = Math.max(
+          0,
+          Math.min(100, (mouseY / containerRect.height) * 100)
+        );
+
+        setQrConfig((prev) => ({ ...prev, x: newX, y: newY }));
+      }
+
+      // Update the starting position for the next move
+      setStartDragPos({ x: mouseX, y: mouseY });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      setIsDraggingQR(false);
+      setCurrentDragIndex(null);
+    };
+
+    // Add listeners
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, isDraggingQR, currentDragIndex, startDragPos, variables]);
+
+  const startDragging = (index, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - containerRect.left;
+    const mouseY = e.clientY - containerRect.top;
+
+    setIsDragging(true);
+    setCurrentDragIndex(index);
+    setStartDragPos({ x: mouseX, y: mouseY });
+  };
+
+  const startDraggingQR = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const mouseX = e.clientX - containerRect.left;
+    const mouseY = e.clientY - containerRect.top;
+
+    setIsDraggingQR(true);
+    setStartDragPos({ x: mouseX, y: mouseY });
+  };
 
   const {
     getRootProps: getTemplateRootProps,
@@ -269,7 +360,10 @@ const CertificateGenerator = () => {
 
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="w-full lg:w-2/3 relative">
-                <div className="border border-gray-200 rounded-lg p-1 bg-gray-50">
+                <div
+                  ref={containerRef}
+                  className="border border-gray-200 rounded-lg p-1 bg-gray-50 relative"
+                >
                   <img
                     ref={imgRef}
                     src={template}
@@ -282,6 +376,7 @@ const CertificateGenerator = () => {
                     return varConfig.type === "text" ? (
                       <div
                         key={index}
+                        className="draggable-element"
                         style={{
                           position: "absolute",
                           left: xPixel + "px",
@@ -294,13 +389,17 @@ const CertificateGenerator = () => {
                           fontSize: `${varConfig.fontSize}px`,
                           color: varConfig.color,
                           zIndex: 10,
+                          userSelect: "none", // Prevent text selection during drag
+                          WebkitUserSelect: "none",
                         }}
+                        onMouseDown={(e) => startDragging(index, e)}
                       >
                         {varConfig.name}
                       </div>
                     ) : (
                       <div
                         key={index}
+                        className="draggable-element"
                         style={{
                           position: "absolute",
                           left: xPixel + "px",
@@ -315,7 +414,10 @@ const CertificateGenerator = () => {
                             (varConfig.size / 100) * imageDimensions.width
                           }px`,
                           zIndex: 10,
+                          userSelect: "none",
+                          WebkitUserSelect: "none",
                         }}
+                        onMouseDown={(e) => startDragging(index, e)}
                       >
                         [QR Code]
                       </div>
@@ -325,6 +427,7 @@ const CertificateGenerator = () => {
                     <img
                       src={qrDataUrl}
                       alt="QR Code"
+                      className="draggable-element"
                       style={{
                         position: "absolute",
                         left: (qrConfig.x / 100) * imageDimensions.width + "px",
@@ -333,9 +436,15 @@ const CertificateGenerator = () => {
                         height: qrConfig.height + "px",
                         cursor: "move",
                         zIndex: 10,
+                        userSelect: "none",
+                        WebkitUserSelect: "none",
                       }}
+                      onMouseDown={startDraggingQR}
                     />
                   )}
+                </div>
+                <div className="mt-2 text-center text-sm text-gray-500">
+                  <p>Drag to position elements on the certificate</p>
                 </div>
               </div>
 
@@ -384,7 +493,7 @@ const CertificateGenerator = () => {
                           </label>
                           <input
                             type="number"
-                            value={qrConfig.x}
+                            value={qrConfig.x.toFixed(2)}
                             onChange={(e) =>
                               setQrConfig((prev) => ({
                                 ...prev,
@@ -400,7 +509,7 @@ const CertificateGenerator = () => {
                           </label>
                           <input
                             type="number"
-                            value={qrConfig.y}
+                            value={qrConfig.y.toFixed(2)}
                             onChange={(e) =>
                               setQrConfig((prev) => ({
                                 ...prev,
@@ -474,7 +583,7 @@ const CertificateGenerator = () => {
                           </label>
                           <input
                             type="number"
-                            value={varConfig.x}
+                            value={varConfig.x.toFixed(2)}
                             onChange={(e) =>
                               updateVariableProperty(
                                 index,
@@ -491,7 +600,7 @@ const CertificateGenerator = () => {
                           </label>
                           <input
                             type="number"
-                            value={varConfig.y}
+                            value={varConfig.y.toFixed(2)}
                             onChange={(e) =>
                               updateVariableProperty(
                                 index,
