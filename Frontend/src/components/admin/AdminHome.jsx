@@ -1,13 +1,188 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import logo from "/assets/VES-logo.png"; // adjust the path as needed
 
 const AdminHome = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [admins, setAdmins] = useState([]);
+  const [adminLoading, setAdminLoading] = useState(true);
+  const [adminError, setAdminError] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Form state
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState("");
+  const [formSuccess, setFormSuccess] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No token found in localStorage");
+          navigate("/login");
+          return;
+        }
+
+        const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        console.log(
+          "Verifying user with token:",
+          token.substring(0, 10) + "..."
+        );
+
+        const res = await axios.get(`${baseUrl}/api/auth/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("User verification response:", res.data);
+
+        if (!res.data.success || res.data.data.role !== "superadmin") {
+          throw new Error("Not authorized as superadmin");
+        }
+
+        setUser(res.data.data);
+      } catch (error) {
+        console.error(
+          "User verification error:",
+          error.response?.data || error.message
+        );
+        localStorage.removeItem("token");
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyUser();
+  }, [navigate]);
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        setAdminLoading(true);
+        setAdminError(null);
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No authentication token found");
+        }
+
+        const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+        console.log("Fetching admins from:", `${baseUrl}/api/admin/list`);
+
+        const res = await axios.get(`${baseUrl}/api/admin/list`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("Admin list response:", res.data);
+
+        if (res.data?.success && Array.isArray(res.data.data)) {
+          setAdmins(res.data.data);
+        } else {
+          console.warn("Unexpected response format:", res.data);
+          setAdmins([]);
+        }
+      } catch (err) {
+        console.error(
+          "Error fetching admins:",
+          err.response?.data || err.message
+        );
+        setAdminError(
+          err.response?.data?.message ||
+            err.message ||
+            "Failed to fetch admin list. Please check if the server is running."
+        );
+      } finally {
+        setAdminLoading(false);
+      }
+    };
+
+    fetchAdmins();
+  }, [refreshKey]);
 
   const handleLogout = () => {
+    localStorage.removeItem("token");
     navigate("/");
   };
+
+  const handleCreateAdmin = async (e) => {
+    e.preventDefault();
+    setFormError("");
+    setFormSuccess("");
+    setIsSubmitting(true);
+
+    try {
+      // Validation
+      if (!email || !password) {
+        throw new Error("Email and password are required");
+      }
+
+      if (!email.endsWith("@ves.ac.in")) {
+        throw new Error("Only VES domain emails allowed");
+      }
+
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters");
+      }
+
+      const token = localStorage.getItem("token");
+      const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const response = await axios.post(
+        `${baseUrl}/api/admin/create`,
+        {
+          email: email,
+          password: password,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        setFormSuccess("Admin created successfully!");
+        setEmail("");
+        setPassword("");
+        setRefreshKey((k) => k + 1); // Refresh the admin list
+      } else {
+        setFormError(response.data.message || "Failed to create admin");
+      }
+    } catch (error) {
+      console.error(
+        "Admin creation failed:",
+        error.response?.data || error.message
+      );
+      setFormError(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          error.message ||
+          "An error occurred"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+        <div className="text-xl text-gray-700">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f8fafc]">
@@ -37,7 +212,7 @@ const AdminHome = () => {
                   className="h-10 w-10 rounded-full border-2 border-[#e0c9a9] shadow-sm"
                 />
                 <span className="text-[#5f4b32] font-semibold text-lg">
-                  Super Admin
+                  {user?.email ? user.email.split("@")[0] : "Super Admin"}
                 </span>
               </div>
               <button
@@ -54,114 +229,139 @@ const AdminHome = () => {
       {/* Main Content - Enhanced sections */}
       <div className="pt-24 p-8">
         <div className="max-w-6xl mx-auto">
-          {/* Enhanced Issuers List */}
+          {/* Admin List Section */}
           <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mb-8">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-800">
-                Issuers List
+                Admin Accounts
               </h2>
-              <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
-                {["VRC", "E CELL", "CSI", "ISTE", "IEEE"].length} Active
-              </span>
-            </div>
-
-            <ul className="space-y-3">
-              {["VRC", "E CELL", "CSI", "ISTE", "IEEE"].map((issuer, index) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className={`h-9 w-9 rounded-full flex items-center justify-center ${
-                        index % 3 === 0
-                          ? "bg-red-100 text-red-600"
-                          : index % 3 === 1
-                          ? "bg-amber-100 text-amber-600"
-                          : "bg-orange-100 text-orange-600"
-                      }`}
-                    >
-                      <span className="font-medium">{issuer.charAt(0)}</span>
-                    </div>
-                    <span className="font-medium text-gray-700">{issuer}</span>
-                  </div>
-                  <button className="text-gray-500 hover:text-red-600 transition-colors">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            <div className="flex justify-between items-center mt-6">
-              <button className="bg-[#5f4b32] hover:bg-[#4a3a27] text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                View All
+              <button
+                onClick={() => setRefreshKey((k) => k + 1)}
+                className="bg-[#5f4b32] hover:bg-[#4a3a27] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+              >
+                Refresh List
               </button>
             </div>
+
+            {adminLoading ? (
+              <div className="text-center py-4">Loading admins...</div>
+            ) : adminError ? (
+              <div className="bg-red-50 text-red-600 p-3 rounded-lg">
+                Error: {adminError}
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Email
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Created At
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {admins.length > 0 ? (
+                      admins.map((admin) => (
+                        <tr key={admin._id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {admin.email}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {new Date(admin.createdAt).toLocaleString()}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="2"
+                          className="px-6 py-4 text-center text-sm text-gray-500"
+                        >
+                          No admin accounts found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
 
-          {/* Enhanced Add Issuer Form */}
+          {/* Add New Admin Form */}
           <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
             <h2 className="text-xl font-semibold text-gray-800 mb-6">
-              Add New Issuer
+              Add New Admin
             </h2>
-            <form className="space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Issuer Name
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e0c9a9] focus:border-[#d4b88f] transition-all"
-                    placeholder="e.g. Cultural Committee"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Contact Email
-                  </label>
-                  <input
-                    type="email"
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e0c9a9] focus:border-[#d4b88f] transition-all"
-                    placeholder="contact@example.com"
-                  />
-                </div>
+
+            {formError && (
+              <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4">
+                {formError}
+              </div>
+            )}
+
+            {formSuccess && (
+              <div className="bg-green-50 text-green-600 p-3 rounded-lg mb-4">
+                {formSuccess}
+              </div>
+            )}
+
+            <form className="space-y-5" onSubmit={handleCreateAdmin}>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email (VES domain only) *
+                </label>
+                <input
+                  type="email"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e0c9a9] focus:border-[#d4b88f] transition-all"
+                  placeholder="example@ves.ac.in"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  pattern="^[a-zA-Z0-9._%+-]+@ves\.ac\.in$"
+                  required
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
+                  Password *
                 </label>
-                <textarea
+                <input
+                  type="password"
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e0c9a9] focus:border-[#d4b88f] transition-all"
-                  placeholder="Brief description about the issuer..."
-                  rows="3"
-                ></textarea>
+                  placeholder="Minimum 8 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  minLength="8"
+                  required
+                />
               </div>
 
               <div className="flex justify-end space-x-3 pt-2">
                 <button
                   type="button"
                   className="px-5 py-2.5 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                  onClick={() => {
+                    setEmail("");
+                    setPassword("");
+                    setFormError("");
+                    setFormSuccess("");
+                  }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#5f4b32] hover:bg-[#4a3a27] text-white rounded-lg font-medium transition-colors"
+                  disabled={isSubmitting}
+                  className={`px-5 py-2.5 ${
+                    isSubmitting
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-[#5f4b32] hover:bg-[#4a3a27] cursor-pointer"
+                  } text-white rounded-lg font-medium transition-colors`}
                 >
-                  Add Issuer
+                  {isSubmitting ? "Creating..." : "Add Admin"}
                 </button>
               </div>
             </form>

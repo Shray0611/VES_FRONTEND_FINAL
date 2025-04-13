@@ -13,41 +13,42 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-  
+
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const responseData = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(responseData.message || responseData.error || "Login failed");
+        throw new Error(
+          responseData.message || responseData.error || "Login failed"
+        );
       }
-  
+
       // Destructuring structure
       const userData = responseData.data.user;
       const userRole = userData?.role?.toLowerCase() || "student";
-  
+
       localStorage.setItem("token", responseData.data.token);
       localStorage.setItem("role", userRole);
-  
+
       // Console log
       console.log("Login successful. Role:", userRole);
-  
-      switch(userRole) {
+
+      switch (userRole) {
         case "admin":
           navigate("/generate");
           break;
         case "superadmin":
-          navigate("/superadmin/dashboard");
+          navigate("/superadmin/login");
           break;
         default:
           navigate("/user-home");
       }
-  
     } catch (err) {
       console.error("Login Error:", err);
       setError(err.message);

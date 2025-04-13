@@ -8,7 +8,7 @@ const authController = require('./controllers/authcontroller');
 // const certificateController = require('./controllers/certificatecontroller');
 // const collectionController = require('./controllers/collectionController');
 // const templateController = require('./controllers/templateController');
-// const userController = require('./controllers/userController');
+const userController = require('./controllers/userController');
 
 const app = express();
 
@@ -39,14 +39,14 @@ app.post('/api/register', authController.register);
 // // Collection Routes
 
 
-// //superadmin routes
-// app.post('/api/auth/login-superadmin', userController.loginSuperAdmin);
-// app.post('/api/auth/create-superadmin', userController.createSuperAdmin);
-// app.get('/api/auth/me', auth(['superadmin']), authController.getMe);
+//superadmin routes
+app.post('/api/auth/login-superadmin', userController.loginSuperAdmin);
+app.post('/api/auth/create-superadmin', userController.createSuperAdmin);
+app.get('/api/auth/me', auth(['superadmin']), authController.getMe);
 
-// //adding of the admins
-// app.post('/api/admin/create', auth(['superadmin']), userController.createAdmin);
-// app.get('/api/admin/list', auth(['superadmin']), userController.getAllAdmins);
+//adding of the admins
+app.post('/api/admin/create', auth(['superadmin']), userController.createAdmin);
+app.get('/api/admin/list', auth(['superadmin']), userController.getAllAdmins);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

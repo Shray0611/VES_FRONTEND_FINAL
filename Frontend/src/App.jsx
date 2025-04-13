@@ -80,7 +80,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
             element={<IssuerRecords onLogout={onLogout} />}
           />
           <Route path="/view-template" element={<ViewTemplate />} />
-          <Route path="/admin-home" element={<AdminHome />} />
+          <Route path="/superadmin/login" element={<AdminHome />} />
 
           <Route path="/certificate-view/:id" element={<CertificateView />} />
           <Route path="/report-issue/:id" element={<ReportIssue />} />
