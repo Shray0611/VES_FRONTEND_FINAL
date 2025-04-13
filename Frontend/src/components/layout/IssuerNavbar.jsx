@@ -49,7 +49,7 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
 
         {/* Right Section */}
         <div className="flex items-center space-x-4">
-          <button className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] px-4 py-2 rounded-lg font-medium transition-colors">
+          <button onClick={() => navigate("/generate")}className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] px-4 py-2 rounded-lg font-medium transition-colors">
             Create
           </button>
 

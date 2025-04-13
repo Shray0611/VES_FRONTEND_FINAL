@@ -25,6 +25,7 @@ import ForgotPassword from "./components/auth/ForgotPassword";
 import EventView from "./components/issuer/EventView";
 import ViewTemplate from "./components/issuer/ViewTemplate";
 import ComplaintView from "./components/complaints/ComplaintView";
+import CertificateGenerator from "./components/issuer/CertificateGenerator";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
@@ -79,6 +80,8 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
             path="/issuer-records"
             element={<IssuerRecords onLogout={onLogout} />}
           />
+          <Route path="/generate" element={<CertificateGenerator />} />
+
           <Route path="/view-template" element={<ViewTemplate />} />
           <Route path="/superadmin/login" element={<AdminHome />} />
 
