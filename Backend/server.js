@@ -26,8 +26,13 @@ connectDB();
 app.post('/api/login', authController.login);
 app.post('/api/register', authController.register);
 
+// Auth Routes
+app.get('/api/auth/verify', auth(), authController.getMe);
+app.get('/api/auth/admins', auth(['superadmin']), userController.getAllAdmins);
+
 // Template Routes
 app.post("/api/templates", auth(["admin"]), templateController.createTemplate);
+app.post("/api/templates/create", auth(["admin"]), templateController.createTemplate);
 
 // // Certificate Routes
 app.get('/api/certificates/:id', auth(), certificateController.generateCertificateImage);
@@ -37,7 +42,9 @@ app.put("/api/certificates/:id", auth(["admin"]), certificateController.updateCe
 app.get('/api/admin/certificates', auth(['admin']), certificateController.getAdminCertificates);
 
 // // Collection Routes
-
+app.post('/api/collections', auth(['admin']), collectionController.createCollection);
+app.get('/api/collections', auth(['admin']), collectionController.getCollections);
+app.get('/api/collections/:id', auth(['admin']), collectionController.getCollectionById);
 
 //superadmin routes
 app.post('/api/auth/login-superadmin', userController.loginSuperAdmin);

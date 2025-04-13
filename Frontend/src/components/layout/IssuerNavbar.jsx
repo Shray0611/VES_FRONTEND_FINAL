@@ -14,18 +14,15 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
             src={logo}
             alt="Logo"
             className="h-14 w-auto cursor-pointer"
-            onClick={() => navigate("/issuer-home")}
+            onClick={() => navigate("/admin/home")}
           />
-          <div className="text-[#5f4b32] font-bold text-lg">
+          <div
+            className="text-[#5f4b32] font-bold text-lg cursor-pointer"
+            onClick={() => navigate("/admin/home")}
+          >
             <b>VESIT</b>
           </div>
           <div className="hidden md:flex items-center space-x-6">
-            <span
-              onClick={() => navigate("/issuer-home")}
-              className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer transition-colors"
-            >
-              Home
-            </span>
             <span
               onClick={() => navigate("/view-template")}
               className="text-[#7d6954] hover:text-[#5f4b32] cursor-pointer transition-colors"
@@ -49,7 +46,10 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
 
         {/* Right Section */}
         <div className="flex items-center space-x-4">
-          <button className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] px-4 py-2 rounded-lg font-medium transition-colors">
+          <button
+            className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] px-4 py-2 rounded-lg font-medium transition-colors"
+            onClick={() => navigate("/generate")}
+          >
             Create
           </button>
 

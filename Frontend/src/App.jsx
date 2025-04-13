@@ -54,6 +54,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
     <>
       {/* Conditionally render IssuerNavbar on issuer routes (temporarily without login check for testing) */}
       {(location.pathname === "/issuer-home" ||
+        location.pathname === "/admin/home" ||
         location.pathname === "/issuer-records" ||
         location.pathname === "/view-template" ||
         location.pathname === "/complaints-view" ||
@@ -77,6 +78,8 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           {/* These routes are accessible after logging in */}
           <Route path="/user-home" element={<UserHome onLogout={onLogout} />} />
           <Route path="/issuer-home" element={<IssuerHome />} />
+          <Route path="/admin/home" element={<IssuerHome />} />
+          <Route path="/admin/certificates" element={<EventView />} />
           <Route
             path="/issuer-records"
             element={<IssuerRecords onLogout={onLogout} />}

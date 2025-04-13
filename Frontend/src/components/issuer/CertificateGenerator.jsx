@@ -278,7 +278,7 @@ const CertificateGenerator = () => {
         excelData: payload.excelData.length + " rows",
       });
 
-      const response = await fetch("http://localhost:5000/api/templates", {
+      const response = await fetch("/api/templates/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -287,20 +287,22 @@ const CertificateGenerator = () => {
         body: JSON.stringify(payload),
       });
 
-      const responseData = await response.json();
-
       if (!response.ok) {
+        const responseData = await response.json().catch(() => ({}));
         throw new Error(
-          responseData.error || "Failed to generate certificates"
+          responseData.message ||
+            responseData.error ||
+            `Failed to generate certificates: ${response.status} ${response.statusText}`
         );
       }
 
+      const responseData = await response.json();
       alert("Certificates generated successfully!");
       console.log("Certificates generated successfully:", responseData);
       navigate("/admin/certificates");
     } catch (error) {
       console.error("Certificate generation error:", error);
-      alert("Error: " + error.message);
+      alert("Error generating certificates: " + error.message);
     }
   };
 

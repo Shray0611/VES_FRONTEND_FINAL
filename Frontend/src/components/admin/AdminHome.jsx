@@ -20,96 +20,64 @@ const AdminHome = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const verifyUser = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found in localStorage");
-          navigate("/login");
-          return;
-        }
-
-        const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-        console.log(
-          "Verifying user with token:",
-          token.substring(0, 10) + "..."
-        );
-
-        const res = await axios.get(`${baseUrl}/api/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        console.log("User verification response:", res.data);
-
-        if (!res.data.success || res.data.data.role !== "superadmin") {
-          throw new Error("Not authorized as superadmin");
-        }
-
-        setUser(res.data.data);
-      } catch (error) {
-        console.error(
-          "User verification error:",
-          error.response?.data || error.message
-        );
-        localStorage.removeItem("token");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You are not logged in. Please login to continue.");
+      setTimeout(() => {
         navigate("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
+      }, 2000);
+      return;
+    }
 
-    verifyUser();
-  }, [navigate]);
-
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        setAdminLoading(true);
-        setAdminError(null);
-
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("No authentication token found");
+    // Check if user is authenticated and has admin role
+    fetch("/api/auth/verify", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Authentication failed");
         }
-
-        const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-        console.log("Fetching admins from:", `${baseUrl}/api/admin/list`);
-
-        const res = await axios.get(`${baseUrl}/api/admin/list`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        console.log("Admin list response:", res.data);
-
-        if (res.data?.success && Array.isArray(res.data.data)) {
-          setAdmins(res.data.data);
+        return response.json();
+      })
+      .then((data) => {
+        console.log("User verification response:", data);
+        if (data.success && data.data && data.data.role === "superadmin") {
+          setUser(data.data);
+          setLoading(false);
+          // Fetch admins list
+          return fetch("/api/auth/admins", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
         } else {
-          console.warn("Unexpected response format:", res.data);
-          setAdmins([]);
+          throw new Error("User is not a superadmin");
         }
-      } catch (err) {
-        console.error(
-          "Error fetching admins:",
-          err.response?.data || err.message
-        );
-        setAdminError(
-          err.response?.data?.message ||
-            err.message ||
-            "Failed to fetch admin list. Please check if the server is running."
-        );
-      } finally {
-        setAdminLoading(false);
-      }
-    };
-
-    fetchAdmins();
-  }, [refreshKey]);
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch admins list");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Admins list response:", data);
+        if (data.success && data.data) {
+          setAdmins(data.data);
+        } else {
+          console.error("Admins list error:", data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError(error.message || "An error occurred. Please try again.");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+      });
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
