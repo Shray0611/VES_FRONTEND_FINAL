@@ -84,6 +84,8 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
             path="/issuer-records"
             element={<IssuerRecords onLogout={onLogout} />}
           />
+          <Route path="/generate" element={<CertificateGenerator />} />
+
           <Route path="/view-template" element={<ViewTemplate />} />
           <Route path="/generate" element={<CertificateGenerator />} />
           <Route path="/superadmin/login" element={<AdminHome />} />

@@ -16,6 +16,7 @@ const UserHome = ({ onLogout }) => {
     complaint: false,
   });
 
+
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
@@ -24,6 +25,7 @@ const UserHome = ({ onLogout }) => {
           navigate("/login");
           return;
         }
+
 
         const response = await axios.get(
           "http://localhost:5000/api/certificates",
@@ -43,8 +45,10 @@ const UserHome = ({ onLogout }) => {
       }
     };
 
+
     fetchCertificates();
   }, [navigate]);
+
 
   // Cleanup preview URL when component unmounts
   useEffect(() => {
@@ -149,6 +153,7 @@ const UserHome = ({ onLogout }) => {
     <div className="min-h-screen bg-gray-100 p-6 pt-24 flex flex-col items-center">
       <UserNavbar onLogout={onLogout} />
 
+
       <h1 className="text-gray-800 text-3xl font-bold mb-4">Welcome, User!</h1>
       <h2 className="text-gray-700 text-2xl font-semibold mb-8">
         Your Certificates
@@ -244,5 +249,6 @@ const UserHome = ({ onLogout }) => {
     </div>
   );
 };
+
 
 export default UserHome;

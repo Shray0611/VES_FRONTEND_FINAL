@@ -1,4 +1,3 @@
-/* Certificate Generator Styles */
 
 .react-draggable {
   cursor: move;
@@ -79,6 +78,7 @@
   transition: transform 0.3s ease;
 }
 
+
 .preview-container:hover {
   transform: scale(1.01);
-} 
+}

@@ -598,7 +598,7 @@ const EventView = () => {
         {/* Edit Modal */}
         {editingCert && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+              <div className="bg-white rounded-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
               <h3 className="text-xl font-semibold text-[#5f4b32] mb-4">
                 Edit Certificate Data
               </h3>

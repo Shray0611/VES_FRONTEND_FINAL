@@ -32,19 +32,16 @@ app.get('/api/auth/admins', auth(['superadmin']), userController.getAllAdmins);
 
 // Template Routes
 app.post("/api/templates", auth(["admin"]), templateController.createTemplate);
-app.post("/api/templates/create", auth(["admin"]), templateController.createTemplate);
 
-// // Certificate Routes
+// Certificate Routes
 app.get('/api/certificates/:id', auth(), certificateController.generateCertificateImage);
 app.get('/api/verify/:code', certificateController.verifyCertificate);
 app.get("/api/certificates", auth(), certificateController.getUserCertificates);
 app.put("/api/certificates/:id", auth(["admin"]), certificateController.updateCertificate);
 app.get('/api/admin/certificates', auth(['admin']), certificateController.getAdminCertificates);
 
-// // Collection Routes
-app.post('/api/collections', auth(['admin']), collectionController.createCollection);
-app.get('/api/collections', auth(['admin']), collectionController.getCollections);
-app.get('/api/collections/:id', auth(['admin']), collectionController.getCollectionById);
+// Collection Routes
+
 
 //superadmin routes
 app.post('/api/auth/login-superadmin', userController.loginSuperAdmin);

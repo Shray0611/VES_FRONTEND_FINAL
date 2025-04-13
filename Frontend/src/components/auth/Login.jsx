@@ -41,7 +41,7 @@ const Login = () => {
 
       switch (userRole) {
         case "admin":
-          navigate("/admin/home");
+          navigate("/issuer-home");
           break;
         case "superadmin":
           navigate("/superadmin/login");

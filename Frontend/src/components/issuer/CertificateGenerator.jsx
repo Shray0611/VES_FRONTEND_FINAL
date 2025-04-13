@@ -78,7 +78,9 @@ const CertificateGenerator = () => {
     const handleMouseMove = (e) => {
       if (!isDragging && !isDraggingQR) return;
 
+
       if (!containerRef.current) return;
+
 
       const containerRect = containerRef.current.getBoundingClientRect();
       const mouseX = e.clientX - containerRect.left;
@@ -114,8 +116,10 @@ const CertificateGenerator = () => {
           Math.min(100, (mouseY / containerRect.height) * 100)
         );
 
+
         setQrConfig((prev) => ({ ...prev, x: newX, y: newY }));
       }
+
 
       // Update the starting position for the next move
       setStartDragPos({ x: mouseX, y: mouseY });
@@ -142,7 +146,9 @@ const CertificateGenerator = () => {
     e.preventDefault();
     e.stopPropagation();
 
+
     if (!containerRef.current) return;
+
 
     const containerRect = containerRef.current.getBoundingClientRect();
     const mouseX = e.clientX - containerRect.left;
@@ -157,7 +163,9 @@ const CertificateGenerator = () => {
     e.preventDefault();
     e.stopPropagation();
 
+
     if (!containerRef.current) return;
+
 
     const containerRect = containerRef.current.getBoundingClientRect();
     const mouseX = e.clientX - containerRect.left;
@@ -468,7 +476,7 @@ const CertificateGenerator = () => {
                     </button>
                   </div>
 
-                  {!qrEnabled ? (
+                    {!qrEnabled ? (   
                     <button
                       onClick={() => setQrEnabled(true)}
                       className="w-full bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] px-4 py-2 rounded-lg font-medium transition-colors mb-4"
@@ -578,7 +586,7 @@ const CertificateGenerator = () => {
                         </button>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-2 mb-2">
+                        <div className="grid grid-cols-2 gap-2 mb-2">
                         <div>
                           <label className="block text-sm text-gray-600 mb-1">
                             X (%)
