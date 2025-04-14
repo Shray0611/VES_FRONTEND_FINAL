@@ -20,6 +20,7 @@ import ComplaintsPage from "./components/complaints/ComplaintsPage";
 import Guidelines from "./components/pages/Guidelines";
 import IssuerNavbar from "./components/layout/IssuerNavbar"; // Import IssuerNavbar
 import IssuerHome from "./components/issuer/IssuerHome"; // Import IssuerHome
+import VerifyCertificate from "./components/layout/VerifyCertificate"; // Import VerifyCertificate
 import "./App.css"; // Import your App's CSS file
 import ForgotPassword from "./components/auth/ForgotPassword";
 import EventView from "./components/issuer/EventView";
@@ -72,6 +73,9 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           />
           <Route path="/forgotPassword" element={<ForgotPassword />} />
           <Route path="/signup" element={<Signup />} />
+
+          {/* Certificate verification route - accessible without login */}
+          <Route path="/verify/:code" element={<VerifyCertificate />} />
 
           {/* These routes are accessible after logging in */}
           <Route path="/user-home" element={<UserHome onLogout={onLogout} />} />
