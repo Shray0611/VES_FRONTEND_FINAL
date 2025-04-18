@@ -44,7 +44,7 @@ const Login = () => {
           navigate("/issuer-home");
           break;
         case "superadmin":
-          navigate("/superadmin/login");
+          navigate("/superadmin/dashboard");
           break;
         default:
           navigate("/user-home");

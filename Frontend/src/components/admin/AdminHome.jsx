@@ -49,6 +49,7 @@ const AdminHome = () => {
         }
 
         setUser(res.data.data);
+        setLoading(false);
       } catch (error) {
         console.error(
           "User verification error:",
@@ -56,8 +57,6 @@ const AdminHome = () => {
         );
         localStorage.removeItem("token");
         navigate("/login");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -93,6 +92,7 @@ const AdminHome = () => {
           console.warn("Unexpected response format:", res.data);
           setAdmins([]);
         }
+        setAdminLoading(false);
       } catch (err) {
         console.error(
           "Error fetching admins:",
@@ -103,7 +103,6 @@ const AdminHome = () => {
             err.message ||
             "Failed to fetch admin list. Please check if the server is running."
         );
-      } finally {
         setAdminLoading(false);
       }
     };

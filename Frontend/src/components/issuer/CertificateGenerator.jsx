@@ -7,7 +7,6 @@ import QRCode from "qrcode";
 import IssuerNavbar from "../layout/IssuerNavbar";
 import "./CertificateGenerator.css";
 
-
 const CertificateGenerator = () => {
   const [template, setTemplate] = useState(null);
   const [variables, setVariables] = useState([]);
@@ -29,18 +28,15 @@ const CertificateGenerator = () => {
   });
   const [qrDataUrl, setQrDataUrl] = useState(null);
 
-
   // State for drag functionality
   const [isDragging, setIsDragging] = useState(false);
   const [currentDragIndex, setCurrentDragIndex] = useState(null);
   const [isDraggingQR, setIsDraggingQR] = useState(false);
   const [startDragPos, setStartDragPos] = useState({ x: 0, y: 0 });
 
-
   const imgRef = useRef(null);
   const containerRef = useRef(null);
   const navigate = useNavigate();
-
 
   const fontOptions = [
     "Arial",
@@ -51,20 +47,48 @@ const CertificateGenerator = () => {
     "Georgia",
   ];
 
-
   useEffect(() => {
     if (imgRef.current) {
       const observer = new ResizeObserver(() => {
-        setImageDimensions({
-          width: imgRef.current.offsetWidth,
-          height: imgRef.current.offsetHeight,
-        });
+        if (
+          imgRef.current &&
+          imgRef.current.offsetWidth &&
+          imgRef.current.offsetHeight
+        ) {
+          setImageDimensions({
+            width: imgRef.current.offsetWidth,
+            height: imgRef.current.offsetHeight,
+          });
+        }
       });
       observer.observe(imgRef.current);
       return () => observer.disconnect();
     }
   }, [template]);
 
+  useEffect(() => {
+    if (template && imgRef.current) {
+      const img = imgRef.current;
+      const updateDimensions = () => {
+        if (img.offsetWidth && img.offsetHeight) {
+          setImageDimensions({
+            width: img.offsetWidth,
+            height: img.offsetHeight,
+          });
+        }
+      };
+
+      // Update dimensions when the image loads
+      img.addEventListener("load", updateDimensions);
+
+      // Try to update immediately in case the image is already loaded
+      updateDimensions();
+
+      return () => {
+        img.removeEventListener("load", updateDimensions);
+      };
+    }
+  }, [template]);
 
   useEffect(() => {
     // Generate sample QR code for preview
@@ -79,25 +103,20 @@ const CertificateGenerator = () => {
     }
   }, [qrEnabled]);
 
-
   // Setup mouse event listeners for drag
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!isDragging && !isDraggingQR) return;
 
-
       if (!containerRef.current) return;
-
 
       const containerRect = containerRef.current.getBoundingClientRect();
       const mouseX = e.clientX - containerRect.left;
       const mouseY = e.clientY - containerRect.top;
 
-
       // Calculate delta from the start position
       const deltaX = mouseX - startDragPos.x;
       const deltaY = mouseY - startDragPos.y;
-
 
       if (isDragging && currentDragIndex !== null) {
         const currentVar = variables[currentDragIndex];
@@ -109,7 +128,6 @@ const CertificateGenerator = () => {
           0,
           Math.min(100, (mouseY / containerRect.height) * 100)
         );
-
 
         setVariables((prev) =>
           prev.map((v, i) =>
@@ -126,15 +144,12 @@ const CertificateGenerator = () => {
           Math.min(100, (mouseY / containerRect.height) * 100)
         );
 
-
         setQrConfig((prev) => ({ ...prev, x: newX, y: newY }));
       }
-
 
       // Update the starting position for the next move
       setStartDragPos({ x: mouseX, y: mouseY });
     };
-
 
     const handleMouseUp = () => {
       setIsDragging(false);
@@ -142,11 +157,9 @@ const CertificateGenerator = () => {
       setCurrentDragIndex(null);
     };
 
-
     // Add listeners
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
-
 
     // Cleanup
     return () => {
@@ -155,43 +168,34 @@ const CertificateGenerator = () => {
     };
   }, [isDragging, isDraggingQR, currentDragIndex, startDragPos, variables]);
 
-
   const startDragging = (index, e) => {
     e.preventDefault();
     e.stopPropagation();
 
-
     if (!containerRef.current) return;
-
 
     const containerRect = containerRef.current.getBoundingClientRect();
     const mouseX = e.clientX - containerRect.left;
     const mouseY = e.clientY - containerRect.top;
-
 
     setIsDragging(true);
     setCurrentDragIndex(index);
     setStartDragPos({ x: mouseX, y: mouseY });
   };
 
-
   const startDraggingQR = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-
     if (!containerRef.current) return;
-
 
     const containerRect = containerRef.current.getBoundingClientRect();
     const mouseX = e.clientX - containerRect.left;
     const mouseY = e.clientY - containerRect.top;
 
-
     setIsDraggingQR(true);
     setStartDragPos({ x: mouseX, y: mouseY });
   };
-
 
   const {
     getRootProps: getTemplateRootProps,
@@ -199,12 +203,30 @@ const CertificateGenerator = () => {
   } = useDropzone({
     accept: { "image/*": [".png", ".jpg", ".jpeg"] },
     onDrop: (files) => {
-      const reader = new FileReader();
-      reader.onload = () => setTemplate(reader.result);
-      reader.readAsDataURL(files[0]);
+      if (files && files.length > 0) {
+        const file = files[0];
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          // Preload the image to ensure it can be properly rendered
+          const img = new Image();
+          img.onload = () => {
+            setTemplate(reader.result);
+          };
+          img.onerror = () => {
+            alert("Failed to load the image. Please try a different file.");
+          };
+          img.src = reader.result;
+        };
+
+        reader.onerror = () => {
+          alert("Failed to read the file. Please try again.");
+        };
+
+        reader.readAsDataURL(file);
+      }
     },
   });
-
 
   const { getRootProps: getExcelRootProps, getInputProps: getExcelInputProps } =
     useDropzone({
@@ -221,7 +243,6 @@ const CertificateGenerator = () => {
         else setExcelData(data);
       },
     });
-
 
   const addVariable = () => {
     if (!currentVar) return;
@@ -240,7 +261,6 @@ const CertificateGenerator = () => {
     setCurrentVar("");
   };
 
-
   const addQRVariable = () => {
     setVariables((prev) => [
       ...prev,
@@ -248,46 +268,77 @@ const CertificateGenerator = () => {
     ]);
   };
 
-
   const updateVariableProperty = (index, property, value) => {
     setVariables((prev) =>
       prev.map((v, i) => (i === index ? { ...v, [property]: value } : v))
     );
   };
 
-
   const deleteVariable = (index) => {
     setVariables((prev) => prev.filter((_, i) => i !== index));
   };
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInput((prev) => ({ ...prev, [name]: value }));
   };
 
-
   const generatePreview = async () => {
     if (!template) return;
+
     const img = await loadImage(template);
     const canvas = document.createElement("canvas");
     canvas.width = img.width;
     canvas.height = img.height;
     const ctx = canvas.getContext("2d");
+
+    // Draw the template image
     ctx.drawImage(img, 0, 0);
     ctx.textBaseline = "top";
-    variables.forEach(({ type, name, x, y, fontSize, fontFamily, color }) => {
-      if (type === "text") {
+
+    // Draw text variables
+    for (const variable of variables) {
+      if (variable.type === "text") {
+        const { name, x, y, fontSize, fontFamily, color } = variable;
         const posX = (x / 100) * canvas.width;
         const posY = (y / 100) * canvas.height;
         ctx.font = `${fontSize}px ${fontFamily}`;
         ctx.fillStyle = color;
         ctx.fillText(userInput[name] || "", posX, posY);
+      } else if (variable.type === "qr") {
+        // Draw QR code from variables
+        try {
+          const { x, y, size } = variable;
+          const posX = (x / 100) * canvas.width;
+          const posY = (y / 100) * canvas.height;
+          const qrSize = (size / 100) * canvas.width;
+
+          // Create verification URL for preview (will use a placeholder)
+          const verificationUrl = "https://ves.ac.in/verify/sample";
+          const qrDataUrl = await QRCode.toDataURL(verificationUrl);
+          const qrImg = await loadImage(qrDataUrl);
+
+          ctx.drawImage(qrImg, posX, posY, qrSize, qrSize);
+        } catch (err) {
+          console.error("Failed to draw QR code in preview:", err);
+        }
       }
-    });
+    }
+
+    // Draw the QR code from qrConfig if enabled
+    if (qrEnabled && qrDataUrl) {
+      try {
+        const qrImg = await loadImage(qrDataUrl);
+        const posX = (qrConfig.x / 100) * canvas.width;
+        const posY = (qrConfig.y / 100) * canvas.height;
+        ctx.drawImage(qrImg, posX, posY, qrConfig.width, qrConfig.height);
+      } catch (err) {
+        console.error("Failed to draw enabled QR code in preview:", err);
+      }
+    }
+
     setPreviewCertificate(canvas.toDataURL("image/png"));
   };
-
 
   const generateCertificates = async () => {
     try {
@@ -298,24 +349,45 @@ const CertificateGenerator = () => {
         return;
       }
 
+      // Create a deep copy of variables for modification
+      let certificateVariables = [...variables];
 
-      const payload = {
-        image: template,
-        variables,
-        excelData,
-      };
-      if (qrEnabled) {
-        payload.qrConfig = qrConfig;
+      // Add QR code as a variable if enabled but not already in variables
+      if (qrEnabled && !variables.some((v) => v.type === "qr")) {
+        console.log("Adding QR code configuration as a variable");
+        certificateVariables.push({
+          type: "qr",
+          name: "qrCode",
+          x: qrConfig.x,
+          y: qrConfig.y,
+          size: (qrConfig.width / imageDimensions.width) * 100, // Convert to percentage
+        });
       }
 
+      // Create the payload with template and variables
+      const payload = {
+        image: template,
+        variables: certificateVariables,
+        excelData: excelData,
+        // Include qrConfig for additional QR configuration options
+        qrConfig: qrEnabled
+          ? {
+              enabled: true,
+              ...qrConfig,
+            }
+          : { enabled: false },
+      };
 
       console.log("Sending certificate generation request with payload:", {
-        ...payload,
-        excelData: payload.excelData.length + " rows",
+        templateIncluded: !!payload.image,
+        variablesCount: payload.variables.length,
+        qrVariablesCount: payload.variables.filter((v) => v.type === "qr")
+          .length,
+        excelDataRows: payload.excelData.length,
       });
 
-
-      const response = await fetch("/api/templates/create", {
+      const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const response = await fetch(`${baseUrl}/api/templates`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -324,16 +396,15 @@ const CertificateGenerator = () => {
         body: JSON.stringify(payload),
       });
 
-
       if (!response.ok) {
         const responseData = await response.json().catch(() => ({}));
+        console.error("Error response from server:", responseData);
         throw new Error(
           responseData.message ||
             responseData.error ||
             `Failed to generate certificates: ${response.status} ${response.statusText}`
         );
       }
-
 
       const responseData = await response.json();
       alert("Certificates generated successfully!");
@@ -345,14 +416,12 @@ const CertificateGenerator = () => {
     }
   };
 
-
   const loadImage = (src) =>
     new Promise((resolve) => {
       const img = new Image();
       img.onload = () => resolve(img);
       img.src = src;
     });
-
 
   const exportConfig = () => {
     const config = { variables };
@@ -365,11 +434,9 @@ const CertificateGenerator = () => {
     saveAs(blob, "certificate-config.json");
   };
 
-
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       <IssuerNavbar />
-
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <div className="mb-8">
@@ -380,7 +447,6 @@ const CertificateGenerator = () => {
             Create beautiful certificates with customizable fields and QR codes
           </p>
         </div>
-
 
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <h2 className="text-xl font-semibold text-[#5f4b32] mb-4">
@@ -398,13 +464,11 @@ const CertificateGenerator = () => {
           </div>
         </div>
 
-
         {template && (
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <h2 className="text-xl font-semibold text-[#5f4b32] mb-4">
               Design Certificate
             </h2>
-
 
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="w-full lg:w-2/3 relative">
@@ -496,7 +560,6 @@ const CertificateGenerator = () => {
                 </div>
               </div>
 
-
               <div className="w-full lg:w-1/3">
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-3">
@@ -514,7 +577,6 @@ const CertificateGenerator = () => {
                       Add Field
                     </button>
                   </div>
-
 
                   {!qrEnabled ? (
                     <button
@@ -606,7 +668,6 @@ const CertificateGenerator = () => {
                   )}
                 </div>
 
-
                 <div className="space-y-4 mt-6">
                   {variables.map((varConfig, index) => (
                     <div
@@ -626,7 +687,6 @@ const CertificateGenerator = () => {
                           Remove
                         </button>
                       </div>
-
 
                       <div className="grid grid-cols-2 gap-2 mb-2">
                         <div>
@@ -664,7 +724,6 @@ const CertificateGenerator = () => {
                           />
                         </div>
                       </div>
-
 
                       {varConfig.type === "text" ? (
                         <div className="space-y-2">
@@ -754,13 +813,11 @@ const CertificateGenerator = () => {
           </div>
         )}
 
-
         {template && variables.filter((v) => v.type === "text").length > 0 && (
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <h2 className="text-xl font-semibold text-[#5f4b32] mb-4">
               Preview Certificate
             </h2>
-
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
@@ -794,7 +851,6 @@ const CertificateGenerator = () => {
                 </button>
               </div>
 
-
               {previewCertificate && (
                 <div>
                   <h3 className="text-lg font-medium text-[#5f4b32] mb-3">
@@ -821,7 +877,6 @@ const CertificateGenerator = () => {
           </div>
         )}
 
-
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <h2 className="text-xl font-semibold text-[#5f4b32] mb-4">
             Upload Data File
@@ -838,7 +893,6 @@ const CertificateGenerator = () => {
               (Must contain an email column)
             </p>
           </div>
-
 
           {excelData.length > 0 && (
             <div className="mt-4">
@@ -864,7 +918,6 @@ const CertificateGenerator = () => {
           )}
         </div>
 
-
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
           <button
             onClick={exportConfig}
@@ -877,7 +930,6 @@ const CertificateGenerator = () => {
           >
             Export Template Configuration
           </button>
-
 
           <button
             onClick={generateCertificates}
@@ -892,7 +944,6 @@ const CertificateGenerator = () => {
           </button>
         </div>
 
-
         <div className="text-center">
           <a
             href="/admin/certificates"
@@ -905,6 +956,5 @@ const CertificateGenerator = () => {
     </div>
   );
 };
-
 
 export default CertificateGenerator;
