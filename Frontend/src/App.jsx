@@ -21,6 +21,7 @@ import Guidelines from "./components/pages/Guidelines";
 import IssuerNavbar from "./components/layout/IssuerNavbar"; // Import IssuerNavbar
 import IssuerHome from "./components/issuer/IssuerHome"; // Import IssuerHome
 import VerifyCertificate from "./components/layout/VerifyCertificate"; // Import VerifyCertificate
+import IssuerComplaints from "./components/complaints/IssuerComplaints"; // Import IssuerComplaints
 import "./App.css"; // Import your App's CSS file
 import ForgotPassword from "./components/auth/ForgotPassword";
 import EventView from "./components/issuer/EventView";
@@ -87,14 +88,14 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route path="/generate" element={<CertificateGenerator />} />
 
           <Route path="/view-template" element={<ViewTemplate />} />
-          <Route path="/superadmin/login" element={<AdminHome />} />
+          <Route path="/superadmin/dashboard" element={<AdminHome />} />
 
           <Route path="/certificate-view/:id" element={<CertificateView />} />
           <Route path="/report-issue/:id" element={<ReportIssue />} />
           <Route path="/complaints" element={<ComplaintsPage />} />
           <Route path="/guidelines" element={<Guidelines />} />
           <Route path="/event-view" element={<EventView />} />
-          <Route path="/complaints-view" element={<ComplaintView />} />
+          <Route path="/complaints-view" element={<IssuerComplaints />} />
         </Routes>
       </div>
 
