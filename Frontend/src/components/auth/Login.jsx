@@ -51,6 +51,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error("Login Error:", err);
+      
       setError(err.message);
     } finally {
       setIsLoading(false);
