@@ -123,7 +123,7 @@ const Home = () => {
             transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <motion.h1
-              className="text-4xl md:text-5xl font-extrabold text-[#5f4b32] mb-6 leading-tight"
+              className="text-4xl md:text-3xl font-extrabold text-[#5f4b32] mb-6 leading-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
@@ -146,7 +146,7 @@ const Home = () => {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <motion.button
-                onClick={() => navigate("/issuer-home")}
+                onClick={() => navigate("/login")}
                 className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-semibold py-3 px-8 rounded-full shadow-md transition-all duration-300"
                 whileHover={{
                   scale: 1.05,
