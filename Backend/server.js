@@ -28,6 +28,8 @@ connectDB();
 // Routes
 app.post("/api/login", authController.login);
 app.post("/api/register", authController.register);
+app.post("/api/auth/google", authController.googleAuth);
+// app.post('/api/auth/google', authController.googleAuth);
 
 // Template Routes
 app.post("/api/templates", auth(["admin"]), templateController.createTemplate);

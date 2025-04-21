@@ -213,6 +213,7 @@ exports.createAdmin = async (req, res) => {
       email,
       password: hashedPassword, 
       role: 'admin',
+      isGoogleAuth: true
     });
 
     const adminData = admin.toObject();
