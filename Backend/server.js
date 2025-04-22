@@ -66,7 +66,21 @@ app.put(
   auth(["admin", "superadmin"]),
   complaintController.updateComplaintStatus
 );
-
+app.post(
+  "/api/collections",
+  auth(["admin"]),
+  collectionController.createCollection
+);
+app.get(
+  "/api/collections",
+  auth(["admin"]),
+  collectionController.getCollections
+);
+app.get(
+  "/api/collections/:id",
+  auth(["admin"]),
+  collectionController.getCollectionById
+);
 //superadmin routes
 app.post("/api/auth/login-superadmin", userController.loginSuperAdmin);
 app.post("/api/auth/create-superadmin", userController.createSuperAdmin);

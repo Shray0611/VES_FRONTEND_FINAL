@@ -95,6 +95,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route path="/complaints" element={<ComplaintsPage />} />
           <Route path="/guidelines" element={<Guidelines />} />
           <Route path="/event-view" element={<EventView />} />
+          <Route path="/event-view/:id" element={<EventView />} />
           <Route path="/complaints-view" element={<IssuerComplaints />} />
         </Routes>
       </div>
