@@ -24,7 +24,7 @@ app.use(express.json({ limit: "50mb" }));
 
 // Database Connection
 connectDB();
-wwq
+
 
 // Routes
 app.post("/api/login", authController.login);

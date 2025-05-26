@@ -51,6 +51,7 @@ const Login = () => {
       const { token, user } = responseData.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
+      localStorage.setItem("userName", email); 
 
       switch (user.role) {
         case "superadmin":
@@ -95,6 +96,9 @@ const Login = () => {
       const { token, user, redirectTo } = responseData.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
+      
+      // Store user name or email from Google response
+      localStorage.setItem("userName", user.name || user.email || "User");
 
       navigate(redirectTo || "/");
     } catch (err) {
@@ -124,7 +128,7 @@ const Login = () => {
             VESIT-Ecertificate
           </h2>
           <p className="text-1.8xl font-light text-[#6b7280] mt-4 text-center">
-          A trusted platform for managing and verifying digital certificates
+            A trusted platform for managing and verifying digital certificates
           </p>
         </div>
 

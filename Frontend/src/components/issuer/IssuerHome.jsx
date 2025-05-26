@@ -107,7 +107,7 @@ const IssuerHome = () => {
   }
 
   return (
-    <div className="pt-20 px-6 pb-8 min-h-screen bg-gray-50">
+    <div className="pt-20 px-6 pb-8 min-h-screen ">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-[#5f4b32] mb-8">
           Issuer Dashboard

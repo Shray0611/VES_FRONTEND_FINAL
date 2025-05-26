@@ -1,9 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "/assets/VES-logo.png"; // adjust the path as needed
 
 const IssuerNavbar = ({ onLogout, handleQuery }) => {
   const navigate = useNavigate();
+  const [councilName, setCouncilName] = useState("Council Name");
+
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+
+      const formattedName = storedName.includes("@")
+        ? storedName.split("@")[0].split(".").join(" ").replace(/\b\w/g, c => c.toUpperCase())
+        : storedName;
+      setCouncilName(formattedName);
+    }
+  }, []);
 
   return (
     <nav className="bg-[#f5f1e6] fixed top-0 left-0 w-full shadow-md z-50 border-b-2 border-[#e0c9a9]">
@@ -49,7 +61,10 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
 
         {/* Right Section */}
         <div className="flex items-center space-x-4">
-          <button onClick={() => navigate("/generate")}className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] px-4 py-2 rounded-lg font-medium transition-colors">
+          <button
+            onClick={() => navigate("/generate")}
+            className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] px-4 py-2 rounded-lg font-medium transition-colors"
+          >
             Create
           </button>
 
@@ -76,9 +91,9 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
                 className="h-10 w-10 rounded-full border-2 border-[#e0c9a9] shadow-sm"
               />
               <span className="text-[#5f4b32] font-semibold text-lg">
-                Council Name
+                {councilName}
               </span>
-            </div>{" "}
+            </div>
             <span
               onClick={() => navigate("/")}
               className="text-[#5f4b32] hover:bg-[#e0c9a9] border border-[#e0c9a9] px-4 py-2 rounded-lg cursor-pointer transition-all duration-200"
