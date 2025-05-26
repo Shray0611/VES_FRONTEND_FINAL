@@ -4,65 +4,82 @@ import IssuerNavbar from "../layout/IssuerNavbar";
 
 const Guidelines = () => {
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-8">
-      <IssuerNavbar></IssuerNavbar>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-light text-[#1e293b] text-center mb-8">
-          Certificate Issuance Guidelines
-        </h1>
+    <div className="min-h-screen bg-[#F5E9D8] p-6 sm:p-8">
+      <IssuerNavbar />
+      <div className="max-w-4xl mx-auto mt-8 sm:mt-12">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl sm:text-4xl font-semibold text-[#4A3C31] mb-2">
+            Certificate Issuance Guidelines
+          </h1>
+          <p className="text-[#6B5E4F] text-lg">
+            Please follow these specifications for successful certificate
+            generation
+          </p>
+        </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-8 border border-[#edf2f7] space-y-6">
-          <section className="space-y-3">
-            <h3 className="text-lg font-medium text-[#1e293b] flex items-center gap-2">
-              <span className="text-blue-500">➡</span>
-              Template Requirements
-            </h3>
-            <ul className="list-disc pl-6 space-y-2 text-[#475569]">
-              <li>1. Include specific fields for custom template</li>
-              <li>2. Maintain standard certificate dimensions</li>
+        <div className="bg-[#FFFFFF] rounded-xl shadow-sm p-6 sm:p-8 border border-gray-200 space-y-8">
+          {/* Template Requirements */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 bg-blue-600 rounded-full"></div>
+              <h3 className="text-xl font-semibold text-[#4A3C31]">
+                Template Requirements
+              </h3>
+            </div>
+            <ul className="space-y-3 text-[#6B5E4F] pl-8">
+              <li className="relative before:absolute before:left-[-1.25rem] before:top-2 before:w-2 before:h-2 before:bg-blue-600 before:rounded-full">
+                Include specific fields for custom template (Name, Date,
+                Certificate ID)
+              </li>
+              <li className="relative before:absolute before:left-[-1.25rem] before:top-2 before:w-2 before:h-2 before:bg-blue-600 before:rounded-full">
+                Maintain standard dimensions of 1920×1080 pixels (Landscape
+                orientation)
+              </li>
             </ul>
-          </section>
+          </div>
 
-          <section className="space-y-3">
-            <h3 className="text-lg font-medium text-[#1e293b] flex items-center gap-2">
-              <span className="text-blue-500">➡</span>
-              Excel File Specifications
-            </h3>
-            <ul className="list-disc pl-6 space-y-2 text-[#475569]">
-              <li>1. Required column headers must be included</li>
-              <li>2. Maintain consistent data formatting</li>
+          {/* Excel Specifications */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 bg-green-600 rounded-full"></div>
+              <h3 className="text-xl font-semibold text-[#4A3C31]">
+                Excel File Specifications
+              </h3>
+            </div>
+            <ul className="space-y-3 text-[#6B5E4F] pl-8">
+              <li className="relative before:absolute before:left-[-1.25rem] before:top-2 before:w-2 before:h-2 before:bg-green-600 before:rounded-full">
+                Required columns: Full Name, Email, Issue Date, Certificate ID
+              </li>
+              <li className="relative before:absolute before:left-[-1.25rem] before:top-2 before:w-2 before:h-2 before:bg-green-600 before:rounded-full">
+                Maintain consistent data formatting (Dates: YYYY-MM-DD)
+              </li>
             </ul>
-          </section>
+          </div>
 
-          <section className="space-y-3">
-            <h3 className="text-lg font-medium text-[#1e293b] flex items-center gap-2">
-              <span className="text-blue-500">➡</span>
-              File Format Requirements
-            </h3>
-            <p className="text-[#475569] pl-8">
-              Custom templates must be uploaded in PNG format only
-            </p>
-          </section>
+          {/* File Format */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 bg-purple-600 rounded-full"></div>
+              <h3 className="text-xl font-semibold text-[#4A3C31]">
+                File Format Requirements
+              </h3>
+            </div>
+            <div className="text-[#6B5E4F] pl-8">
+              <p className="relative before:absolute before:left-[-1.25rem] before:top-2 before:w-2 before:h-2 before:bg-purple-600 before:rounded-full">
+                Custom templates must be uploaded in PNG format (300 DPI
+                resolution)
+              </p>
+            </div>
+          </div>
 
-          <div className="pt-6 text-center">
+          {/* Return Button */}
+          <div className="pt-8 mt-8 border-t border-gray-200 text-center">
             <Link
               to="/issuer-home"
-              className="bg-[#334155] text-white px-6 py-2.5 rounded-lg
-                        hover:bg-[#475569] transition-colors inline-flex
-                        items-center gap-2"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#E8D5B9] text-[#4A3C31] rounded-lg
+                        hover:bg-[#D9C4A5] transition-colors font-medium text-sm sm:text-base"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <span aria-hidden="true">←</span>
               Return to Dashboard
             </Link>
           </div>
@@ -73,4 +90,3 @@ const Guidelines = () => {
 };
 
 export default Guidelines;
-
