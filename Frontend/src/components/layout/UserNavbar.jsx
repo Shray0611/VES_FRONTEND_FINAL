@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const UserNavbar = () => {
   const navigate = useNavigate();
+  const [displayName, setDisplayName] = useState("User");
 
-  // Handle Logout
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      if (storedName.endsWith("@ves.ac.in")) {
+        const namePart = storedName.split("@")[0].split(".").slice(1).join(".");
+        const formattedName = namePart
+          .split(".")
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" ");
+        setDisplayName(formattedName || "User");
+      } else {
+        setDisplayName(storedName);
+      }
+    }
+  }, []);
+
+
   const handleLogout = () => {
-    navigate("/"); // Navigate to the landing page after logout
+    navigate("/"); 
   };
 
   return (
@@ -39,17 +56,15 @@ const UserNavbar = () => {
 
         {/* Right Section - User Info & Logout */}
         <div className="flex items-center space-x-4">
-          {/* User Icon & Name */}
           <div className="flex items-center space-x-2">
             <img
               src="/assets/usericon.jpg"
               alt="User Icon"
               className="h-10 w-10 rounded-full border-2 border-[#e0c9a9] shadow-sm"
             />
-            <span className="text-[#5f4b32] font-semibold text-lg">Name</span>
+            <span className="text-[#5f4b32] font-semibold text-lg">{displayName}</span>
           </div>
 
-          {/* Log Out Button */}
           <span
             onClick={handleLogout}
             className="text-[#5f4b32] hover:bg-[#e0c9a9] border border-[#e0c9a9] px-4 py-2 rounded-lg cursor-pointer transition-all duration-200"

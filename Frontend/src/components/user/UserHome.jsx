@@ -4,7 +4,6 @@ import UserNavbar from "../layout/UserNavbar";
 import { saveAs } from "file-saver";
 import axios from "axios";
 
-
 const UserHome = ({ onLogout }) => {
   const navigate = useNavigate();
   const [certificates, setCertificates] = useState([]);
@@ -16,7 +15,26 @@ const UserHome = ({ onLogout }) => {
     download: false,
     complaint: false,
   });
+  const [firstName, setFirstName] = useState("User");
 
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      if (storedName.endsWith("@ves.ac.in")) {
+        // Extract the name part (e.g., 2022.avan.shetty@ves.ac.in -> avan.shetty)
+        const namePart = storedName.split("@")[0].split(".").slice(1).join(".");
+        // Take only the first name (avan.shetty -> avan)
+        const firstNamePart = namePart.split(".")[0];
+        // Capitalize the first name (avan -> Avan)
+        const formattedFirstName =
+          firstNamePart.charAt(0).toUpperCase() + firstNamePart.slice(1);
+        setFirstName(formattedFirstName || "User");
+      } else {
+        // If not a ves.ac.in email, use the stored name as-is
+        setFirstName(storedName);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const fetchCertificates = async () => {
@@ -27,14 +45,12 @@ const UserHome = ({ onLogout }) => {
           return;
         }
 
-
         const response = await axios.get(
           "http://localhost:5000/api/certificates",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
 
         setCertificates(response.data);
       } catch (error) {
@@ -47,10 +63,8 @@ const UserHome = ({ onLogout }) => {
       }
     };
 
-
     fetchCertificates();
   }, [navigate]);
-
 
   // Cleanup preview URL when component unmounts
   useEffect(() => {
@@ -61,25 +75,21 @@ const UserHome = ({ onLogout }) => {
     };
   }, [previewUrl]);
 
-
   const handleView = async (certificateId) => {
     try {
       setActionLoading((prev) => ({ ...prev, view: true }));
       setError("");
-
 
       // Cleanup previous preview URL if exists
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
 
-
       const token = localStorage.getItem("token");
       if (!token) {
         navigate("/login");
         return;
       }
-
 
       const response = await axios.get(
         `http://localhost:5000/api/certificates/${certificateId}`,
@@ -88,7 +98,6 @@ const UserHome = ({ onLogout }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
 
       const url = URL.createObjectURL(response.data);
       setPreviewUrl(url);
@@ -102,19 +111,16 @@ const UserHome = ({ onLogout }) => {
     }
   };
 
-
   const handleDownload = async (certificateId) => {
     try {
       setActionLoading((prev) => ({ ...prev, download: true }));
       setError("");
-
 
       const token = localStorage.getItem("token");
       if (!token) {
         navigate("/login");
         return;
       }
-
 
       const response = await axios.get(
         `http://localhost:5000/api/certificates/${certificateId}`,
@@ -124,12 +130,10 @@ const UserHome = ({ onLogout }) => {
         }
       );
 
-
       // Get the certificate details to use in filename
       const cert = certificates.find((c) => c._id === certificateId);
       const eventName = cert?.studentData?.eventName || "certificate";
       const filename = `${eventName}-${certificateId}.png`;
-
 
       saveAs(response.data, filename);
     } catch (error) {
@@ -141,11 +145,9 @@ const UserHome = ({ onLogout }) => {
     }
   };
 
-
   const handleComplaint = (certificateId) => {
     navigate(`/report-issue/${certificateId}`);
   };
-
 
   const closePreview = () => {
     if (previewUrl) {
@@ -153,7 +155,6 @@ const UserHome = ({ onLogout }) => {
       setPreviewUrl(null);
     }
   };
-
 
   if (loading) {
     return (
@@ -164,24 +165,22 @@ const UserHome = ({ onLogout }) => {
     );
   }
 
-
   return (
     <div className="min-h-screen bg-gray-100 p-6 pt-24 flex flex-col items-center">
       <UserNavbar onLogout={onLogout} />
 
-
-      <h1 className="text-gray-800 text-3xl font-bold mb-4">Welcome, User!</h1>
+      <h1 className="text-gray-800 text-3xl font-bold mb-4">
+        Welcome, {firstName}!
+      </h1>
       <h2 className="text-gray-700 text-2xl font-semibold mb-8">
         Your Certificates
       </h2>
-
 
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg w-full max-w-6xl text-center">
           {error}
         </div>
       )}
-
 
       <div className="w-full max-w-6xl bg-gray-100 p-4 rounded-lg shadow-md border border-gray-200">
         {certificates.length === 0 ? (
@@ -244,7 +243,6 @@ const UserHome = ({ onLogout }) => {
         )}
       </div>
 
-
       {/* Preview Modal */}
       {previewUrl && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -268,6 +266,5 @@ const UserHome = ({ onLogout }) => {
     </div>
   );
 };
-
 
 export default UserHome;
