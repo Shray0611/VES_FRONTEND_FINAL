@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require("uuid");
 const Complaint = require("../models/Complaint");
 const Certificate = require("../models/Certificate");
 const User = require("../models/User");
@@ -26,8 +27,9 @@ exports.createComplaint = async (req, res) => {
     // Get the issuer (admin) who created this certificate
     const issuerId = certificate.templateId.createdBy;
 
-    // Create the complaint
+    // Create the complaint with a random UUID for complaintId
     const complaint = new Complaint({
+      complaintId: `COMP-${uuidv4()}`,
       certificateId,
       userId: req.user._id,
       issuerId,
