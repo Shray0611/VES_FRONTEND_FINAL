@@ -32,6 +32,7 @@ const CertificateGenerator = () => {
   const [currentDragIndex, setCurrentDragIndex] = useState(null);
   const [isDraggingQR, setIsDraggingQR] = useState(false);
   const [startDragPos, setStartDragPos] = useState({ x: 0, y: 0 });
+  const [eventName, setEventName] = useState("");
 
   const imgRef = useRef(null);
   const containerRef = useRef(null);
@@ -378,6 +379,7 @@ const CertificateGenerator = () => {
               ...qrConfig,
             }
           : { enabled: false },
+        eventName,
       };
 
       console.log("Sending certificate generation request with payload:", {
@@ -447,6 +449,18 @@ const CertificateGenerator = () => {
           <p className="text-gray-600 mt-2">
             Create beautiful certificates with customizable fields and QR codes
           </p>
+          <div className="mt-4">
+            <label className="block text-lg font-medium text-[#5f4b32] mb-1">
+              Event Name
+            </label>
+            <input
+              type="text"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              placeholder="Enter event name (e.g. Annual Day 2024)"
+              className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e0c9a9] focus:border-[#d4b88f] outline-none"
+            />
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">

@@ -238,7 +238,7 @@ const IssuerRecords = ({ onLogout }) => {
                     >
                       <td className="px-6 py-4 text-[#475569]">{index + 1}</td>
                       <td className="px-6 py-4 font-medium text-[#1e293b]">
-                        {collection.name}
+                        {collection.eventName || collection.name}
                       </td>
                       <td className="px-6 py-4 text-[#475569]">
                         {new Date(collection.createdAt).toLocaleDateString()}

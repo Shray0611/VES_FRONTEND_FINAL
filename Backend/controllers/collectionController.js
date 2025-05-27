@@ -5,9 +5,10 @@ const { generateCertificateBuffer } = require("../utils/certificateUtils");
 
 exports.createCollection = async (req, res) => {
   try {
-    const { name, certificateIds } = req.body;
+    const { name, eventName, certificateIds } = req.body;
     const collection = new Collection({
       name,
+      eventName,
       certificates: certificateIds,
       createdBy: req.user._id,
     });
