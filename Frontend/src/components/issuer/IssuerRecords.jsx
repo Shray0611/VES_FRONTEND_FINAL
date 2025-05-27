@@ -107,6 +107,50 @@ const IssuerRecords = ({ onLogout }) => {
     }
   };
 
+  const handleDownloadCollection = async (collectionId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:5000/api/collections/${collectionId}/certificates/download`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!response.ok) {
+        // Try to parse JSON error, but fallback to status text if it fails
+        try {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.error || `Server returned ${response.status}`
+          );
+        } catch (jsonError) {
+          throw new Error(
+            `Failed to download collection. Server returned status: ${response.status} ${response.statusText}`
+          );
+        }
+      }
+
+      // The backend sends a zip file, so we get the blob and create a download link
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      // Get collection name for filename, fallback to ID
+      const collection = collections.find((c) => c._id === collectionId);
+      const filename = `${
+        collection?.name.replace(/\s+/g, "_") || collectionId
+      }_certificates.zip`;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Failed to download collection: " + err.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">
       {/* Top Navbar */}
@@ -226,7 +270,7 @@ const IssuerRecords = ({ onLogout }) => {
                           </button>
                           <button
                             onClick={() =>
-                              console.log(`Download ${collection._id}`)
+                              handleDownloadCollection(collection._id)
                             }
                             className="text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                             title="Download All Certificates"

@@ -221,6 +221,45 @@ const EventView = () => {
     }
   };
 
+  // Handle certificate download
+  const handleDownloadCertificate = async (certId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:5000/api/certificates/${certId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!response.ok) {
+        // Try to parse JSON error, but fallback to status text if it fails
+        try {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.error || `Server returned ${response.status}`
+          );
+        } catch (jsonError) {
+          throw new Error(
+            `Failed to download certificate. Server returned status: ${response.status} ${response.statusText}`
+          );
+        }
+      }
+
+      const imageBlob = await response.blob();
+      const url = window.URL.createObjectURL(imageBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `certificate-${certId}.png`; // You might want a better filename
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Failed to download certificate: " + err.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">
       <IssuerNavbar />
@@ -316,6 +355,7 @@ const EventView = () => {
                           <button
                             className="text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                             title="Download Certificate"
+                            onClick={() => handleDownloadCertificate(cert._id)}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"

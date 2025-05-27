@@ -91,6 +91,12 @@ app.delete(
   auth(["admin"]),
   collectionController.deleteCollection
 );
+// Route to download all certificates in a collection
+app.get(
+  "/api/collections/:id/certificates/download",
+  auth(["admin"]),
+  collectionController.downloadCollectionCertificates
+);
 //superadmin routes
 app.post("/api/auth/login-superadmin", userController.loginSuperAdmin);
 app.post("/api/auth/create-superadmin", userController.createSuperAdmin);
