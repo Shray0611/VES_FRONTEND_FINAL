@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { AlertCircle } from "lucide-react";
+import Chart from "chart.js/auto";
 
 const IssuerHome = () => {
   const navigate = useNavigate();
@@ -8,32 +10,53 @@ const IssuerHome = () => {
   const [pendingComplaintsCount, setPendingComplaintsCount] = useState(0);
   const [recentActivities, setRecentActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        
+        console.log("Token:", token); // Debug: Check if token exists
+
+        if (!token) {
+          throw new Error("Authentication token not found. Please log in.");
+        }
+
         // Fetch collections for certificate count
+        console.log("Fetching collections...");
         const collectionsResponse = await fetch("http://localhost:5000/api/collections", {
           headers: { Authorization: `Bearer ${token}` },
         });
+        if (!collectionsResponse.ok) {
+          throw new Error(`Failed to fetch collections: ${collectionsResponse.status} ${collectionsResponse.statusText}`);
+        }
         const collectionsData = await collectionsResponse.json();
+        console.log("Collections Data:", collectionsData); // Debug: Inspect response
         const certCount = collectionsData.reduce((acc, curr) => acc + (curr.certificates?.length || 0), 0);
         setTotalCertificates(certCount);
 
         // Fetch templates
+        console.log("Fetching templates...");
         const templatesResponse = await fetch("http://localhost:5000/api/templates", {
           headers: { Authorization: `Bearer ${token}` },
         });
+        if (!templatesResponse.ok) {
+          throw new Error(`Failed to fetch templates: ${templatesResponse.status} ${templatesResponse.statusText}`);
+        }
         const templatesData = await templatesResponse.json();
+        console.log("Templates Data:", templatesData); // Debug: Inspect response
         setTemplateCount(templatesData.length);
 
         // Fetch complaints
+        console.log("Fetching complaints...");
         const complaintsResponse = await fetch("http://localhost:5000/api/complaints/issuer", {
           headers: { Authorization: `Bearer ${token}` },
         });
+        if (!complaintsResponse.ok) {
+          throw new Error(`Failed to fetch complaints: ${complaintsResponse.status} ${complaintsResponse.statusText}`);
+        }
         const complaintsData = await complaintsResponse.json();
+        console.log("Complaints Data:", complaintsData); // Debug: Inspect response
         const pendingComplaints = complaintsData.filter(c => c.status !== "resolved");
         setPendingComplaintsCount(pendingComplaints.length);
 
@@ -62,7 +85,8 @@ const IssuerHome = () => {
 
         setRecentActivities(activities);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error.message); // Debug: Log specific error
+        setError(error.message || "Failed to load dashboard data. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -70,6 +94,41 @@ const IssuerHome = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!loading && !error) {
+      const ctx = document.getElementById("dashboardChart");
+      if (ctx) {
+        new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Certificates", "Templates", "Pending Complaints"],
+            datasets: [{
+              label: "Dashboard Metrics",
+              data: [totalCertificates, templateCount, pendingComplaintsCount],
+              backgroundColor: [
+                "rgba(59, 130, 246, 0.5)", // Blue
+                "rgba(34, 197, 94, 0.5)", // Green
+                "rgba(239, 68, 68, 0.5)", // Red
+              ],
+              borderColor: [
+                "rgb(59, 130, 246)",
+                "rgb(34, 197, 94)",
+                "rgb(239, 68, 68)",
+              ],
+              borderWidth: 1,
+            }],
+          },
+          options: {
+            scales: { y: { beginAtZero: true } },
+            plugins: { legend: { display: false } },
+          },
+        });
+      } else {
+        console.error("Chart canvas not found");
+      }
+    }
+  }, [loading, error, totalCertificates, templateCount, pendingComplaintsCount]);
 
   const dashboardData = [
     {
@@ -98,90 +157,128 @@ const IssuerHome = () => {
     },
   ];
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-[#f5f1e6] rounded-xl shadow-lg p-6">
+          <div className="flex items-center space-x-3 text-red-600">
+            <AlertCircle className="h-5 w-5" />
+            <h3 className="text-lg font-semibold">Error</h3>
+          </div>
+          <p className="mt-2 text-sm text-gray-600">{error}</p>
+          <div className="mt-4 flex space-x-4">
+            <button
+              onClick={() => window.location.reload()}
+              className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
+            >
+              Try Again
+            </button>
+            <button
+              onClick={() => navigate("/login")}
+              className="inline-flex items-center px-4 py-2 bg-[#5f4b32] text-white text-sm font-medium rounded-md hover:bg-[#7d6954] transition-colors"
+            >
+              Log In
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
-      <div className="pt-20 px-6 pb-8 min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#e0c9a9] border-t-[#5f4b32]"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md bg-[#f5f1e6] rounded-xl shadow-lg p-6 space-y-4">
+          <div className="h-12 w-12 mx-auto rounded-full bg-gray-200 animate-pulse"></div>
+          <div className="h-4 w-3/4 mx-auto bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-4 w-1/2 mx-auto bg-gray-200 rounded animate-pulse"></div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="pt-20 px-6 pb-8 min-h-screen ">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-[#5f4b32] mb-8">
-          Issuer Dashboard
-        </h1>
+    <div className="min-h-screen bg-gray-50">
+      <div className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Header Section */}
+          <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6 space-y-3">
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#5f4b32] to-[#7d6954] bg-clip-text text-transparent text-left">
+              Issuer Dashboard
+            </h1>
+            <p className="text-lg text-gray-600 text-left">
+              Monitor your certificates, templates, and activities with ease.
+            </p>
+          </div>
 
-        {/* Dashboard Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {dashboardData.map((card, index) => (
-            <div
-              key={index}
-              onClick={() => navigate(card.link)}
-              className={`${card.color} rounded-lg shadow-md p-6 cursor-pointer transition-transform hover:scale-105`}
-            >
-              <div>
-                <p className="text-lg font-semibold">{card.title}</p>
-                {card.count !== null && (
-                  <p className="text-3xl font-bold mt-2">{card.count}</p>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Recent Activity Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-bold text-[#5f4b32] mb-4">
-            Recent Activity
-          </h2>
-          <div className="divide-y divide-gray-200">
-            {recentActivities.map((activity) => (
-              <div key={activity.id} className="py-4">
-                <div className="flex justify-between">
-                  <div>
-                    <p className="font-medium text-gray-800">
-                      {activity.action}
-                    </p>
-                    <p className="text-gray-600">{activity.details}</p>
-                  </div>
-                  <p className="text-sm text-gray-500">{activity.timestamp}</p>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {dashboardData.map((card, index) => (
+              <div
+                key={index}
+                onClick={() => navigate(card.link)}
+                className={`${card.color} rounded-xl shadow-lg p-6 cursor-pointer transition-transform hover:scale-105`}
+              >
+                <div>
+                  <p className="text-lg font-semibold">{card.title}</p>
+                  {card.count !== null && (
+                    <p className="text-3xl font-bold mt-2">{card.count}</p>
+                  )}
                 </div>
               </div>
             ))}
           </div>
-          <button
-            className="mt-4 text-[#7d6954] hover:text-[#5f4b32] font-medium"
-            onClick={() => navigate("/issuer-records")}
-          >
-            View All Activities →
-          </button>
-        </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold text-[#5f4b32] mb-4">
-            Quick Actions
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button
-              onClick={() => navigate("/view-template")}
-              className="bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-            >
-              <span className="mr-2">📋</span> Create New Template
-            </button>
-            <button
-              onClick={() => navigate("/issuer-records")}
-              className="bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-            >
-              <span className="mr-2">📜</span> Issue Certificate
-            </button>
-            <button
-              onClick={() => navigate("/complaints-view")}
-              className="bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
-            >
-              <span className="mr-2">⚠️</span> View Complaints
-            </button>
+          {/* Chart Section */}
+          <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-bold text-[#5f4b32] mb-4">Dashboard Metrics</h2>
+            <canvas id="dashboardChart" className="w-full max-h-64"></canvas>
+          </div>
+
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Recent Activity */}
+            <div className="lg:col-span-2 bg-[#f5f1e6] rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">Recent Activity</h2>
+              <div className="divide-y divide-gray-200">
+                {recentActivities.map((activity) => (
+                  <div key={activity.id} className="py-4">
+                    <div className="flex justify-between">
+                      <div>
+                        <p className="font-medium text-gray-800">{activity.action}</p>
+                        <p className="text-gray-600">{activity.details}</p>
+                      </div>
+                      <p className="text-sm text-gray-500">{activity.timestamp}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                className="mt-4 text-[#7d6954] hover:text-[#5f4b32] font-medium"
+                onClick={() => navigate("/issuer-records")}
+              >
+                View All Activities
+              </button>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">Quick Actions</h2>
+              <div className="grid grid-cols-1 gap-4">
+                <button
+                  onClick={() => navigate("/view-template")}
+                  className="bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center border border-[#e0c9a9]"
+                >
+                  Create New Template
+                </button>
+                <button
+                  onClick={() => navigate("/complaints-view")}
+                  className="bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center border border-[#e0c9a9]"
+                >
+                  View Complaints
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
