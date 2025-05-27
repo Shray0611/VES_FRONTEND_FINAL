@@ -34,14 +34,16 @@ exports.generateCertificateImage = async (req, res) => {
       );
     }
 
-    // Check if certificate exists AND if the user is the creator of the template
+    // Check if certificate exists AND if the user is the creator of the template or the recipient
     if (
       !certificate ||
       !certificate.templateId ||
-      certificate.templateId.createdBy?.toString() !== req.user._id?.toString()
+      (certificate.templateId.createdBy?.toString() !==
+        req.user._id?.toString() &&
+        certificate.email !== req.user.email)
     ) {
       console.log(
-        "Certificate not found, template not populated, or user is not the template creator."
+        "Certificate not found, template not populated, or user is not authorized."
       );
       return res
         .status(404)

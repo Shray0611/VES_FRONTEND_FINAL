@@ -20,7 +20,7 @@ exports.createTemplate = async (req, res) => {
 
     const certificates = excelData.map((row) => ({
       templateId: template._id,
-      studentData: row,
+      studentData: { ...row, eventName },
       email: row.email,
       verificationCode: uuid.v4(),
     }));
@@ -41,12 +41,10 @@ exports.createTemplate = async (req, res) => {
       { $set: { collectionId: collection._id } }
     );
 
-    res
-      .status(201)
-      .json({
-        message: "Certificates generated successfully",
-        collectionId: collection._id,
-      });
+    res.status(201).json({
+      message: "Certificates generated successfully",
+      collectionId: collection._id,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
