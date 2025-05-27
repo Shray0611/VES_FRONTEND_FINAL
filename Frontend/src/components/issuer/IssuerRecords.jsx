@@ -75,6 +75,38 @@ const IssuerRecords = ({ onLogout }) => {
     });
   };
 
+  const handleDeleteCollection = async (collectionId) => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:5000/api/collections/${collectionId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!response.ok) {
+        // Try to parse JSON error, but fallback to status text if it fails
+        try {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.error || `Server returned ${response.status}`
+          );
+        } catch (jsonError) {
+          throw new Error(
+            `Failed to delete event. Server returned status: ${response.status} ${response.statusText}`
+          );
+        }
+      }
+
+      setCollections((prev) => prev.filter((c) => c._id !== collectionId));
+    } catch (err) {
+      alert("Failed to delete event: " + err.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">
       {/* Top Navbar */}
@@ -215,7 +247,7 @@ const IssuerRecords = ({ onLogout }) => {
                           </button>
                           <button
                             onClick={() =>
-                              console.log(`Delete ${collection._id}`)
+                              handleDeleteCollection(collection._id)
                             }
                             className="text-red-600 hover:text-red-700 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                             title="Delete Event"
