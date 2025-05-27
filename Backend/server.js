@@ -25,7 +25,6 @@ app.use(express.json({ limit: "50mb" }));
 // Database Connection
 connectDB();
 
-
 // Routes
 app.post("/api/login", authController.login);
 app.post("/api/register", authController.register);
@@ -47,6 +46,11 @@ app.put(
   "/api/certificates/:id",
   auth(["admin"]),
   certificateController.updateCertificate
+);
+app.delete(
+  "/api/certificates/:id",
+  auth(["admin"]),
+  certificateController.deleteCertificate
 );
 app.get(
   "/api/admin/certificates",
@@ -81,6 +85,17 @@ app.get(
   "/api/collections/:id",
   auth(["admin"]),
   collectionController.getCollectionById
+);
+app.delete(
+  "/api/collections/:id",
+  auth(["admin"]),
+  collectionController.deleteCollection
+);
+// Route to download all certificates in a collection
+app.get(
+  "/api/collections/:id/certificates/download",
+  auth(["admin"]),
+  collectionController.downloadCollectionCertificates
 );
 //superadmin routes
 app.post("/api/auth/login-superadmin", userController.loginSuperAdmin);

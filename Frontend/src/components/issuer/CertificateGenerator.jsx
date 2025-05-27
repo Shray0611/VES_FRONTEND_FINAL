@@ -2,12 +2,14 @@ import React, { useState, useRef, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { read, utils } from "xlsx";
 import { saveAs } from "file-saver";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import QRCode from "qrcode";
 import IssuerNavbar from "../layout/IssuerNavbar";
 import "./CertificateGenerator.css";
 
 const CertificateGenerator = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [template, setTemplate] = useState(null);
   const [variables, setVariables] = useState([]);
   const [currentVar, setCurrentVar] = useState("");
@@ -18,25 +20,22 @@ const CertificateGenerator = () => {
     width: 0,
     height: 0,
   });
-  // State to control whether the QR field is added or not
   const [qrEnabled, setQrEnabled] = useState(false);
   const [qrConfig, setQrConfig] = useState({
-    x: 50, // in percentage
-    y: 50, // in percentage
-    width: 100, // in pixels
-    height: 100, // in pixels
+    x: 50,
+    y: 50,
+    width: 100,
+    height: 100,
   });
   const [qrDataUrl, setQrDataUrl] = useState(null);
-
-  // State for drag functionality
   const [isDragging, setIsDragging] = useState(false);
   const [currentDragIndex, setCurrentDragIndex] = useState(null);
   const [isDraggingQR, setIsDraggingQR] = useState(false);
   const [startDragPos, setStartDragPos] = useState({ x: 0, y: 0 });
+  const [eventName, setEventName] = useState("");
 
   const imgRef = useRef(null);
   const containerRef = useRef(null);
-  const navigate = useNavigate();
 
   const fontOptions = [
     "Arial",
@@ -47,6 +46,31 @@ const CertificateGenerator = () => {
     "Georgia",
   ];
 
+  // Handle incoming templates from location.state
+  useEffect(() => {
+    const loadTemplateFromState = async () => {
+      if (location.state?.selectedTemplate) {
+        try {
+          if (location.state.selectedTemplate.startsWith("blob:")) {
+            setTemplate(location.state.selectedTemplate);
+          } else {
+            const response = await fetch(location.state.selectedTemplate);
+            const blob = await response.blob();
+            const reader = new FileReader();
+            reader.onloadend = () => setTemplate(reader.result);
+            reader.readAsDataURL(blob);
+          }
+        } catch (error) {
+          console.error("Error loading template:", error);
+          alert("Failed to load template image");
+        }
+      }
+    };
+
+    loadTemplateFromState();
+  }, [location.state]);
+
+  // Update image dimensions on template load or resize
   useEffect(() => {
     if (imgRef.current) {
       const observer = new ResizeObserver(() => {
@@ -78,20 +102,16 @@ const CertificateGenerator = () => {
         }
       };
 
-      // Update dimensions when the image loads
       img.addEventListener("load", updateDimensions);
-
-      // Try to update immediately in case the image is already loaded
       updateDimensions();
-
       return () => {
         img.removeEventListener("load", updateDimensions);
       };
     }
   }, [template]);
 
+  // Generate sample QR code for preview
   useEffect(() => {
-    // Generate sample QR code for preview
     if (qrEnabled) {
       QRCode.toDataURL("https://ves.ac.in/sample-certificate-verification")
         .then((url) => {
@@ -103,23 +123,20 @@ const CertificateGenerator = () => {
     }
   }, [qrEnabled]);
 
-  // Setup mouse event listeners for drag
+  // Handle dragging of variables and QR code
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!isDragging && !isDraggingQR) return;
-
       if (!containerRef.current) return;
 
       const containerRect = containerRef.current.getBoundingClientRect();
       const mouseX = e.clientX - containerRect.left;
       const mouseY = e.clientY - containerRect.top;
 
-      // Calculate delta from the start position
       const deltaX = mouseX - startDragPos.x;
       const deltaY = mouseY - startDragPos.y;
 
       if (isDragging && currentDragIndex !== null) {
-        const currentVar = variables[currentDragIndex];
         const newX = Math.max(
           0,
           Math.min(100, (mouseX / containerRect.width) * 100)
@@ -147,7 +164,6 @@ const CertificateGenerator = () => {
         setQrConfig((prev) => ({ ...prev, x: newX, y: newY }));
       }
 
-      // Update the starting position for the next move
       setStartDragPos({ x: mouseX, y: mouseY });
     };
 
@@ -157,11 +173,9 @@ const CertificateGenerator = () => {
       setCurrentDragIndex(null);
     };
 
-    // Add listeners
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
 
-    // Cleanup
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
@@ -171,7 +185,6 @@ const CertificateGenerator = () => {
   const startDragging = (index, e) => {
     e.preventDefault();
     e.stopPropagation();
-
     if (!containerRef.current) return;
 
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -186,12 +199,12 @@ const CertificateGenerator = () => {
   const startDraggingQR = (e) => {
     e.preventDefault();
     e.stopPropagation();
-
     if (!containerRef.current) return;
 
     const containerRect = containerRef.current.getBoundingClientRect();
-    const mouseX = e.clientX - containerRect.left;
-    const mouseY = e.clientY - containerRect.top;
+    const mouseX =
+      e.clientX - containerRef.current.getBoundingClientRect().left;
+    const mouseY = e.clientY - containerRef.current.getBoundingClientRect().top;
 
     setIsDraggingQR(true);
     setStartDragPos({ x: mouseX, y: mouseY });
@@ -208,7 +221,6 @@ const CertificateGenerator = () => {
         const reader = new FileReader();
 
         reader.onload = () => {
-          // Preload the image to ensure it can be properly rendered
           const img = new Image();
           img.onload = () => {
             setTemplate(reader.result);
@@ -292,11 +304,9 @@ const CertificateGenerator = () => {
     canvas.height = img.height;
     const ctx = canvas.getContext("2d");
 
-    // Draw the template image
     ctx.drawImage(img, 0, 0);
     ctx.textBaseline = "top";
 
-    // Draw text variables
     for (const variable of variables) {
       if (variable.type === "text") {
         const { name, x, y, fontSize, fontFamily, color } = variable;
@@ -306,14 +316,12 @@ const CertificateGenerator = () => {
         ctx.fillStyle = color;
         ctx.fillText(userInput[name] || "", posX, posY);
       } else if (variable.type === "qr") {
-        // Draw QR code from variables
         try {
           const { x, y, size } = variable;
           const posX = (x / 100) * canvas.width;
           const posY = (y / 100) * canvas.height;
           const qrSize = (size / 100) * canvas.width;
 
-          // Create verification URL for preview (will use a placeholder)
           const verificationUrl = "https://ves.ac.in/verify/sample";
           const qrDataUrl = await QRCode.toDataURL(verificationUrl);
           const qrImg = await loadImage(qrDataUrl);
@@ -325,7 +333,6 @@ const CertificateGenerator = () => {
       }
     }
 
-    // Draw the QR code from qrConfig if enabled
     if (qrEnabled && qrDataUrl) {
       try {
         const qrImg = await loadImage(qrDataUrl);
@@ -349,10 +356,8 @@ const CertificateGenerator = () => {
         return;
       }
 
-      // Create a deep copy of variables for modification
       let certificateVariables = [...variables];
 
-      // Add QR code as a variable if enabled but not already in variables
       if (qrEnabled && !variables.some((v) => v.type === "qr")) {
         console.log("Adding QR code configuration as a variable");
         certificateVariables.push({
@@ -360,22 +365,21 @@ const CertificateGenerator = () => {
           name: "qrCode",
           x: qrConfig.x,
           y: qrConfig.y,
-          size: (qrConfig.width / imageDimensions.width) * 100, // Convert to percentage
+          size: (qrConfig.width / imageDimensions.width) * 100,
         });
       }
 
-      // Create the payload with template and variables
       const payload = {
         image: template,
         variables: certificateVariables,
         excelData: excelData,
-        // Include qrConfig for additional QR configuration options
         qrConfig: qrEnabled
           ? {
               enabled: true,
               ...qrConfig,
             }
           : { enabled: false },
+        eventName,
       };
 
       console.log("Sending certificate generation request with payload:", {
@@ -409,7 +413,7 @@ const CertificateGenerator = () => {
       const responseData = await response.json();
       alert("Certificates generated successfully!");
       console.log("Certificates generated successfully:", responseData);
-      navigate("/admin/certificates");
+      navigate("/generate");
     } catch (error) {
       console.error("Certificate generation error:", error);
       alert("Error generating certificates: " + error.message);
@@ -437,7 +441,6 @@ const CertificateGenerator = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       <IssuerNavbar />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[#5f4b32]">
@@ -446,6 +449,18 @@ const CertificateGenerator = () => {
           <p className="text-gray-600 mt-2">
             Create beautiful certificates with customizable fields and QR codes
           </p>
+          <div className="mt-4">
+            <label className="block text-lg font-medium text-[#5f4b32] mb-1">
+              Event Name
+            </label>
+            <input
+              type="text"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              placeholder="Enter event name (e.g. Annual Day 2024)"
+              className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e0c9a9] focus:border-[#d4b88f] outline-none"
+            />
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-md p-6 mb-8">
@@ -469,7 +484,6 @@ const CertificateGenerator = () => {
             <h2 className="text-xl font-semibold text-[#5f4b32] mb-4">
               Design Certificate
             </h2>
-
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="w-full lg:w-2/3 relative">
                 <div
@@ -501,7 +515,7 @@ const CertificateGenerator = () => {
                           fontSize: `${varConfig.fontSize}px`,
                           color: varConfig.color,
                           zIndex: 10,
-                          userSelect: "none", // Prevent text selection during drag
+                          userSelect: "none",
                           WebkitUserSelect: "none",
                         }}
                         onMouseDown={(e) => startDragging(index, e)}
@@ -818,7 +832,6 @@ const CertificateGenerator = () => {
             <h2 className="text-xl font-semibold text-[#5f4b32] mb-4">
               Preview Certificate
             </h2>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-lg font-medium text-[#5f4b32] mb-3">

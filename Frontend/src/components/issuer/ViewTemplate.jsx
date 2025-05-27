@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import IssuerNavbar from "../layout/IssuerNavbar";
 import { FiPlus } from "react-icons/fi";
 
 const ViewTemplate = () => {
-  // Mock template data
+  const navigate = useNavigate();
+
+  // Mock template data with absolute paths
   const templates = [
     {
       id: 1,
@@ -32,11 +35,19 @@ const ViewTemplate = () => {
     },
   ];
 
+  const handleUseTemplate = (templateImage) => {
+    navigate("/generate", {
+      state: { selectedTemplate: templateImage },
+    });
+  };
+
   const handleUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Handle file upload logic here
-      console.log("Selected file:", file);
+      // Handle direct upload logic if needed
+      navigate("/generate", {
+        state: { selectedTemplate: URL.createObjectURL(file) },
+      });
     }
   };
 
@@ -67,7 +78,10 @@ const ViewTemplate = () => {
                   <h3 className="text-lg font-semibold text-gray-800">
                     {template.title}
                   </h3>
-                  <button className="mt-2 w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+                  <button
+                    onClick={() => handleUseTemplate(template.image)}
+                    className="mt-2 w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+                  >
                     Use Template
                   </button>
                 </div>
@@ -80,7 +94,7 @@ const ViewTemplate = () => {
             <label className="cursor-pointer p-4 flex flex-col items-center justify-center h-full min-h-[300px]">
               <input
                 type="file"
-                accept=".pdf,.png,.jpg,.jpeg"
+                accept=".png,.jpg,.jpeg"
                 onChange={handleUpload}
                 className="hidden"
               />
@@ -90,7 +104,7 @@ const ViewTemplate = () => {
                   Upload Custom Template
                 </span>
                 <span className="text-sm mt-1 text-gray-500">
-                  (PDF, PNG, JPG)
+                  (PNG, JPG, JPEG)
                 </span>
               </div>
             </label>

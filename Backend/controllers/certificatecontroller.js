@@ -1,49 +1,56 @@
-const { createCanvas, loadImage } = require('canvas');
-const uuid = require('uuid');
-const qr = require('qr-image');
-const Certificate = require('../models/Certificate');
-const Template = require('../models/Template');
-const Collection = require('../models/Collection');
+const { createCanvas, loadImage } = require("canvas");
+const uuid = require("uuid");
+const qr = require("qr-image");
+const Certificate = require("../models/Certificate");
+const Template = require("../models/Template");
+const Collection = require("../models/Collection");
+const { generateCertificateBuffer } = require("../utils/certificateUtils");
+
+// Helper function to generate certificate image buffer
+// This function has been moved to Backend/utils/certificateUtils.js
 
 exports.generateCertificateImage = async (req, res) => {
   try {
-    const certificate = await Certificate.findById(req.params.id)
-      .populate('templateId')
-      .populate('collectionId');
+    const certId = req.params.id;
+    console.log(`Received request for certificate ID: ${certId}`);
+    const certificate = await Certificate.findById(certId)
+      .populate({ path: "templateId", select: "image createdBy variables" })
+      .populate("collectionId");
 
-    if (!certificate || certificate.email !== req.user.email) {
-      return res.status(404).json({ error: 'Certificate not found' });
+    console.log(`Certificate found: ${!!certificate}`);
+    if (certificate) {
+      console.log(`Certificate email: ${certificate.email}`);
+      console.log(`User email: ${req.user.email}`);
+      // Log the createdBy ID from the template
+      console.log(
+        `Template createdBy ID: ${certificate.templateId?.createdBy}`
+      );
+      console.log(`User ID: ${req.user._id}`);
+      console.log(
+        `Authorization check (template createdBy matches user ID): ${
+          certificate.templateId?.createdBy?.toString() ===
+          req.user._id?.toString()
+        }`
+      );
     }
 
-    const dataURL = certificate.templateId.image;
-    const base64Data = dataURL.replace(/^data:image\/\w+;base64,/, '');
-    const buffer = Buffer.from(base64Data, 'base64');
-    const image = await loadImage(buffer);
-    const canvas = createCanvas(image.width, image.height);
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(image, 0, 0);
-    ctx.textBaseline = 'top';
-
-    for (const varConfig of certificate.templateId.variables) {
-      if (varConfig.type === 'text') {
-        const posX = (varConfig.x / 100) * canvas.width;
-        const posY = (varConfig.y / 100) * canvas.height;
-        ctx.font = `${varConfig.fontSize}px ${varConfig.fontFamily}`;
-        ctx.fillStyle = varConfig.color;
-        ctx.fillText(certificate.studentData[varConfig.name] || '', posX, posY);
-      } else if (varConfig.type === 'qr') {
-        const qrUrl = `${process.env.FRONTEND_VERIFY_URL}/${certificate.verificationCode}`;
-        const qrBuffer = qr.imageSync(qrUrl, { type: 'png' });
-        const qrImage = await loadImage(qrBuffer);
-        const posX = (varConfig.x / 100) * canvas.width;
-        const posY = (varConfig.y / 100) * canvas.height;
-        const size = (varConfig.size / 100) * canvas.width;
-        ctx.drawImage(qrImage, posX, posY, size, size);
-      }
+    // Check if certificate exists AND if the user is the creator of the template
+    if (
+      !certificate ||
+      !certificate.templateId ||
+      certificate.templateId.createdBy?.toString() !== req.user._id?.toString()
+    ) {
+      console.log(
+        "Certificate not found, template not populated, or user is not the template creator."
+      );
+      return res
+        .status(404)
+        .json({ error: "Certificate not found or not authorized" });
     }
 
-    res.set('Content-Type', 'image/png');
-    canvas.createPNGStream().pipe(res);
+    const stream = await generateCertificateBuffer(certificate);
+    res.set("Content-Type", "image/png");
+    stream.pipe(res);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -51,20 +58,23 @@ exports.generateCertificateImage = async (req, res) => {
 
 exports.verifyCertificate = async (req, res) => {
   try {
-    const certificate = await Certificate.findOne({ verificationCode: req.params.code })
-      .populate('templateId')
-      .populate('collectionId');
-      
-    if (!certificate) return res.status(404).json({ error: 'Certificate not found' });
-    
+    const certificate = await Certificate.findOne({
+      verificationCode: req.params.code,
+    })
+      .populate("templateId")
+      .populate("collectionId");
+
+    if (!certificate)
+      return res.status(404).json({ error: "Certificate not found" });
+
     res.json({
       valid: true,
       certificate: {
         studentData: certificate.studentData,
         createdAt: certificate.createdAt,
         issuedBy: certificate.templateId.createdBy,
-        collection: certificate.collectionId?.name
-      }
+        collection: certificate.collectionId?.name,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -84,12 +94,17 @@ exports.getUserCertificates = async (req, res) => {
 
 exports.updateCertificate = async (req, res) => {
   try {
-    const certificate = await Certificate.findById(req.params.id).populate('templateId');
-    
-    if (!certificate || certificate.templateId.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(404).json({ error: 'Certificate not found' });
+    const certificate = await Certificate.findById(req.params.id).populate(
+      "templateId"
+    );
+
+    if (
+      !certificate ||
+      certificate.templateId.createdBy.toString() !== req.user._id.toString()
+    ) {
+      return res.status(404).json({ error: "Certificate not found" });
     }
-    
+
     certificate.studentData = { ...certificate.studentData, ...req.body };
     await certificate.save();
     res.json(certificate);
@@ -101,9 +116,32 @@ exports.updateCertificate = async (req, res) => {
 exports.getAdminCertificates = async (req, res) => {
   try {
     const certificates = await Certificate.find()
-      .populate({ path: 'templateId', match: { createdBy: req.user._id } })
-      .then(results => results.filter(c => c.templateId !== null));
+      .populate({ path: "templateId", match: { createdBy: req.user._id } })
+      .then((results) => results.filter((c) => c.templateId !== null));
     res.json(certificates);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.deleteCertificate = async (req, res) => {
+  try {
+    const certificate = await Certificate.findById(req.params.id).populate(
+      "templateId"
+    );
+
+    if (!certificate) {
+      return res.status(404).json({ error: "Certificate not found" });
+    }
+
+    // Optional: Add authorization check if needed, e.g., only the issuer who created the template can delete the certificate
+    // if (certificate.templateId.createdBy.toString() !== req.user._id.toString()) {
+    //   return res.status(403).json({ error: 'Not authorized to delete this certificate' });
+    // }
+
+    await certificate.deleteOne();
+
+    res.json({ message: "Certificate deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
