@@ -16,47 +16,27 @@ const IssuerHome = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log("Token:", token); // Debug: Check if token exists
-
-        if (!token) {
-          throw new Error("Authentication token not found. Please log in.");
-        }
-
+        
         // Fetch collections for certificate count
-        console.log("Fetching collections...");
         const collectionsResponse = await fetch("http://localhost:5000/api/collections", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!collectionsResponse.ok) {
-          throw new Error(`Failed to fetch collections: ${collectionsResponse.status} ${collectionsResponse.statusText}`);
-        }
         const collectionsData = await collectionsResponse.json();
-        console.log("Collections Data:", collectionsData); // Debug: Inspect response
         const certCount = collectionsData.reduce((acc, curr) => acc + (curr.certificates?.length || 0), 0);
         setTotalCertificates(certCount);
 
         // Fetch templates
-        console.log("Fetching templates...");
         const templatesResponse = await fetch("http://localhost:5000/api/templates", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!templatesResponse.ok) {
-          throw new Error(`Failed to fetch templates: ${templatesResponse.status} ${templatesResponse.statusText}`);
-        }
         const templatesData = await templatesResponse.json();
-        console.log("Templates Data:", templatesData); // Debug: Inspect response
         setTemplateCount(templatesData.length);
 
         // Fetch complaints
-        console.log("Fetching complaints...");
         const complaintsResponse = await fetch("http://localhost:5000/api/complaints/issuer", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!complaintsResponse.ok) {
-          throw new Error(`Failed to fetch complaints: ${complaintsResponse.status} ${complaintsResponse.statusText}`);
-        }
         const complaintsData = await complaintsResponse.json();
-        console.log("Complaints Data:", complaintsData); // Debug: Inspect response
         const pendingComplaints = complaintsData.filter(c => c.status !== "resolved");
         setPendingComplaintsCount(pendingComplaints.length);
 
@@ -85,8 +65,7 @@ const IssuerHome = () => {
 
         setRecentActivities(activities);
       } catch (error) {
-        console.error("Error fetching data:", error.message); // Debug: Log specific error
-        setError(error.message || "Failed to load dashboard data. Please try again later.");
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -129,6 +108,41 @@ const IssuerHome = () => {
       }
     }
   }, [loading, error, totalCertificates, templateCount, pendingComplaintsCount]);
+
+  // Additional debugging for templates fetch issue (outside useEffect)
+  const debugTemplatesFetch = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log("Debugging Templates Fetch - Token:", token);
+      if (!token) {
+        console.error("Debugging Templates Fetch - Error: Authentication token not found. Please log in.");
+        return;
+      }
+      console.log("Debugging Templates Fetch - Fetching templates...");
+      const templatesResponse = await fetch("http://localhost:5000/api/templates", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Debugging Templates Fetch - Response Status:", templatesResponse.status, templatesResponse.statusText);
+      if (!templatesResponse.ok) {
+        console.error(`Debugging Templates Fetch - Error: Failed to fetch templates: ${templatesResponse.status} ${templatesResponse.statusText}`);
+        return;
+      }
+      const templatesData = await templatesResponse.json();
+      console.log("Debugging Templates Fetch - Templates Data:", templatesData);
+      if (!Array.isArray(templatesData)) {
+        console.error("Debugging Templates Fetch - Error: Templates data is not an array. Received:", templatesData);
+        return;
+      }
+      console.log("Debugging Templates Fetch - Success: Templates fetched successfully. Count:", templatesData.length);
+    } catch (error) {
+      console.error("Debugging Templates Fetch - Error:", error.message);
+    }
+  };
+
+  // Run the debug function after component mounts
+  useEffect(() => {
+    debugTemplatesFetch();
+  }, []);
 
   const dashboardData = [
     {
@@ -231,7 +245,7 @@ const IssuerHome = () => {
 
           {/* Chart Section */}
           <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-[#5f4b32] mb-4">Dashboard Metrics</h2>
+            <h2 className="text-xl Oceansbold text-[#5f4b32] mb-4">Dashboard Metrics</h2>
             <canvas id="dashboardChart" className="w-full max-h-64"></canvas>
           </div>
 
