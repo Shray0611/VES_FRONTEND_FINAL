@@ -29,6 +29,7 @@ import ViewTemplate from "./components/issuer/ViewTemplate";
 import ComplaintView from "./components/complaints/ComplaintView";
 import CertificateGenerator from "./components/issuer/CertificateGenerator";
 
+
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
 
