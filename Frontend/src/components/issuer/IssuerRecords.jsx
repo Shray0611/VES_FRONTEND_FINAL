@@ -14,6 +14,13 @@ const IssuerRecords = ({ onLogout }) => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
+        if (!token) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("userName");
+          navigate("/login");
+          return;
+        }
 
         // Using the correct endpoint from server.js
         const response = await fetch("http://localhost:5000/api/collections", {
@@ -65,6 +72,16 @@ const IssuerRecords = ({ onLogout }) => {
 
     fetchCollections();
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleViewCollection = (collection) => {
     navigate(`/event-view/${collection._id}`, {

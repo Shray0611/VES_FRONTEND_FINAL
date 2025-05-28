@@ -112,7 +112,9 @@ const AdminHome = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
+    navigate("/login");
   };
 
   const handleCreateAdmin = async (e) => {

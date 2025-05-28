@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 import Chart from "chart.js/auto";
+import IssuerNavbar from "../layout/IssuerNavbar";
 
 const IssuerHome = () => {
   const navigate = useNavigate();
@@ -143,6 +144,17 @@ const IssuerHome = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      navigate("/login");
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [navigate]);
+
   const dashboardData = [
     {
       title: "Total Certificates",
@@ -163,6 +175,13 @@ const IssuerHome = () => {
       link: "/issuer-records",
     },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
+    navigate("/login");
+  };
 
   if (error) {
     return (
@@ -299,6 +318,7 @@ const IssuerHome = () => {
           </div>
         </div>
       </div>
+      <IssuerNavbar onLogout={handleLogout} handleQuery={() => {}} />
     </div>
   );
 };

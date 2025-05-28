@@ -9,9 +9,12 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
     if (storedName) {
-
       const formattedName = storedName.includes("@")
-        ? storedName.split("@")[0].split(".").join(" ").replace(/\b\w/g, c => c.toUpperCase())
+        ? storedName
+            .split("@")[0]
+            .split(".")
+            .join(" ")
+            .replace(/\b\w/g, (c) => c.toUpperCase())
         : storedName;
       setCouncilName(formattedName);
     }
@@ -95,7 +98,12 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
               </span>
             </div>
             <span
-              onClick={() => navigate("/")}
+              onClick={() => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("role");
+                localStorage.removeItem("userName");
+                navigate("/login");
+              }}
               className="text-[#5f4b32] hover:bg-[#e0c9a9] border border-[#e0c9a9] px-4 py-2 rounded-lg cursor-pointer transition-all duration-200"
             >
               Log Out
