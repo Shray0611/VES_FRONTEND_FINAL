@@ -95,11 +95,36 @@ const IssuerComplaints = () => {
 
   // Helper function to safely access nested properties
   const getStudentName = (complaint) => {
-    try {
-      return complaint.certificateId?.studentData?.name || "Unknown Student";
-    } catch (e) {
-      return "Unknown Student";
+    // Try to get from certificate data
+    let name = complaint.certificateId?.studentData?.name;
+    if (name && name.trim() !== "") return name;
+
+    // If not available, try to derive from email
+    const email = complaint.userId?.email;
+    if (email && email.includes("@")) {
+      // Example: 2022.avan.shetty@ves.ac.in -> avan shetty
+      const local = email.split("@")[0];
+      const parts = local.split(".");
+      // Remove year/roll if present (first part is all digits)
+      const nameParts =
+        parts.length > 2 && /^\d+$/.test(parts[0]) ? parts.slice(1) : parts;
+      // Capitalize each part
+      return nameParts
+        .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+        .join(" ");
     }
+    return "Unknown Student";
+  };
+
+  // Helper to get event name
+  const getEventName = (complaint) => {
+    // Try studentData.eventName first
+    if (complaint.certificateId?.studentData?.eventName)
+      return complaint.certificateId.studentData.eventName;
+    // Fallback to collectionId.eventName
+    if (complaint.certificateId?.collectionId?.eventName)
+      return complaint.certificateId.collectionId.eventName;
+    return "N/A";
   };
 
   return (
@@ -292,22 +317,32 @@ const IssuerComplaints = () => {
                 <h4 className="text-lg font-medium text-gray-700 mb-2">
                   Certificate Information
                 </h4>
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <span className="block font-semibold text-gray-500 mb-1">
-                      Certificate ID:
-                    </span>
-                    <span className="text-gray-700 break-all">
-                      {selectedComplaint.certificateId?._id || "N/A"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="block font-semibold text-gray-500 mb-1">
-                      Student Name:
-                    </span>
-                    <span className="text-gray-700">
-                      {getStudentName(selectedComplaint)}
-                    </span>
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-1 gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
+                    <div className="flex-1">
+                      <span className="block font-semibold text-gray-500 mb-1 md:mb-0">
+                        Certificate ID:
+                      </span>
+                      <span className="text-gray-700 break-all">
+                        {selectedComplaint.certificateId?._id || "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <span className="block font-semibold text-gray-500 mb-1 md:mb-0">
+                        Student Name:
+                      </span>
+                      <span className="text-gray-700">
+                        {getStudentName(selectedComplaint)}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <span className="block font-semibold text-gray-500 mb-1 md:mb-0">
+                        Event Name:
+                      </span>
+                      <span className="text-gray-700">
+                        {getEventName(selectedComplaint)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

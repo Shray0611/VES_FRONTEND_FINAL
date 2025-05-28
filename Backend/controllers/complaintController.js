@@ -66,7 +66,10 @@ exports.getIssuerComplaints = async (req, res) => {
     // Superadmin can see all complaints
 
     const complaints = await Complaint.find(query)
-      .populate("certificateId")
+      .populate({
+        path: "certificateId",
+        populate: { path: "collectionId" },
+      })
       .populate("userId", "email")
       .sort({ createdAt: -1 });
 
