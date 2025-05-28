@@ -1,43 +1,58 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AlertCircle } from "lucide-react";
 import Chart from "chart.js/auto";
+import IssuerNavbar from "../layout/IssuerNavbar";
 
 const IssuerHome = () => {
   const navigate = useNavigate();
   const [totalCertificates, setTotalCertificates] = useState(0);
-  const [templateCount, setTemplateCount] = useState(0);
   const [pendingComplaintsCount, setPendingComplaintsCount] = useState(0);
+  const [totalEventsCount, setTotalEventsCount] = useState(0);
   const [recentActivities, setRecentActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const chartRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        
-        // Fetch collections for certificate count
-        const collectionsResponse = await fetch("http://localhost:5000/api/collections", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+
+        // Fetch collections for certificate count and events count
+        const collectionsResponse = await fetch(
+          "http://localhost:5000/api/collections",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const collectionsData = await collectionsResponse.json();
-        const certCount = collectionsData.reduce((acc, curr) => acc + (curr.certificates?.length || 0), 0);
+
+        // Set total events count (number of collections)
+        setTotalEventsCount(collectionsData.length);
+
+        // Calculate total certificates
+        const certCount = collectionsData.reduce(
+          (acc, curr) => acc + (curr.certificates?.length || 0),
+          0
+        );
         setTotalCertificates(certCount);
 
-        // Fetch templates
-        const templatesResponse = await fetch("http://localhost:5000/api/templates", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const templatesData = await templatesResponse.json();
-        setTemplateCount(templatesData.length);
-
         // Fetch complaints
-        const complaintsResponse = await fetch("http://localhost:5000/api/complaints/issuer", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const complaintsResponse = await fetch(
+          "http://localhost:5000/api/complaints/issuer",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const complaintsData = await complaintsResponse.json();
-        const pendingComplaints = complaintsData.filter(c => c.status !== "resolved");
+
+        // Filter pending complaints
+        const pendingComplaints = complaintsData.filter(
+          (c) => c.status !== "resolved"
+        );
+
+        // Set pending complaints count
         setPendingComplaintsCount(pendingComplaints.length);
 
         // Generate recent activities
@@ -48,24 +63,20 @@ const IssuerHome = () => {
             details: `${collection.name} certificates issued`,
             timestamp: new Date(collection.createdAt).toLocaleDateString(),
           })),
-          ...templatesData.slice(0, 1).map(template => ({
-            id: `tpl-${template._id}`,
-            action: "Template created",
-            details: template.name,
-            timestamp: new Date(template.createdAt).toLocaleDateString(),
-          })),
           ...pendingComplaints.slice(0, 3).map((complaint, index) => ({
             id: `comp-${complaint._id}`,
             action: "New complaint",
             details: `Complaint #COMP-${index + 1}: ${complaint.description}`,
             timestamp: new Date(complaint.createdAt).toLocaleDateString(),
-          }))
-        ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-         .slice(0, 3);
+          })),
+        ]
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+          .slice(0, 3);
 
         setRecentActivities(activities);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError("Failed to load dashboard data");
       } finally {
         setLoading(false);
       }
@@ -78,25 +89,35 @@ const IssuerHome = () => {
     if (!loading && !error) {
       const ctx = document.getElementById("dashboardChart");
       if (ctx) {
-        new Chart(ctx, {
+        if (chartRef.current) {
+          chartRef.current.destroy();
+        }
+
+        chartRef.current = new Chart(ctx, {
           type: "bar",
           data: {
-            labels: ["Certificates", "Templates", "Pending Complaints"],
-            datasets: [{
-              label: "Dashboard Metrics",
-              data: [totalCertificates, templateCount, pendingComplaintsCount],
-              backgroundColor: [
-                "rgba(59, 130, 246, 0.5)", // Blue
-                "rgba(34, 197, 94, 0.5)", // Green
-                "rgba(239, 68, 68, 0.5)", // Red
-              ],
-              borderColor: [
-                "rgb(59, 130, 246)",
-                "rgb(34, 197, 94)",
-                "rgb(239, 68, 68)",
-              ],
-              borderWidth: 1,
-            }],
+            labels: ["Certificates", "Pending Complaints", "Total Events"],
+            datasets: [
+              {
+                label: "Dashboard Metrics",
+                data: [
+                  totalCertificates,
+                  pendingComplaintsCount,
+                  totalEventsCount,
+                ],
+                backgroundColor: [
+                  "rgba(59, 130, 246, 0.5)", // Blue
+                  "rgba(34, 197, 94, 0.5)", // Green
+                  "rgba(239, 68, 68, 0.5)", // Red
+                ],
+                borderColor: [
+                  "rgb(59, 130, 246)",
+                  "rgb(34, 197, 94)",
+                  "rgb(239, 68, 68)",
+                ],
+                borderWidth: 1,
+              },
+            ],
           },
           options: {
             scales: { y: { beginAtZero: true } },
@@ -107,42 +128,32 @@ const IssuerHome = () => {
         console.error("Chart canvas not found");
       }
     }
-  }, [loading, error, totalCertificates, templateCount, pendingComplaintsCount]);
+  }, [
+    loading,
+    error,
+    totalCertificates,
+    pendingComplaintsCount,
+    totalEventsCount,
+  ]);
 
-  // Additional debugging for templates fetch issue (outside useEffect)
-  const debugTemplatesFetch = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      console.log("Debugging Templates Fetch - Token:", token);
-      if (!token) {
-        console.error("Debugging Templates Fetch - Error: Authentication token not found. Please log in.");
-        return;
-      }
-      console.log("Debugging Templates Fetch - Fetching templates...");
-      const templatesResponse = await fetch("http://localhost:5000/api/templates", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      console.log("Debugging Templates Fetch - Response Status:", templatesResponse.status, templatesResponse.statusText);
-      if (!templatesResponse.ok) {
-        console.error(`Debugging Templates Fetch - Error: Failed to fetch templates: ${templatesResponse.status} ${templatesResponse.statusText}`);
-        return;
-      }
-      const templatesData = await templatesResponse.json();
-      console.log("Debugging Templates Fetch - Templates Data:", templatesData);
-      if (!Array.isArray(templatesData)) {
-        console.error("Debugging Templates Fetch - Error: Templates data is not an array. Received:", templatesData);
-        return;
-      }
-      console.log("Debugging Templates Fetch - Success: Templates fetched successfully. Count:", templatesData.length);
-    } catch (error) {
-      console.error("Debugging Templates Fetch - Error:", error.message);
-    }
-  };
-
-  // Run the debug function after component mounts
   useEffect(() => {
-    debugTemplatesFetch();
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+    };
   }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      navigate("/login");
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [navigate]);
 
   const dashboardData = [
     {
@@ -152,24 +163,25 @@ const IssuerHome = () => {
       link: "/issuer-records",
     },
     {
-      title: "Templates",
-      count: templateCount,
-      color: "bg-green-100 text-green-800",
-      link: "/view-template",
-    },
-    {
       title: "Pending Complaints",
       count: pendingComplaintsCount,
-      color: "bg-red-100 text-red-800",
+      color: "bg-green-100 text-green-800",
       link: "/complaints-view",
     },
     {
-      title: "Guidelines",
-      count: null,
-      color: "bg-purple-100 text-purple-800",
-      link: "/guidelines",
+      title: "Total Events",
+      count: totalEventsCount,
+      color: "bg-red-100 text-red-800",
+      link: "/issuer-records",
     },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
+    navigate("/login");
+  };
 
   if (error) {
     return (
@@ -225,27 +237,29 @@ const IssuerHome = () => {
             </p>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {dashboardData.map((card, index) => (
-              <div
-                key={index}
-                onClick={() => navigate(card.link)}
-                className={`${card.color} rounded-xl shadow-lg p-6 cursor-pointer transition-transform hover:scale-105`}
-              >
-                <div>
-                  <p className="text-lg font-semibold">{card.title}</p>
-                  {card.count !== null && (
+          {/* Stats Cards - Centered with 3 columns */}
+          <div className="flex justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl w-full">
+              {dashboardData.map((card, index) => (
+                <div
+                  key={index}
+                  onClick={() => navigate(card.link)}
+                  className={`${card.color} rounded-xl shadow-lg p-6 cursor-pointer transition-transform hover:scale-105`}
+                >
+                  <div>
+                    <p className="text-lg font-semibold">{card.title}</p>
                     <p className="text-3xl font-bold mt-2">{card.count}</p>
-                  )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
           {/* Chart Section */}
           <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6">
-            <h2 className="text-xl Oceansbold text-[#5f4b32] mb-4">Dashboard Metrics</h2>
+            <h2 className="text-xl Oceansbold text-[#5f4b32] mb-4">
+              Dashboard Metrics
+            </h2>
             <canvas id="dashboardChart" className="w-full max-h-64"></canvas>
           </div>
 
@@ -253,16 +267,22 @@ const IssuerHome = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Recent Activity */}
             <div className="lg:col-span-2 bg-[#f5f1e6] rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">Recent Activity</h2>
+              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">
+                Recent Activity
+              </h2>
               <div className="divide-y divide-gray-200">
                 {recentActivities.map((activity) => (
                   <div key={activity.id} className="py-4">
                     <div className="flex justify-between">
                       <div>
-                        <p className="font-medium text-gray-800">{activity.action}</p>
+                        <p className="font-medium text-gray-800">
+                          {activity.action}
+                        </p>
                         <p className="text-gray-600">{activity.details}</p>
                       </div>
-                      <p className="text-sm text-gray-500">{activity.timestamp}</p>
+                      <p className="text-sm text-gray-500">
+                        {activity.timestamp}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -277,10 +297,12 @@ const IssuerHome = () => {
 
             {/* Quick Actions */}
             <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">Quick Actions</h2>
+              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">
+                Quick Actions
+              </h2>
               <div className="grid grid-cols-1 gap-4">
                 <button
-                  onClick={() => navigate("/view-template")}
+                  onClick={() => navigate("/create-template")}
                   className="bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center border border-[#e0c9a9]"
                 >
                   Create New Template
@@ -296,6 +318,7 @@ const IssuerHome = () => {
           </div>
         </div>
       </div>
+      <IssuerNavbar onLogout={handleLogout} handleQuery={() => {}} />
     </div>
   );
 };

@@ -156,10 +156,17 @@ const UserHome = ({ onLogout }) => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
+    navigate("/login");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 p-6 pt-24 flex flex-col items-center">
-        <UserNavbar onLogout={onLogout} />
+        <UserNavbar onLogout={handleLogout} />
         <div className="text-xl text-gray-600">Loading certificates...</div>
       </div>
     );
@@ -167,7 +174,7 @@ const UserHome = ({ onLogout }) => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 pt-24 flex flex-col items-center">
-      <UserNavbar onLogout={onLogout} />
+      <UserNavbar onLogout={handleLogout} />
 
       <h1 className="text-gray-800 text-3xl font-bold mb-4">
         Welcome, {firstName}!

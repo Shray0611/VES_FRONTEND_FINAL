@@ -26,12 +26,14 @@ const IssuerComplaints = () => {
           }
         );
 
-        // Add a complaint ID to each complaint for display
-        const complaintsWithId = response.data.map((complaint, index) => ({
+        // Sort complaints by createdAt ascending for numbering
+        const sortedComplaints = response.data
+          .slice()
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        const complaintsWithId = sortedComplaints.map((complaint, index) => ({
           ...complaint,
-          complaintId: `#COMP-${789 + index}`,
+          complaintId: `COMP#${index + 1}`,
         }));
-
         setComplaints(complaintsWithId);
       } catch (err) {
         console.error("Error fetching complaints:", err);
@@ -95,11 +97,36 @@ const IssuerComplaints = () => {
 
   // Helper function to safely access nested properties
   const getStudentName = (complaint) => {
-    try {
-      return complaint.certificateId?.studentData?.name || "Unknown Student";
-    } catch (e) {
-      return "Unknown Student";
+    // Try to get from certificate data
+    let name = complaint.certificateId?.studentData?.name;
+    if (name && name.trim() !== "") return name;
+
+    // If not available, try to derive from email
+    const email = complaint.userId?.email;
+    if (email && email.includes("@")) {
+      // Example: 2022.avan.shetty@ves.ac.in -> avan shetty
+      const local = email.split("@")[0];
+      const parts = local.split(".");
+      // Remove year/roll if present (first part is all digits)
+      const nameParts =
+        parts.length > 2 && /^\d+$/.test(parts[0]) ? parts.slice(1) : parts;
+      // Capitalize each part
+      return nameParts
+        .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+        .join(" ");
     }
+    return "Unknown Student";
+  };
+
+  // Helper to get event name
+  const getEventName = (complaint) => {
+    // Try studentData.eventName first
+    if (complaint.certificateId?.studentData?.eventName)
+      return complaint.certificateId.studentData.eventName;
+    // Fallback to collectionId.eventName
+    if (complaint.certificateId?.collectionId?.eventName)
+      return complaint.certificateId.collectionId.eventName;
+    return "N/A";
   };
 
   return (
@@ -115,19 +142,7 @@ const IssuerComplaints = () => {
                 to="/issuer-home"
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
               >
-                Dashboard
-              </Link>
-              <Link
-                to="/generate"
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-              >
-                Create Certificate
-              </Link>
-              <Link
-                to="/complaints-view"
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-              >
-                View Complaints
+                Back To Dashboard
               </Link>
             </div>
           </div>
@@ -160,10 +175,10 @@ const IssuerComplaints = () => {
                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
                       Sr.No
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Complaint ID
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Email ID
                     </th>
                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
@@ -186,10 +201,10 @@ const IssuerComplaints = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                         {index + 1}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700 text-center">
                         {complaint.complaintId}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                         {complaint.userId?.email || "Unknown"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
@@ -292,22 +307,32 @@ const IssuerComplaints = () => {
                 <h4 className="text-lg font-medium text-gray-700 mb-2">
                   Certificate Information
                 </h4>
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <span className="block font-semibold text-gray-500 mb-1">
-                      Certificate ID:
-                    </span>
-                    <span className="text-gray-700 break-all">
-                      {selectedComplaint.certificateId?._id || "N/A"}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="block font-semibold text-gray-500 mb-1">
-                      Student Name:
-                    </span>
-                    <span className="text-gray-700">
-                      {getStudentName(selectedComplaint)}
-                    </span>
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-1 gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
+                    <div className="flex-1">
+                      <span className="block font-semibold text-gray-500 mb-1 md:mb-0">
+                        Certificate ID:
+                      </span>
+                      <span className="text-gray-700 break-all">
+                        {selectedComplaint.certificateId?._id || "N/A"}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <span className="block font-semibold text-gray-500 mb-1 md:mb-0">
+                        Student Name:
+                      </span>
+                      <span className="text-gray-700">
+                        {getStudentName(selectedComplaint)}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <span className="block font-semibold text-gray-500 mb-1 md:mb-0">
+                        Event Name:
+                      </span>
+                      <span className="text-gray-700">
+                        {getEventName(selectedComplaint)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -438,6 +438,16 @@ const CertificateGenerator = () => {
     saveAs(blob, "certificate-config.json");
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      navigate("/login");
+    }
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       <IssuerNavbar />

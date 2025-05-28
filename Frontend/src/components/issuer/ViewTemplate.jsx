@@ -51,6 +51,17 @@ const ViewTemplate = () => {
     }
   };
 
+  // Add useEffect to check for token
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      navigate("/login");
+    }
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <IssuerNavbar />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import IssuerNavbar from "../layout/IssuerNavbar";
 import "./certificates.css";
 
@@ -8,12 +8,14 @@ const EventView = () => {
   const location = useLocation();
   const collectionId = location.state?.collectionId || id;
   const collectionName = location.state?.collectionName || "Event";
+  const navigate = useNavigate();
 
   const [certificates, setCertificates] = useState([]);
   const [editingCert, setEditingCert] = useState(null);
   const [formData, setFormData] = useState({});
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [collection, setCollection] = useState({});
 
   // Fetch certificates for this collection
   useEffect(() => {
@@ -35,6 +37,7 @@ const EventView = () => {
         }
 
         const data = await response.json();
+        setCollection(data); // Save the full collection object
         console.log("Collection data:", data);
 
         // Handle response - expecting certificates to be in data.certificates
@@ -260,6 +263,40 @@ const EventView = () => {
     }
   };
 
+  // Helper to get student name from studentData or email
+  const getStudentName = (cert) => {
+    let name = cert.studentData?.name;
+    if (name && name.trim() !== "") return name;
+    const email = cert.email;
+    if (email && email.includes("@")) {
+      const local = email.split("@")[0];
+      const parts = local.split(".");
+      // Take the part after the first dot and before the second dot
+      if (parts.length >= 3) {
+        return (
+          parts[1].charAt(0).toUpperCase() +
+          parts[1].slice(1) +
+          " " +
+          parts[2].charAt(0).toUpperCase() +
+          parts[2].slice(1)
+        );
+      }
+      // Fallback: just capitalize the local part
+      return local.charAt(0).toUpperCase() + local.slice(1);
+    }
+    return "Unknown Student";
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      navigate("/login");
+    }
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">
       <IssuerNavbar />
@@ -319,7 +356,10 @@ const EventView = () => {
                       No.
                     </th>
                     <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide">
-                      Name
+                      Event Name
+                    </th>
+                    <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide">
+                      Student Name
                     </th>
                     <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide">
                       Email
@@ -340,7 +380,10 @@ const EventView = () => {
                     >
                       <td className="px-6 py-4 text-[#475569]">{index + 1}</td>
                       <td className="px-6 py-4 font-medium text-[#1e293b]">
-                        {cert.studentData?.name || "N/A"}
+                        {collection.eventName || collection.name || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 font-medium text-[#1e293b]">
+                        {getStudentName(cert)}
                       </td>
                       <td className="px-6 py-4 text-[#475569]">
                         {cert.email || "N/A"}
