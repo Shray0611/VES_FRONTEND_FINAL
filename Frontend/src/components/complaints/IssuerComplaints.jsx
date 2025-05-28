@@ -142,19 +142,7 @@ const IssuerComplaints = () => {
                 to="/issuer-home"
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
               >
-                Dashboard
-              </Link>
-              <Link
-                to="/generate"
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-              >
-                Create Certificate
-              </Link>
-              <Link
-                to="/complaints-view"
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-              >
-                View Complaints
+                Back To Dashboard
               </Link>
             </div>
           </div>
@@ -187,10 +175,10 @@ const IssuerComplaints = () => {
                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
                       Sr.No
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Complaint ID
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Email ID
                     </th>
                     <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
@@ -213,10 +201,10 @@ const IssuerComplaints = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                         {index + 1}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-700 text-center">
                         {complaint.complaintId}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                         {complaint.userId?.email || "Unknown"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
