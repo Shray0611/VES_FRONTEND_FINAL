@@ -31,6 +31,7 @@ import ComplaintView from "./components/complaints/ComplaintView";
 import CertificateGenerator from "./components/issuer/CertificateGenerator";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
+
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
 

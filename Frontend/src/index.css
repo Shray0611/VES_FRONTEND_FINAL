@@ -98,3 +98,28 @@ button:focus-visible {
 .issuer-home-header {
   margin-top: 35px;
 }
+
+@layer utilities {
+  .animate-slide-up {
+    animation: slideUp 3s ease-in-out forwards;
+  }
+
+  @keyframes slideUp {
+    0% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    10% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    90% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+}
