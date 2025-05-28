@@ -26,12 +26,14 @@ const IssuerComplaints = () => {
           }
         );
 
-        // Add a complaint ID to each complaint for display
-        const complaintsWithId = response.data.map((complaint, index) => ({
+        // Sort complaints by createdAt ascending for numbering
+        const sortedComplaints = response.data
+          .slice()
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        const complaintsWithId = sortedComplaints.map((complaint, index) => ({
           ...complaint,
-          complaintId: `#COMP-${789 + index}`,
+          complaintId: `COMP#${index + 1}`,
         }));
-
         setComplaints(complaintsWithId);
       } catch (err) {
         console.error("Error fetching complaints:", err);
