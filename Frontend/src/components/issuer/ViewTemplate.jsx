@@ -92,7 +92,7 @@ const ViewTemplate = () => {
                   </h3>
                   <button
                     onClick={() => handleUseTemplate(template.image)}
-                    className="mt-2 w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+                    className="mt-2 w-full bg-[#4b3515] hover:bg-[#3f2f15] text-[#e4d7c8] px-4 py-2 rounded-lg  transition-colors duration-200"
                   >
                     Use Template
                   </button>

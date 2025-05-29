@@ -288,7 +288,7 @@ const IssuerHome = () => {
                 ))}
               </div>
               <button
-                className="mt-4 text-[#7d6954] hover:text-[#5f4b32] font-medium"
+                className="mt-4 bg-[#4b3515] hover:bg-[#3f2f15] text-[#e4d7c8] font-medium"
                 onClick={() => navigate("/issuer-records")}
               >
                 View All Activities
@@ -296,7 +296,7 @@ const IssuerHome = () => {
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6">
+            {/* <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6">
               <h2 className="text-xl font-bold text-[#5f4b32] mb-4">
                 Quick Actions
               </h2>
@@ -314,7 +314,7 @@ const IssuerHome = () => {
                   View Complaints
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

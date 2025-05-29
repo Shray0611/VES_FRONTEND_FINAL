@@ -225,9 +225,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
       </div>
 
       {/* Footer */}
-      <footer>
-        <p>Footer Content</p>
-      </footer>
+
     </>
   );
 };
