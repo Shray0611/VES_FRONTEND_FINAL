@@ -1,6 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import IssuerNavbar from "../layout/IssuerNavbar";
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  Download,
+  Edit,
+  Trash2,
+  Calendar,
+  Mail,
+  User,
+  FileText,
+  Users,
+  Loader2,
+  AlertCircle,
+  X,
+  Save,
+} from "lucide-react";
 import "./certificates.css";
 
 const EventView = () => {
@@ -16,6 +32,10 @@ const EventView = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [collection, setCollection] = useState({});
+  const [actionLoading, setActionLoading] = useState({
+    delete: null,
+    download: null,
+  });
 
   // Fetch certificates for this collection
   useEffect(() => {
@@ -195,6 +215,7 @@ const EventView = () => {
     if (!window.confirm("Are you sure you want to delete this certificate?"))
       return;
     try {
+      setActionLoading((prev) => ({ ...prev, delete: certId }));
       const token = localStorage.getItem("token");
       const response = await fetch(
         `http://localhost:5000/api/certificates/${certId}`,
@@ -220,13 +241,16 @@ const EventView = () => {
 
       setCertificates((prev) => prev.filter((c) => c._id !== certId));
     } catch (err) {
-      alert("Failed to delete certificate: " + err.message);
+      setError("Failed to delete certificate: " + err.message);
+    } finally {
+      setActionLoading((prev) => ({ ...prev, delete: null }));
     }
   };
 
   // Handle certificate download
   const handleDownloadCertificate = async (certId) => {
     try {
+      setActionLoading((prev) => ({ ...prev, download: certId }));
       const token = localStorage.getItem("token");
       const response = await fetch(
         `http://localhost:5000/api/certificates/${certId}`,
@@ -259,7 +283,9 @@ const EventView = () => {
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert("Failed to download certificate: " + err.message);
+      setError("Failed to download certificate: " + err.message);
+    } finally {
+      setActionLoading((prev) => ({ ...prev, download: null }));
     }
   };
 
@@ -297,176 +323,338 @@ const EventView = () => {
     }
   }, [navigate]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] flex flex-col">
+        <IssuerNavbar />
+        <div className="flex-1 flex items-center justify-center">
+          <motion.div
+            className="bg-white/80 backdrop-blur-md rounded-3xl p-12 shadow-xl border border-[#e0c9a9]/30 text-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Loader2 className="w-12 h-12 text-[#e0c9a9] mx-auto mb-4 animate-spin" />
+            <p className="text-xl text-[#5f4b32] font-medium">
+              Loading certificates...
+            </p>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] p-6 pt-24">
+      {/* Top Navbar */}
       <IssuerNavbar />
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col items-center justify-center mb-12">
-          <h1 className="text-4xl font-bold text-[#1e293b] mb-2">
+
+      {/* Main Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header Section */}
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h1 className="text-4xl md:text-5xl font-bold text-[#5f4b32] mb-4">
             {collectionName} Certificates
           </h1>
-        </div>
+          <p className="text-[#7d6954] text-lg md:text-xl max-w-2xl mx-auto">
+            Manage and track certificates for this event
+          </p>
+        </motion.div>
 
+        {/* Back Button */}
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.button
+            onClick={() => navigate(-1)}
+            className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to Events
+          </motion.button>
+        </motion.div>
+
+        {/* Error Alert */}
         {error && (
-          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
-            {error}
-          </div>
+          <motion.div
+            className="mb-8 bg-red-50/80 backdrop-blur-md border border-red-200 rounded-2xl p-4 shadow-lg"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <p className="text-red-700 font-medium">{error}</p>
+            </div>
+          </motion.div>
         )}
 
-        <div className="bg-white rounded-2xl shadow-sm border border-[#edf2f7]">
-          <div className="p-6 border-b border-[#edf2f7] flex justify-between items-center">
-            <h2 className="text-xl font-medium text-[#1e293b]">Certificates</h2>
-            <div className="flex gap-3">
-              <button
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-1 transition-colors"
-                onClick={() => window.history.back()}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                Back
-              </button>
+        {/* Certificates Section */}
+        <motion.div
+          className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-[#e0c9a9]/30 overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          {/* Section Header */}
+          <div className="bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] px-8 py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <FileText className="w-6 h-6 text-[#5f4b32]" />
+                <h2 className="text-2xl font-bold text-[#5f4b32]">
+                  Certificates ({certificates.length})
+                </h2>
+              </div>
             </div>
           </div>
 
-          {loading ? (
-            <div className="p-8 text-center">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#e0c9a9] border-t-[#5f4b32]"></div>
-              <p className="mt-2 text-[#64748b]">Loading certificates...</p>
-            </div>
-          ) : certificates.length === 0 ? (
-            <div className="p-8 text-center text-[#64748b]">
-              No certificates found for this collection.
-            </div>
+          {certificates.length === 0 ? (
+            <motion.div
+              className="text-center py-16"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <FileText className="w-16 h-16 text-[#e0c9a9] mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-[#5f4b32] mb-2">
+                No certificates found
+              </h3>
+              <p className="text-[#7d6954]">
+                No certificates have been issued for this event yet
+              </p>
+            </motion.div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-[#f8fafc]">
-                  <tr>
-                    <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide">
-                      No.
-                    </th>
-                    <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide">
-                      Event Name
-                    </th>
-                    <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide">
-                      Student Name
-                    </th>
-                    <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide">
-                      Email
-                    </th>
-                    <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide">
-                      Issue Date
-                    </th>
-                    <th className="px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide text-center">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#edf2f7]">
-                  {certificates.map((cert, index) => (
-                    <tr
-                      key={cert._id}
-                      className="transition-colors duration-200 hover:bg-[#e2e8f0] hover:shadow-md"
-                    >
-                      <td className="px-6 py-4 text-[#475569]">{index + 1}</td>
-                      <td className="px-6 py-4 font-medium text-[#1e293b]">
-                        {collection.eventName || collection.name || "N/A"}
-                      </td>
-                      <td className="px-6 py-4 font-medium text-[#1e293b]">
-                        {getStudentName(cert)}
-                      </td>
-                      <td className="px-6 py-4 text-[#475569]">
-                        {cert.email || "N/A"}
-                      </td>
-                      <td className="px-6 py-4 text-[#475569]">
-                        {cert.createdAt
-                          ? new Date(cert.createdAt).toLocaleDateString()
-                          : "N/A"}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex justify-center gap-4">
-                          <button
-                            className="text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
-                            title="Download Certificate"
-                            onClick={() => handleDownloadCertificate(cert._id)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span>Download</span>
-                          </button>
-                          <button
-                            className="text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
-                            onClick={() => handleEditClick(cert)}
-                            title="Edit Certificate"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                            </svg>
-                            <span>Edit</span>
-                          </button>
-                          <button
-                            className="text-red-600 hover:text-red-700 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
-                            title="Delete Certificate"
-                            onClick={() => handleDeleteCertificate(cert._id)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              viewBox="0 0 20 20"
-                              fill="currentColor"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                            <span>Delete</span>
-                          </button>
-                        </div>
-                      </td>
+            <div className="p-8">
+              {/* Desktop Table View */}
+              <div className="hidden lg:block">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-[#e0c9a9]/30">
+                      <th className="text-left py-4 px-6 text-[#5f4b32] font-semibold">
+                        #
+                      </th>
+                      <th className="text-left py-4 px-6 text-[#5f4b32] font-semibold">
+                        Student Name
+                      </th>
+                      <th className="text-left py-4 px-6 text-[#5f4b32] font-semibold">
+                        Email
+                      </th>
+                      <th className="text-left py-4 px-6 text-[#5f4b32] font-semibold">
+                        Issue Date
+                      </th>
+                      <th className="text-center py-4 px-6 text-[#5f4b32] font-semibold">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {certificates.map((cert, index) => (
+                      <motion.tr
+                        key={cert._id}
+                        className="border-b border-[#e0c9a9]/20 hover:bg-[#f8e5c5]/30 transition-colors"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <td className="py-4 px-6 text-[#7d6954] font-medium">
+                          {index + 1}
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-2">
+                            <User className="w-4 h-4 text-[#e0c9a9]" />
+                            <div className="font-medium text-[#5f4b32]">
+                              {getStudentName(cert)}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 text-[#7d6954]">
+                          <div className="flex items-center gap-2">
+                            <Mail className="w-4 h-4" />
+                            {cert.email || "N/A"}
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 text-[#7d6954]">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
+                            {cert.createdAt
+                              ? new Date(cert.createdAt).toLocaleDateString()
+                              : "N/A"}
+                          </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex justify-center gap-2">
+                            <motion.button
+                              onClick={() => handleDownloadCertificate(cert._id)}
+                              disabled={actionLoading.download === cert._id}
+                              className="bg-[#5f4b32] hover:bg-[#4a3a26] text-white font-medium py-2 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              title="Download Certificate"
+                            >
+                              {actionLoading.download === cert._id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Download className="w-4 h-4" />
+                              )}
+                              Download
+                            </motion.button>
+
+                            <motion.button
+                              onClick={() => handleEditClick(cert)}
+                              className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-2 px-4 rounded-xl transition-all duration-200 flex items-center gap-2"
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              title="Edit Certificate"
+                            >
+                              <Edit className="w-4 h-4" />
+                              Edit
+                            </motion.button>
+
+                            <motion.button
+                              onClick={() => handleDeleteCertificate(cert._id)}
+                              disabled={actionLoading.delete === cert._id}
+                              className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              title="Delete Certificate"
+                            >
+                              {actionLoading.delete === cert._id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Trash2 className="w-4 h-4" />
+                              )}
+                              Delete
+                            </motion.button>
+                          </div>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="lg:hidden space-y-4">
+                {certificates.map((cert, index) => (
+                  <motion.div
+                    key={cert._id}
+                    className="bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-[#e0c9a9]/30"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <User className="w-4 h-4 text-[#e0c9a9]" />
+                            <h3 className="font-semibold text-[#5f4b32] text-lg">
+                              {getStudentName(cert)}
+                            </h3>
+                          </div>
+                          <div className="flex items-center gap-2 text-[#7d6954] text-sm mb-1">
+                            <Mail className="w-4 h-4" />
+                            {cert.email || "N/A"}
+                          </div>
+                          <div className="flex items-center gap-2 text-[#7d6954] text-sm">
+                            <Calendar className="w-4 h-4" />
+                            {cert.createdAt
+                              ? new Date(cert.createdAt).toLocaleDateString()
+                              : "N/A"}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <motion.button
+                          onClick={() => handleDownloadCertificate(cert._id)}
+                          disabled={actionLoading.download === cert._id}
+                          className="flex-1 bg-[#5f4b32] hover:bg-[#4a3a26] text-white font-medium py-2 px-3 rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          {actionLoading.download === cert._id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Download className="w-4 h-4" />
+                          )}
+                          Download
+                        </motion.button>
+
+                        <motion.button
+                          onClick={() => handleEditClick(cert)}
+                          className="flex-1 bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-2 px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Edit className="w-4 h-4" />
+                          Edit
+                        </motion.button>
+                      </div>
+
+                      <motion.button
+                        onClick={() => handleDeleteCertificate(cert._id)}
+                        disabled={actionLoading.delete === cert._id}
+                        className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-3 rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {actionLoading.delete === cert._id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                        Delete Certificate
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
 
       {/* Edit Modal */}
       {editingCert && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full max-h-[90vh] overflow-auto">
-            <h3 className="text-xl font-semibold text-[#1e293b] mb-4">
-              Edit Certificate Data
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <motion.div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-[#e0c9a9]/30 p-8 max-w-md w-full max-h-[90vh] overflow-auto"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-[#5f4b32]">
+                Edit Certificate Data
+              </h3>
+              <motion.button
+                onClick={() => setEditingCert(null)}
+                className="text-[#7d6954] hover:text-[#5f4b32] transition-colors"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X className="w-6 h-6" />
+              </motion.button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               {editingCert.templateId?.variables ? (
                 Object.entries(editingCert.templateId.variables)
                   .filter(
@@ -474,8 +662,8 @@ const EventView = () => {
                       !varConfig.name.toLowerCase().includes("qr")
                   )
                   .map(([key, varConfig]) => (
-                    <div key={key} className="space-y-1">
-                      <label className="text-sm font-medium text-[#475569]">
+                    <div key={key} className="space-y-2">
+                      <label className="text-sm font-semibold text-[#5f4b32]">
                         {varConfig.name}
                       </label>
                       <input
@@ -483,13 +671,14 @@ const EventView = () => {
                         name={varConfig.name}
                         value={formData[varConfig.name] || ""}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-[#cbd5e1] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] focus:border-transparent transition-all duration-200"
+                        placeholder={`Enter ${varConfig.name.toLowerCase()}`}
                       />
                     </div>
                   ))
               ) : (
-                <div className="space-y-1">
-                  <label className="text-sm font-medium text-[#475569]">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-[#5f4b32]">
                     Name
                   </label>
                   <input
@@ -497,28 +686,35 @@ const EventView = () => {
                     name="name"
                     value={formData.name || ""}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 border border-[#cbd5e1] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] focus:border-transparent transition-all duration-200"
+                    placeholder="Enter name"
                   />
                 </div>
               )}
-              <div className="flex justify-end gap-3 pt-4">
-                <button
+
+              <div className="flex gap-3 pt-4">
+                <motion.button
                   type="button"
                   onClick={() => setEditingCert(null)}
-                  className="px-4 py-2 border border-[#cbd5e1] rounded-md text-[#475569] hover:bg-[#f1f5f9] transition-colors"
+                  className="flex-1 px-6 py-3 bg-[#f1f5f9] hover:bg-[#e2e8f0] text-[#64748b] font-medium rounded-xl transition-all duration-200 border border-[#e0c9a9]/30"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   Cancel
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                  className="flex-1 px-6 py-3 bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
+                  <Save className="w-4 h-4" />
                   Save Changes
-                </button>
+                </motion.button>
               </div>
             </form>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );
