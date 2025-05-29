@@ -149,7 +149,7 @@ const IssuerHome = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("userName");
-      navigate("/login");
+      navigate("/");
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
@@ -180,7 +180,7 @@ const IssuerHome = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
-    navigate("/login");
+    navigate("/");
   };
 
   if (error) {

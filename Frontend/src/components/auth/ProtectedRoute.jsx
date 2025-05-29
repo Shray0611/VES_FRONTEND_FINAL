@@ -1,9 +1,10 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
-  if (!token) {
+  const role = localStorage.getItem("role");
+  if (!token || (allowedRoles && !allowedRoles.includes(role))) {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");

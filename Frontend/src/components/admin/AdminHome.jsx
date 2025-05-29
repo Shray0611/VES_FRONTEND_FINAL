@@ -69,7 +69,10 @@ const AdminHome = () => {
 
         const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
         const res = await axios.get(`${baseUrl}/api/auth/me`, {
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         });
 
         if (!res.data.success || res.data.data.role !== "superadmin") {
@@ -101,7 +104,10 @@ const AdminHome = () => {
 
         const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
         const res = await axios.get(`${baseUrl}/api/admin/list`, {
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         });
 
         if (res.data?.success && Array.isArray(res.data.data)) {
@@ -111,7 +117,9 @@ const AdminHome = () => {
         }
         setAdminLoading(false);
       } catch (err) {
-        setAdminError(err.response?.data?.message || "Failed to fetch admin list.");
+        setAdminError(
+          err.response?.data?.message || "Failed to fetch admin list."
+        );
         setAdminLoading(false);
       }
     };
@@ -131,7 +139,7 @@ const AdminHome = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
-    navigate("/login");
+    navigate("/");
   };
 
   const handleCreateAdmin = async (e) => {
@@ -156,7 +164,12 @@ const AdminHome = () => {
       const response = await axios.post(
         `${baseUrl}/api/admin/create`,
         { email, password },
-        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (response.data.success) {
@@ -168,7 +181,9 @@ const AdminHome = () => {
         setFormError(response.data.message || "Failed to create admin");
       }
     } catch (error) {
-      setFormError(error.response?.data?.message || error.message || "An error occurred");
+      setFormError(
+        error.response?.data?.message || error.message || "An error occurred"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -176,10 +191,14 @@ const AdminHome = () => {
 
   const handleSelectAdmin = (adminId) => {
     setSelectedAdmins((prev) =>
-      prev.includes(adminId) ? prev.filter((id) => id !== adminId) : [...prev, adminId]
+      prev.includes(adminId)
+        ? prev.filter((id) => id !== adminId)
+        : [...prev, adminId]
     );
     setVisibleCheckboxes((prev) =>
-      prev.includes(adminId) ? prev.filter((id) => id !== adminId) : [...prev, adminId]
+      prev.includes(adminId)
+        ? prev.filter((id) => id !== adminId)
+        : [...prev, adminId]
     );
   };
 
@@ -213,7 +232,10 @@ const AdminHome = () => {
       await Promise.all(
         selectedAdmins.map((adminId) =>
           axios.delete(`${baseUrl}/api/admin/${adminId}`, {
-            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
           })
         )
       );
@@ -223,7 +245,9 @@ const AdminHome = () => {
       setVisibleCheckboxes([]);
       setFormSuccess("Selected admins deleted successfully!");
     } catch (error) {
-      setAdminError(error.response?.data?.message || "Failed to delete admins.");
+      setAdminError(
+        error.response?.data?.message || "Failed to delete admins."
+      );
     } finally {
       setShowDialog(false);
     }
@@ -273,7 +297,8 @@ const AdminHome = () => {
               className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] px-4 py-2 rounded-lg font-medium transition-colors duration-200"
               whileHover={{
                 scale: 1.05,
-                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                boxShadow:
+                  "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
               }}
               whileTap={{ scale: 0.98 }}
             >
@@ -297,14 +322,17 @@ const AdminHome = () => {
           <FadeInSection>
             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 mb-8">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Admin Accounts</h2>
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Admin Accounts
+                </h2>
                 <div className="space-x-4">
                   <motion.button
                     onClick={() => setRefreshKey((k) => k + 1)}
                     className="bg-[#5f4b32] hover:bg-[#4a3a27] text-white px-5 py-2.5 rounded-lg font-medium transition-colors duration-200"
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                      boxShadow:
+                        "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
                     }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -313,14 +341,17 @@ const AdminHome = () => {
                   <motion.button
                     onClick={handleDelete}
                     className={`bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors duration-200 ${
-                      selectedAdmins.length === 0 ? "opacity-50 cursor-not-allowed" : ""
+                      selectedAdmins.length === 0
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
                     }`}
                     disabled={selectedAdmins.length === 0}
                     whileHover={
                       selectedAdmins.length > 0
                         ? {
                             scale: 1.05,
-                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                            boxShadow:
+                              "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
                           }
                         : {}
                     }
@@ -332,9 +363,13 @@ const AdminHome = () => {
               </div>
 
               {adminLoading ? (
-                <div className="text-center py-4 text-gray-600">Loading admins...</div>
+                <div className="text-center py-4 text-gray-600">
+                  Loading admins...
+                </div>
               ) : adminError ? (
-                <div className="bg-red-50 text-red-600 p-4 rounded-lg">{adminError}</div>
+                <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+                  {adminError}
+                </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
@@ -355,7 +390,10 @@ const AdminHome = () => {
                     <tbody className="bg-white divide-y divide-gray-200">
                       {admins.length > 0 ? (
                         admins.map((admin, index) => (
-                          <tr key={admin._id} className="hover:bg-[#f8fafc] transition-colors duration-150">
+                          <tr
+                            key={admin._id}
+                            className="hover:bg-[#f8fafc] transition-colors duration-150"
+                          >
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                               {visibleCheckboxes.includes(admin._id) && (
                                 <input
@@ -382,7 +420,10 @@ const AdminHome = () => {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="4" className="px-6 py-4 text-center text-sm text-gray-500">
+                          <td
+                            colSpan="4"
+                            className="px-6 py-4 text-center text-sm text-gray-500"
+                          >
                             No admin accounts found
                           </td>
                         </tr>
@@ -397,10 +438,14 @@ const AdminHome = () => {
           {/* Add New Admin Form */}
           <FadeInSection>
             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-left">Add New Admin</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-left">
+                Add New Admin
+              </h2>
 
               {formError && (
-                <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">{formError}</div>
+                <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-4">
+                  {formError}
+                </div>
               )}
 
               <form className="space-y-6" onSubmit={handleCreateAdmin}>
@@ -445,7 +490,8 @@ const AdminHome = () => {
                       !isSubmitting
                         ? {
                             scale: 1.05,
-                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                            boxShadow:
+                              "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
                           }
                         : {}
                     }
@@ -466,8 +512,8 @@ const AdminHome = () => {
                   Confirm Deletion
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Are you sure you want to delete {selectedAdmins.length} admin(s)?
-                  This action cannot be undone.
+                  Are you sure you want to delete {selectedAdmins.length}{" "}
+                  admin(s)? This action cannot be undone.
                 </p>
                 <div className="flex justify-end space-x-4">
                   <motion.button
@@ -475,7 +521,8 @@ const AdminHome = () => {
                     className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                      boxShadow:
+                        "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
                     }}
                     whileTap={{ scale: 0.98 }}
                   >
@@ -486,7 +533,8 @@ const AdminHome = () => {
                     className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
                     whileHover={{
                       scale: 1.05,
-                      boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                      boxShadow:
+                        "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
                     }}
                     whileTap={{ scale: 0.98 }}
                   >
