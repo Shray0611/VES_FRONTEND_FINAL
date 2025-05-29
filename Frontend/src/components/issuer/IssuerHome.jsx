@@ -295,26 +295,7 @@ const IssuerHome = () => {
               </button>
             </div>
 
-            {/* Quick Actions */}
-            {/* <div className="bg-[#f5f1e6] rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">
-                Quick Actions
-              </h2>
-              <div className="grid grid-cols-1 gap-4">
-                <button
-                  onClick={() => navigate("/create-template")}
-                  className="bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center border border-[#e0c9a9]"
-                >
-                  Create New Template
-                </button>
-                <button
-                  onClick={() => navigate("/complaints-view")}
-                  className="bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32] font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center border border-[#e0c9a9]"
-                >
-                  View Complaints
-                </button>
-              </div>
-            </div> */}
+
           </div>
         </div>
       </div>
