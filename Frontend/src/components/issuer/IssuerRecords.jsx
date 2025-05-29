@@ -169,19 +169,21 @@ const IssuerRecords = ({ onLogout }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-8">
+    
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] p-8">
       {/* Top Navbar */}
       <IssuerNavbar />
 
       {/* Main Container */}
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto ">
         {/* Header Section */}
-        <div className="flex flex-col items-center justify-center mb-12">
+        <div className="flex flex-col items-center justify-center mb-12 ">
+          <br></br>
           <h1 className="issuer-home-header text-4xl font-bold text-[#1e293b] mb-2 transition-all duration-300 hover:text-[#0f172a]">
             Welcome, Issuer!
           </h1>
-          <p className="text-[#64748b] text-lg transition-colors duration-300 hover:text-[#475569]">
-            Manage your certificate events and activities
+          <p className="text-[#231f0d] text-lg transition-colors duration-300 hover:text-[#485363]">
+            Manage your certificates, events and activities 
           </p>
         </div>
 
@@ -192,24 +194,24 @@ const IssuerRecords = ({ onLogout }) => {
         )}
 
         {/* Events Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-[#edf2f7]">
+        <div className="bg-gradient-to-r from-[#e0c9a9] to-[#c5ab84] rounded-2xl shadow-sm border border-[#edf2f7]">
           <div className="p-6 border-b border-[#edf2f7] flex justify-between items-center">
             <h2 className="text-xl font-medium text-[#1e293b]">Your Events</h2>
           </div>
 
           {loading ? (
             <div className="p-8 text-center">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#e0c9a9] border-t-[#5f4b32]"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-[#312719] border-t-[#5f4b32]"></div>
               <p className="mt-2 text-[#64748b]">Loading events...</p>
             </div>
           ) : collections.length === 0 ? (
-            <div className="p-8 text-center text-[#64748b]">
+            <div className="p-8 text-center text-[#171b1f]">
               No events found. Create your first event to get started.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-[#f8fafc]">
+                <thead className="bg-[#d5b380]">
                   <tr>
                     {[
                       "No.",
@@ -220,7 +222,7 @@ const IssuerRecords = ({ onLogout }) => {
                     ].map((header) => (
                       <th
                         key={header}
-                        className={`px-6 py-4 text-sm font-medium text-[#64748b] uppercase tracking-wide ${
+                        className={`px-6 py-4 text-sm font-medium text-[#101216] uppercase tracking-wide ${
                           header === "Actions" ? "text-center" : ""
                         }`}
                       >
@@ -233,23 +235,23 @@ const IssuerRecords = ({ onLogout }) => {
                   {collections.map((collection, index) => (
                     <tr
                       key={collection._id}
-                      className="transition-colors duration-200 hover:bg-[#e2e8f0] hover:shadow-md"
+                      className="transition-colors duration-200 hover:bg-[#ecdab8] hover:shadow-md"
                     >
-                      <td className="px-6 py-4 text-[#475569]">{index + 1}</td>
+                      <td className="px-6 py-4 text-[#0e1115]">{index + 1}</td>
                       <td className="px-6 py-4 font-medium text-[#1e293b]">
                         {collection.eventName || collection.name}
                       </td>
-                      <td className="px-6 py-4 text-[#475569]">
+                      <td className="px-6 py-4 text-[#0f1217]">
                         {new Date(collection.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 text-[#475569]">
+                      <td className="px-6 py-4 text-[#0b0d10]">
                         {collection.certificates?.length || 0}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-center ml-8 gap-3">
                           <button
                             onClick={() => handleViewCollection(collection)}
-                            className="text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
+                            className=" bg-[#efe1ce] hover:bg-[#d4b88f] text-[#5f4b32] flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                             title="View Certificates"
                           >
                             <svg
@@ -271,7 +273,7 @@ const IssuerRecords = ({ onLogout }) => {
                             onClick={() =>
                               handleDownloadCollection(collection._id)
                             }
-                            className="text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
+                            className="bg-[#efe1ce] hover:bg-[#d4b88f] text-[#5f4b32] flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                             title="Download All Certificates"
                           >
                             <svg
@@ -292,7 +294,7 @@ const IssuerRecords = ({ onLogout }) => {
                             onClick={() =>
                               handleDeleteCollection(collection._id)
                             }
-                            className="text-red-600 hover:text-red-700 flex items-center gap-1 transition-transform duration-200 hover:scale-105"
+                            className="text-red-600 hover:text-white-700 bg-[#302310] flex items-center gap-1 transition-transform duration-200 hover:scale-105"
                             title="Delete Event"
                           >
                             <svg
