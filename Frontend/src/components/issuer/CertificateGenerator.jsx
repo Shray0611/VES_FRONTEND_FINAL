@@ -940,41 +940,20 @@ const CertificateGenerator = () => {
             </div>
           )}
         </div>
+         <div className="flex flex-col sm:flex-row justify-between sm:justify-end items-center gap-4 mb-8">
+            <button
+              onClick={generateCertificates}
+              disabled={!template || !excelData.length || !variables.length}
+              className={`px-6 py-3 rounded-lg font-medium ${
+                !template || !excelData.length || !variables.length
+                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                  : "bg-[#5f4b32] hover:bg-[#4a3a27] text-white"
+              } transition-colors w-full sm:w-auto`}
+            >
+              Generate Certificates
+            </button>
+          </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
-          <button
-            onClick={exportConfig}
-            disabled={!variables.length}
-            className={`px-6 py-3 rounded-lg font-medium ${
-              !variables.length
-                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-[#f5f1e6] hover:bg-[#e0c9a9] text-[#5f4b32]"
-            } transition-colors w-full sm:w-auto`}
-          >
-            Export Template Configuration
-          </button>
-
-          <button
-            onClick={generateCertificates}
-            disabled={!template || !excelData.length || !variables.length}
-            className={`px-6 py-3 rounded-lg font-medium ${
-              !template || !excelData.length || !variables.length
-                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-[#5f4b32] hover:bg-[#4a3a27] text-white"
-            } transition-colors w-full sm:w-auto`}
-          >
-            Generate Certificates
-          </button>
-        </div>
-
-        <div className="text-center">
-          <a
-            href="/admin/certificates"
-            className="text-[#5f4b32] hover:text-[#4a3a27] underline font-medium"
-          >
-            View Generated Certificate Sets
-          </a>
-        </div>
       </div>
     </div>
   );
