@@ -25,7 +25,7 @@ const UserNavbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
-    navigate("/login");
+    navigate("/");
   };
 
   return (

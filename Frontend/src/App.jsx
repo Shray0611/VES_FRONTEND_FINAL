@@ -31,7 +31,6 @@ import ComplaintView from "./components/complaints/ComplaintView";
 import CertificateGenerator from "./components/issuer/CertificateGenerator";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
-
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
 
@@ -52,49 +51,45 @@ const App = () => {
   );
 };
 
+const publicRoutes = [
+  /^\/$/, // Home
+  /^\/about$/, // About
+  /^\/services$/, // Services
+  /^\/contact$/, // Contact
+  /^\/login$/, // Login
+  /^\/signup$/, // Signup
+  /^\/forgotPassword$/, // Forgot Password
+  /^\/verify\/[^/]+$/, // Verify with dynamic code
+];
+
+function isPublicRoute(pathname) {
+  return publicRoutes.some((regex) => regex.test(pathname));
+}
+
 const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
   const location = useLocation(); // Get current location (pathname)
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Listen for browser back/forward navigation
-    const handlePopState = () => {
-      localStorage.setItem("sessionExpired", "true");
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
-
-  useEffect(() => {
-    // If sessionExpired flag is set, clear session and redirect
-    if (localStorage.getItem("sessionExpired") === "true") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("userName");
-      localStorage.removeItem("sessionExpired");
-      navigate("/login");
-      return;
-    }
     const token = localStorage.getItem("token");
-    if (
-      !token &&
-      ![
-        "/login",
-        "/signup",
-        "/forgotPassword",
-        "/verify/:code",
-        "/",
-        "/about",
-        "/services",
-        "/contact",
-      ].includes(location.pathname)
-    ) {
+    if (!token && !isPublicRoute(location.pathname)) {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("userName");
       navigate("/login");
     }
   }, [location, navigate]);
+
+  useEffect(() => {
+    // If user is logged in and navigates to any public route, clear session and reload
+    const token = localStorage.getItem("token");
+    if (token && isPublicRoute(location.pathname)) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      window.location.replace(location.pathname); // Hard reload to clear history stack
+    }
+  }, [location]);
 
   return (
     <>
@@ -125,7 +120,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/user-home"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["student"]}>
                 <UserHome onLogout={onLogout} />
               </ProtectedRoute>
             }
@@ -133,7 +128,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/issuer-home"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <IssuerHome />
               </ProtectedRoute>
             }
@@ -141,7 +136,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/issuer-records"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <IssuerRecords onLogout={onLogout} />
               </ProtectedRoute>
             }
@@ -149,7 +144,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/generate"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <CertificateGenerator />
               </ProtectedRoute>
             }
@@ -157,7 +152,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/view-template"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <ViewTemplate />
               </ProtectedRoute>
             }
@@ -165,7 +160,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/superadmin/dashboard"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["superadmin"]}>
                 <AdminHome />
               </ProtectedRoute>
             }
@@ -173,7 +168,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/certificate-view/:id"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["student"]}>
                 <CertificateView />
               </ProtectedRoute>
             }
@@ -181,7 +176,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/report-issue/:id"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["student"]}>
                 <ReportIssue />
               </ProtectedRoute>
             }
@@ -189,7 +184,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/complaints"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["student"]}>
                 <ComplaintsPage />
               </ProtectedRoute>
             }
@@ -197,7 +192,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/guidelines"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["student"]}>
                 <Guidelines />
               </ProtectedRoute>
             }
@@ -205,7 +200,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/event-view"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <EventView />
               </ProtectedRoute>
             }
@@ -213,7 +208,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/event-view/:id"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <EventView />
               </ProtectedRoute>
             }
@@ -221,7 +216,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/complaints-view"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <IssuerComplaints />
               </ProtectedRoute>
             }
