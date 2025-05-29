@@ -347,20 +347,20 @@ const ComplaintsPage = () => {
 
             <div className="p-8 space-y-8">
               {/* Status Section */}
-              <div className="bg-gradient-to-r from-[#f9f3e8] to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/20">
+              <div className="bg-gradient-to-r from-[#e0c9a9]/30 to-[#d4b88f]/40 rounded-2xl p-6 border border-[#c8a982]/40">
                 <h4 className="text-lg font-bold text-[#5f4b32] mb-4 flex items-center gap-2">
                   <Clock className="w-5 h-5" />
                   Complaint Status
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <span className="block text-sm font-semibold text-[#7d6954] mb-2 uppercase tracking-wider">
+                    <span className="block text-sm font-semibold text-[#5f4b32] mb-2 uppercase tracking-wider">
                       Current Status
                     </span>
                     <StatusBadge status={selectedComplaint.status} large />
                   </div>
-                  <div>
-                    <span className="block text-sm font-semibold text-[#7d6954] mb-2 uppercase tracking-wider">
+                  <div className="flex flex-col items-center">
+                    <span className="block text-sm font-semibold text-[#5f4b32] mb-2 uppercase tracking-wider">
                       Submitted On
                     </span>
                     <div className="flex items-center gap-2">
@@ -374,12 +374,12 @@ const ComplaintsPage = () => {
               </div>
 
               {/* Message Section */}
-              <div className="bg-gradient-to-r from-[#f9f3e8] to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/20">
+              <div className="bg-gradient-to-r from-[#e0c9a9]/30 to-[#d4b88f]/40 rounded-2xl p-6 border border-[#c8a982]/40">
                 <h4 className="text-lg font-bold text-[#5f4b32] mb-4 flex items-center gap-2">
                   <MessageSquare className="w-5 h-5" />
                   Message
                 </h4>
-                <div className="bg-white/70 rounded-xl p-4 border border-[#e0c9a9]/20">
+                <div className="bg-gradient-to-r from-[#d4b88f]/60 to-[#c8a982]/50 rounded-xl p-4 border border-[#b8a275]/50">
                   <p className="text-[#5f4b32] whitespace-pre-wrap leading-relaxed">
                     {selectedComplaint.message}
                   </p>
@@ -387,15 +387,15 @@ const ComplaintsPage = () => {
               </div>
 
               {/* Certificate Information */}
-              <div className="bg-gradient-to-r from-[#f9f3e8] to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/20">
+              <div className="bg-gradient-to-r from-[#e0c9a9]/30 to-[#d4b88f]/40 rounded-2xl p-6 border border-[#c8a982]/40">
                 <h4 className="text-lg font-bold text-[#5f4b32] mb-4 flex items-center gap-2">
                   <Award className="w-5 h-5" />
                   Certificate Information
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {getCertificateInfo(selectedComplaint, "eventName") && (
-                    <div className="bg-white/70 rounded-xl p-4 border border-[#e0c9a9]/20">
-                      <span className="block text-sm font-semibold text-[#7d6954] mb-2 uppercase tracking-wider">
+                    <div className="bg-gradient-to-r from-[#d4b88f]/60 to-[#c8a982]/50 rounded-xl p-4 border border-[#b8a275]/50">
+                      <span className="block text-sm font-semibold text-[#5f4b32] mb-2 uppercase tracking-wider">
                         Event Name
                       </span>
                       <span className="text-[#5f4b32] font-medium">
@@ -404,8 +404,8 @@ const ComplaintsPage = () => {
                     </div>
                   )}
                   {getCertificateInfo(selectedComplaint, "organization") && (
-                    <div className="bg-white/70 rounded-xl p-4 border border-[#e0c9a9]/20">
-                      <span className="block text-sm font-semibold text-[#7d6954] mb-2 uppercase tracking-wider">
+                    <div className="bg-gradient-to-r from-[#d4b88f]/60 to-[#c8a982]/50 rounded-xl p-4 border border-[#b8a275]/50">
+                      <span className="block text-sm font-semibold text-[#5f4b32] mb-2 uppercase tracking-wider">
                         Council/Organization
                       </span>
                       <div className="flex items-center gap-2">
@@ -421,8 +421,8 @@ const ComplaintsPage = () => {
                   )}
                   {!getCertificateInfo(selectedComplaint, "eventName") &&
                     !getCertificateInfo(selectedComplaint, "organization") && (
-                      <div className="bg-white/70 rounded-xl p-4 border border-[#e0c9a9]/20 col-span-2">
-                        <span className="text-[#7d6954] italic">
+                      <div className="bg-gradient-to-r from-[#d4b88f]/60 to-[#c8a982]/50 rounded-xl p-4 border border-[#b8a275]/50 col-span-2">
+                        <span className="text-[#5f4b32] italic">
                           Certificate information is not available for this
                           complaint.
                         </span>
