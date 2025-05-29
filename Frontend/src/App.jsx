@@ -192,7 +192,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route
             path="/guidelines"
             element={
-              <ProtectedRoute allowedRoles={["student"]}>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <Guidelines />
               </ProtectedRoute>
             }
