@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FiSearch,
-  FiChevronDown,
-  FiCheckCircle,
-  FiClock,
-  FiAlertCircle,
-  FiEye,
-} from "react-icons/fi";
+  Search,
+  ChevronDown,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Eye,
+  X,
+  Calendar,
+  MessageSquare,
+  Award,
+  Building2,
+} from "lucide-react";
 import UserNavbar from "../layout/UserNavbar";
 import axios from "axios";
 
@@ -108,192 +113,259 @@ const ComplaintsPage = () => {
   // Helper function to safely access certificate data
   const getCertificateInfo = (complaint, field) => {
     try {
-      if (field === "eventName")
-        return complaint.certificateId?.studentData?.eventName || "N/A";
-      else if (field === "organization")
-        return complaint.certificateId?.collectionId?.name || "N/A";
-      else return "N/A";
+      if (field === "eventName") {
+        const eventName = complaint.certificateId?.studentData?.eventName;
+        return eventName && eventName.trim() !== "" ? eventName : "";
+      } else if (field === "organization") {
+        const organization = complaint.certificateId?.collectionId?.name;
+        return organization && organization.trim() !== "" ? organization : "";
+      } else {
+        return "";
+      }
     } catch (e) {
-      return "N/A";
+      return "";
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4]">
       <UserNavbar />
       <div className="max-w-7xl mx-auto p-6 pt-24">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 border-b pb-4">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
+        {/* Header Section */}
+        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl p-8 mb-8 border border-[#e0c9a9]/30">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-bold text-[#5f4b32] leading-tight">
                 My Complaints
               </h1>
-              <p className="text-gray-500 mt-1 text-sm">
+              <p className="text-[#7d6954] text-lg">
                 {complaints.length} registered case
                 {complaints.length !== 1 ? "s" : ""}
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <div className="relative flex-1">
-                <FiSearch className="absolute left-3 top-3.5 text-gray-500" />
+            <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#7d6954] w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Search complaints..."
-                  className="pl-10 pr-4 py-2.5 w-full rounded-lg border border-gray-200 bg-white
-                         focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-200
-                         text-gray-700 placeholder-gray-400 text-sm"
+                  className="pl-12 pr-4 py-3 w-full sm:w-80 rounded-2xl border-2 border-[#e0c9a9]/30 bg-white/70 
+                         focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] focus:border-[#e0c9a9]
+                         text-[#5f4b32] placeholder-[#7d6954]/60 text-sm font-medium
+                         backdrop-blur-sm transition-all duration-300"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
 
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="px-4 py-2.5 rounded-lg border border-gray-200 bg-white
-                        focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-200
-                        text-gray-700 appearance-none text-sm"
-              >
-                <option>All</option>
-                <option>open</option>
-                <option>resolved</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  className="appearance-none px-6 py-3 pr-12 rounded-2xl border-2 border-[#e0c9a9]/30 bg-white/70
+                          focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] focus:border-[#e0c9a9]
+                          text-[#5f4b32] text-sm font-medium backdrop-blur-sm transition-all duration-300"
+                >
+                  <option>All</option>
+                  <option>open</option>
+                  <option>resolved</option>
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#7d6954] w-4 h-4 pointer-events-none" />
+              </div>
             </div>
           </div>
+        </div>
 
-          {loading && (
-            <div className="flex justify-center py-12">
-              <div className="text-xl text-gray-600">Loading complaints...</div>
+        {/* Loading State */}
+        {loading && (
+          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl p-16 text-center border border-[#e0c9a9]/30">
+            <div className="animate-spin w-12 h-12 border-4 border-[#e0c9a9] border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-xl text-[#7d6954] font-medium">
+              Loading complaints...
+            </p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50/80 backdrop-blur-md border-2 border-red-200 text-red-700 rounded-3xl p-6 mb-6 shadow-xl">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-6 h-6 text-red-500" />
+              <p className="font-medium">{error}</p>
             </div>
-          )}
+          </div>
+        )}
 
-          {error && (
-            <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg text-center">
-              {error}
-            </div>
-          )}
+        {/* Empty State */}
+        {!loading && !error && filteredComplaints.length === 0 && (
+          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl p-16 text-center border border-[#e0c9a9]/30">
+            <MessageSquare className="w-16 h-16 text-[#e0c9a9] mx-auto mb-6" />
+            <h3 className="text-2xl font-bold text-[#5f4b32] mb-2">
+              {searchQuery || selectedStatus !== "All"
+                ? "No matching complaints found"
+                : "No complaints yet"}
+            </h3>
+            <p className="text-[#7d6954] text-lg">
+              {searchQuery || selectedStatus !== "All"
+                ? "Try adjusting your search criteria"
+                : "You haven't submitted any complaints yet"}
+            </p>
+          </div>
+        )}
 
-          {!loading && !error && filteredComplaints.length === 0 && (
-            <div className="text-center py-12 bg-gray-50 rounded-lg border border-gray-200">
-              <p className="text-lg text-gray-600">
-                {searchQuery || selectedStatus !== "All"
-                  ? "No matching complaints found"
-                  : "You haven't submitted any complaints yet"}
-              </p>
-            </div>
-          )}
-
-          {!loading && !error && filteredComplaints.length > 0 && (
-            <div className="overflow-x-auto rounded-lg border border-gray-200">
+        {/* Complaints Table */}
+        {!loading && !error && filteredComplaints.length > 0 && (
+          <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-[#e0c9a9]/30 overflow-hidden">
+            <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-gradient-to-r from-[#e0c9a9]/20 to-[#d4b88f]/20">
                   <tr>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
+                    <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
                       Sr.No
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <div
-                        className="flex items-center gap-1.5 cursor-pointer"
+                    <th className="px-6 py-4 text-left text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
+                      <button
+                        className="flex items-center gap-2 hover:text-[#7d6954] transition-colors"
                         onClick={() => handleSort("createdAt")}
                       >
+                        <Calendar className="w-4 h-4" />
                         Date
                         {sortConfig.key === "createdAt" && (
-                          <FiChevronDown
-                            className={`text-gray-500 transition-transform ${
+                          <ChevronDown
+                            className={`w-4 h-4 transition-transform ${
                               sortConfig.direction === "asc" ? "rotate-180" : ""
                             }`}
                           />
                         )}
+                      </button>
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
+                      <div className="flex items-center gap-2">
+                        <Award className="w-4 h-4" />
+                        Certificate
                       </div>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Certificate
-                    </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                    <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                    <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredComplaints.map((complaint, index) => (
-                    <tr
-                      key={complaint._id}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
-                      <td className="px-6 py-4 text-gray-600 text-sm text-center">
-                        {index + 1}
-                      </td>
-                      <td className="px-6 py-4 text-gray-600 text-sm whitespace-nowrap">
-                        {formatDate(complaint.createdAt)}
-                      </td>
-                      <td className="px-6 py-4 text-gray-900 text-sm font-medium">
-                        <div className="flex flex-col">
-                          <span>
-                            {getCertificateInfo(complaint, "eventName")}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {getCertificateInfo(complaint, "organization")}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <StatusBadge status={complaint.status} />
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <button
-                          onClick={() => handleViewComplaint(complaint)}
-                          className="inline-flex items-center justify-center px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-                        >
-                          <FiEye className="mr-1" /> View
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                <tbody className="divide-y divide-[#e0c9a9]/20">
+                  {filteredComplaints.map((complaint, index) => {
+                    const eventName = getCertificateInfo(
+                      complaint,
+                      "eventName"
+                    );
+                    const organization = getCertificateInfo(
+                      complaint,
+                      "organization"
+                    );
+
+                    return (
+                      <tr
+                        key={complaint._id}
+                        className="hover:bg-[#f9f3e8]/50 transition-all duration-200"
+                      >
+                        <td className="px-6 py-5 text-[#7d6954] text-sm text-center font-medium">
+                          {index + 1}
+                        </td>
+                        <td className="px-6 py-5 text-[#5f4b32] text-sm font-medium whitespace-nowrap">
+                          {formatDate(complaint.createdAt)}
+                        </td>
+                        <td className="px-6 py-5">
+                          <div className="flex flex-col space-y-1">
+                            {eventName && (
+                              <span className="text-[#5f4b32] text-sm font-semibold">
+                                {eventName}
+                              </span>
+                            )}
+                            {organization && (
+                              <div className="flex items-center gap-1">
+                                <Building2 className="w-3 h-3 text-[#7d6954]" />
+                                <span className="text-xs text-[#7d6954]">
+                                  {organization}
+                                </span>
+                              </div>
+                            )}
+                            {!eventName && !organization && (
+                              <span className="text-[#7d6954] text-sm italic">
+                                Certificate info unavailable
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-5 text-center">
+                          <StatusBadge status={complaint.status} />
+                        </td>
+                        <td className="px-6 py-5 text-center">
+                          <button
+                            onClick={() => handleViewComplaint(complaint)}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] 
+                                     text-[#5f4b32] rounded-xl hover:from-[#d4b88f] hover:to-[#c8a982] 
+                                     transition-all duration-300 font-medium text-sm shadow-md hover:shadow-lg
+                                     transform hover:scale-105"
+                          >
+                            <Eye className="w-4 h-4" />
+                            View
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Complaint Detail Modal */}
       {selectedComplaint && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-lg max-w-3xl w-full">
-            <div className="flex justify-between items-center mb-4 pb-3 border-b">
-              <h3 className="text-xl font-semibold text-gray-800">
-                Complaint Details - {selectedComplaint.displayId}
-              </h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-[#e0c9a9]/30">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center p-8 pb-6 border-b border-[#e0c9a9]/20">
+              <div>
+                <h3 className="text-2xl font-bold text-[#5f4b32]">
+                  Complaint Details
+                </h3>
+                <p className="text-[#7d6954] mt-1">
+                  {selectedComplaint.displayId}
+                </p>
+              </div>
               <button
-                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+                className="p-2 hover:bg-[#f9f3e8] rounded-full transition-colors"
                 onClick={closeComplaintView}
               >
-                &times;
+                <X className="w-6 h-6 text-[#7d6954]" />
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
-              <div>
-                <h4 className="text-lg font-medium text-gray-700 mb-2">
+            <div className="p-8 space-y-8">
+              {/* Status Section */}
+              <div className="bg-gradient-to-r from-[#f9f3e8] to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/20">
+                <h4 className="text-lg font-bold text-[#5f4b32] mb-4 flex items-center gap-2">
+                  <Clock className="w-5 h-5" />
                   Complaint Status
                 </h4>
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="block font-semibold text-gray-500 mb-1">
-                        Current Status:
-                      </span>
-                      <StatusBadge status={selectedComplaint.status} />
-                    </div>
-                    <div>
-                      <span className="block font-semibold text-gray-500 mb-1">
-                        Submitted On:
-                      </span>
-                      <span className="text-gray-700">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <span className="block text-sm font-semibold text-[#7d6954] mb-2 uppercase tracking-wider">
+                      Current Status
+                    </span>
+                    <StatusBadge status={selectedComplaint.status} large />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-semibold text-[#7d6954] mb-2 uppercase tracking-wider">
+                      Submitted On
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-[#7d6954]" />
+                      <span className="text-[#5f4b32] font-medium">
                         {formatDate(selectedComplaint.createdAt)}
                       </span>
                     </div>
@@ -301,45 +373,71 @@ const ComplaintsPage = () => {
                 </div>
               </div>
 
-              <div>
-                <h4 className="text-lg font-medium text-gray-700 mb-2">
+              {/* Message Section */}
+              <div className="bg-gradient-to-r from-[#f9f3e8] to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/20">
+                <h4 className="text-lg font-bold text-[#5f4b32] mb-4 flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5" />
                   Message
                 </h4>
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                  <p className="text-gray-700 whitespace-pre-wrap">
+                <div className="bg-white/70 rounded-xl p-4 border border-[#e0c9a9]/20">
+                  <p className="text-[#5f4b32] whitespace-pre-wrap leading-relaxed">
                     {selectedComplaint.message}
                   </p>
                 </div>
               </div>
 
-              <div>
-                <h4 className="text-lg font-medium text-gray-700 mb-2">
+              {/* Certificate Information */}
+              <div className="bg-gradient-to-r from-[#f9f3e8] to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/20">
+                <h4 className="text-lg font-bold text-[#5f4b32] mb-4 flex items-center gap-2">
+                  <Award className="w-5 h-5" />
                   Certificate Information
                 </h4>
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <span className="block font-semibold text-gray-500 mb-1">
-                      Event:
-                    </span>
-                    <span className="text-gray-700">
-                      {getCertificateInfo(selectedComplaint, "eventName")}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="block font-semibold text-gray-500 mb-1">
-                      Council/Organization:
-                    </span>
-                    <span className="text-gray-700">
-                      {getCertificateInfo(selectedComplaint, "organization")}
-                    </span>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {getCertificateInfo(selectedComplaint, "eventName") && (
+                    <div className="bg-white/70 rounded-xl p-4 border border-[#e0c9a9]/20">
+                      <span className="block text-sm font-semibold text-[#7d6954] mb-2 uppercase tracking-wider">
+                        Event Name
+                      </span>
+                      <span className="text-[#5f4b32] font-medium">
+                        {getCertificateInfo(selectedComplaint, "eventName")}
+                      </span>
+                    </div>
+                  )}
+                  {getCertificateInfo(selectedComplaint, "organization") && (
+                    <div className="bg-white/70 rounded-xl p-4 border border-[#e0c9a9]/20">
+                      <span className="block text-sm font-semibold text-[#7d6954] mb-2 uppercase tracking-wider">
+                        Council/Organization
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-[#7d6954]" />
+                        <span className="text-[#5f4b32] font-medium">
+                          {getCertificateInfo(
+                            selectedComplaint,
+                            "organization"
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {!getCertificateInfo(selectedComplaint, "eventName") &&
+                    !getCertificateInfo(selectedComplaint, "organization") && (
+                      <div className="bg-white/70 rounded-xl p-4 border border-[#e0c9a9]/20 col-span-2">
+                        <span className="text-[#7d6954] italic">
+                          Certificate information is not available for this
+                          complaint.
+                        </span>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-end mt-6">
+            {/* Modal Footer */}
+            <div className="flex justify-end p-8 pt-4 border-t border-[#e0c9a9]/20">
               <button
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                className="px-6 py-3 bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] text-[#5f4b32] 
+                         rounded-xl hover:from-[#d4b88f] hover:to-[#c8a982] transition-all duration-300 
+                         font-medium shadow-md hover:shadow-lg transform hover:scale-105"
                 onClick={closeComplaintView}
               >
                 Close
@@ -352,29 +450,37 @@ const ComplaintsPage = () => {
   );
 };
 
-const StatusBadge = ({ status }) => {
+const StatusBadge = ({ status, large = false }) => {
   const statusConfig = {
     resolved: {
-      color: "bg-green-100 text-green-700",
-      icon: <FiCheckCircle className="w-4 h-4" />,
+      color:
+        "bg-gradient-to-r from-green-100 to-green-50 text-green-700 border-green-200",
+      icon: <CheckCircle className={`${large ? "w-5 h-5" : "w-4 h-4"}`} />,
+      label: "Resolved",
     },
     open: {
-      color: "bg-yellow-100 text-yellow-700",
-      icon: <FiAlertCircle className="w-4 h-4" />,
+      color:
+        "bg-gradient-to-r from-amber-100 to-amber-50 text-amber-700 border-amber-200",
+      icon: <AlertCircle className={`${large ? "w-5 h-5" : "w-4 h-4"}`} />,
+      label: "Open",
     },
   };
 
   const config = statusConfig[status] || {
-    color: "bg-gray-100 text-gray-700",
-    icon: <FiClock className="w-4 h-4" />,
+    color:
+      "bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 border-gray-200",
+    icon: <Clock className={`${large ? "w-5 h-5" : "w-4 h-4"}`} />,
+    label: "Pending",
   };
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.color}`}
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border ${
+        config.color
+      } ${large ? "text-sm px-4 py-2" : ""}`}
     >
       {config.icon}
-      {status === "open" ? "Open" : "Resolved"}
+      {config.label}
     </div>
   );
 };
