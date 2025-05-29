@@ -196,7 +196,7 @@ const UserHome = ({ onLogout }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 pt-24 flex flex-col items-center">
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] p-6 pt-24 flex flex-col items-center">
       <UserNavbar onLogout={handleLogout} />
 
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24">
@@ -208,7 +208,7 @@ const UserHome = ({ onLogout }) => {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold text-[#5f4b32] mb-4">
-            Welcome back, {firstName}! 
+            Welcome back, {firstName}!
           </h1>
           {/* <p className="text-[#7d6954] text-lg md:text-xl max-w-2xl mx-auto">
             Manage and download your certificates with ease
