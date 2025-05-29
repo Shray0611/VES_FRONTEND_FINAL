@@ -17,6 +17,9 @@ const ReportIssue = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("userName");
           navigate("/login");
           return;
         }
@@ -58,6 +61,9 @@ const ReportIssue = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userName");
         navigate("/login");
         return;
       }

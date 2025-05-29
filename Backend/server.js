@@ -101,6 +101,7 @@ app.get(
 app.post("/api/auth/login-superadmin", userController.loginSuperAdmin);
 app.post("/api/auth/create-superadmin", userController.createSuperAdmin);
 app.get("/api/auth/me", auth(["superadmin"]), authController.getMe);
+app.delete("/api/admin/:id", auth(["superadmin"]), userController.deleteAdmin);
 
 //adding of the admins
 app.post("/api/admin/create", auth(["superadmin"]), userController.createAdmin);

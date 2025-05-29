@@ -167,6 +167,13 @@ const UserHome = ({ onLogout }) => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
+    navigate("/login");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] flex flex-col">
@@ -189,8 +196,8 @@ const UserHome = ({ onLogout }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] flex flex-col">
-      <UserNavbar onLogout={onLogout} />
+    <div className="min-h-screen bg-gray-100 p-6 pt-24 flex flex-col items-center">
+      <UserNavbar onLogout={handleLogout} />
 
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24">
         {/* Header Section */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import IssuerNavbar from "../layout/IssuerNavbar";
 import "./certificates.css";
 
@@ -8,6 +8,7 @@ const EventView = () => {
   const location = useLocation();
   const collectionId = location.state?.collectionId || id;
   const collectionName = location.state?.collectionName || "Event";
+  const navigate = useNavigate();
 
   const [certificates, setCertificates] = useState([]);
   const [editingCert, setEditingCert] = useState(null);
@@ -285,6 +286,16 @@ const EventView = () => {
     }
     return "Unknown Student";
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-8">

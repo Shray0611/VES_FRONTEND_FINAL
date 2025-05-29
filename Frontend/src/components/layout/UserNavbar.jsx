@@ -12,7 +12,7 @@ const UserNavbar = () => {
         const namePart = storedName.split("@")[0].split(".").slice(1).join(".");
         const formattedName = namePart
           .split(".")
-          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
           .join(" ");
         setDisplayName(formattedName || "User");
       } else {
@@ -21,9 +21,11 @@ const UserNavbar = () => {
     }
   }, []);
 
-
   const handleLogout = () => {
-    navigate("/"); 
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userName");
+    navigate("/login");
   };
 
   return (
@@ -62,7 +64,9 @@ const UserNavbar = () => {
               alt="User Icon"
               className="h-10 w-10 rounded-full border-2 border-[#e0c9a9] shadow-sm"
             />
-            <span className="text-[#5f4b32] font-semibold text-lg">{displayName}</span>
+            <span className="text-[#5f4b32] font-semibold text-lg">
+              {displayName}
+            </span>
           </div>
 
           <span

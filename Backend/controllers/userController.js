@@ -237,3 +237,48 @@ exports.createAdmin = async (req, res) => {
     });
   }
 };
+
+
+// Delete admin (SuperAdmin only)
+exports.deleteAdmin = async (req, res) => {
+  try {
+    // Verify requester is superadmin
+    if (req.user.role !== 'superadmin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only superadmins can delete admin accounts',
+      });
+    }
+
+    // Validate MongoDB ObjectId
+    const mongoose = require('mongoose');
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid admin ID',
+      });
+    }
+
+    // Find and delete admin
+    const admin = await User.findOneAndDelete({ _id: req.params.id, role: 'admin' });
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found or not an admin user',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Admin deleted successfully',
+    });
+  } catch (error) {
+    console.error('Error deleting admin:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+      error: error.message,
+    });
+  }
+};

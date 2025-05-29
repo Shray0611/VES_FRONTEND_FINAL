@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
   useLocation,
+  useNavigate,
 } from "react-router-dom"; // Import useLocation to track current route
 import Home from "./components/pages/Home";
 import AboutUs from "./components/pages/AboutUs";
@@ -28,6 +29,8 @@ import EventView from "./components/issuer/EventView";
 import ViewTemplate from "./components/issuer/ViewTemplate";
 import ComplaintView from "./components/complaints/ComplaintView";
 import CertificateGenerator from "./components/issuer/CertificateGenerator";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Manage login state
@@ -51,6 +54,47 @@ const App = () => {
 
 const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
   const location = useLocation(); // Get current location (pathname)
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Listen for browser back/forward navigation
+    const handlePopState = () => {
+      localStorage.setItem("sessionExpired", "true");
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
+    // If sessionExpired flag is set, clear session and redirect
+    if (localStorage.getItem("sessionExpired") === "true") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("sessionExpired");
+      navigate("/login");
+      return;
+    }
+    const token = localStorage.getItem("token");
+    if (
+      !token &&
+      ![
+        "/login",
+        "/signup",
+        "/forgotPassword",
+        "/verify/:code",
+        "/",
+        "/about",
+        "/services",
+        "/contact",
+      ].includes(location.pathname)
+    ) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("userName");
+      navigate("/login");
+    }
+  }, [location, navigate]);
 
   return (
     <>
@@ -64,6 +108,7 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
 
       <div className="main-content">
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<Services />} />
@@ -74,29 +119,113 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           />
           <Route path="/forgotPassword" element={<ForgotPassword />} />
           <Route path="/signup" element={<Signup />} />
-
-          {/* Certificate verification route - accessible without login */}
           <Route path="/verify/:code" element={<VerifyCertificate />} />
 
-          {/* These routes are accessible after logging in */}
-          <Route path="/user-home" element={<UserHome onLogout={onLogout} />} />
-          <Route path="/issuer-home" element={<IssuerHome />} />
+          {/* Protected routes */}
+          <Route
+            path="/user-home"
+            element={
+              <ProtectedRoute>
+                <UserHome onLogout={onLogout} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/issuer-home"
+            element={
+              <ProtectedRoute>
+                <IssuerHome />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/issuer-records"
-            element={<IssuerRecords onLogout={onLogout} />}
+            element={
+              <ProtectedRoute>
+                <IssuerRecords onLogout={onLogout} />
+              </ProtectedRoute>
+            }
           />
-          <Route path="/generate" element={<CertificateGenerator />} />
-
-          <Route path="/view-template" element={<ViewTemplate />} />
-          <Route path="/superadmin/dashboard" element={<AdminHome />} />
-
-          <Route path="/certificate-view/:id" element={<CertificateView />} />
-          <Route path="/report-issue/:id" element={<ReportIssue />} />
-          <Route path="/complaints" element={<ComplaintsPage />} />
-          <Route path="/guidelines" element={<Guidelines />} />
-          <Route path="/event-view" element={<EventView />} />
-          <Route path="/event-view/:id" element={<EventView />} />
-          <Route path="/complaints-view" element={<IssuerComplaints />} />
+          <Route
+            path="/generate"
+            element={
+              <ProtectedRoute>
+                <CertificateGenerator />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/view-template"
+            element={
+              <ProtectedRoute>
+                <ViewTemplate />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/superadmin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminHome />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/certificate-view/:id"
+            element={
+              <ProtectedRoute>
+                <CertificateView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/report-issue/:id"
+            element={
+              <ProtectedRoute>
+                <ReportIssue />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/complaints"
+            element={
+              <ProtectedRoute>
+                <ComplaintsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/guidelines"
+            element={
+              <ProtectedRoute>
+                <Guidelines />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/event-view"
+            element={
+              <ProtectedRoute>
+                <EventView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/event-view/:id"
+            element={
+              <ProtectedRoute>
+                <EventView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/complaints-view"
+            element={
+              <ProtectedRoute>
+                <IssuerComplaints />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
 
