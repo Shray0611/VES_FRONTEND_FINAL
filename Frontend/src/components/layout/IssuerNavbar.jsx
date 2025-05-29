@@ -102,7 +102,7 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("role");
                 localStorage.removeItem("userName");
-                navigate("/login");
+                navigate("/");
               }}
               className="text-[#5f4b32] hover:bg-[#e0c9a9] border border-[#e0c9a9] px-4 py-2 rounded-lg cursor-pointer transition-all duration-200"
             >

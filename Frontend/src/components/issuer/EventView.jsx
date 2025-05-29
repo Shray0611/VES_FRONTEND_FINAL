@@ -468,8 +468,12 @@ const EventView = () => {
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               {editingCert.templateId?.variables ? (
-                Object.entries(editingCert.templateId.variables).map(
-                  ([key, varConfig]) => (
+                Object.entries(editingCert.templateId.variables)
+                  .filter(
+                    ([key, varConfig]) =>
+                      !varConfig.name.toLowerCase().includes("qr")
+                  )
+                  .map(([key, varConfig]) => (
                     <div key={key} className="space-y-1">
                       <label className="text-sm font-medium text-[#475569]">
                         {varConfig.name}
@@ -482,8 +486,7 @@ const EventView = () => {
                         className="w-full px-3 py-2 border border-[#cbd5e1] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
-                  )
-                )
+                  ))
               ) : (
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-[#475569]">

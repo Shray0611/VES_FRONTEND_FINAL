@@ -171,7 +171,7 @@ const UserHome = ({ onLogout }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
-    navigate("/login");
+    navigate("/");
   };
 
   if (loading) {

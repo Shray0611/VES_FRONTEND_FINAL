@@ -149,7 +149,7 @@ const IssuerHome = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("userName");
-      navigate("/login");
+      navigate("/");
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
@@ -180,12 +180,12 @@ const IssuerHome = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userName");
-    navigate("/login");
+    navigate("/");
   };
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-[#f5f1e6] rounded-xl shadow-lg p-6">
           <div className="flex items-center space-x-3 text-red-600">
             <AlertCircle className="h-5 w-5" />
@@ -213,7 +213,7 @@ const IssuerHome = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-[#f5f1e6] rounded-xl shadow-lg p-6 space-y-4">
           <div className="h-12 w-12 mx-auto rounded-full bg-gray-200 animate-pulse"></div>
           <div className="h-4 w-3/4 mx-auto bg-gray-200 rounded animate-pulse"></div>
@@ -224,7 +224,7 @@ const IssuerHome = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4]">
       <div className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Header Section */}
@@ -267,7 +267,7 @@ const IssuerHome = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Recent Activity */}
             <div className="lg:col-span-2 bg-[#f5f1e6] rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">
+              <h2 className="text-xl  font-bold text-[#5f4b32] mb-4">
                 Recent Activity
               </h2>
               <div className="divide-y divide-gray-200">
