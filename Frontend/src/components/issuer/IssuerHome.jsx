@@ -267,7 +267,7 @@ const IssuerHome = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Recent Activity */}
             <div className="lg:col-span-2 bg-[#f5f1e6] rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#5f4b32] mb-4">
+              <h2 className="text-xl  font-bold text-[#5f4b32] mb-4">
                 Recent Activity
               </h2>
               <div className="divide-y divide-gray-200">
