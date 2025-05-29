@@ -4,7 +4,7 @@ import IssuerNavbar from "../layout/IssuerNavbar";
 
 const Guidelines = () => {
   return (
-    <div className="min-h-screen bg-[#F5E9D8] p-6 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] p-6 sm:p-8">
       <IssuerNavbar />
       <div className="max-w-4xl mx-auto mt-12 sm:mt-16">
         <div className="text-center mb-12">

@@ -130,7 +130,7 @@ const IssuerComplaints = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4]">
       <div className="container mx-auto px-4 py-6 pt-20">
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex flex-col md:flex-row items-center justify-between mb-8 border-b pb-4">

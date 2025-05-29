@@ -449,7 +449,7 @@ const CertificateGenerator = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc]">
+    <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4]">
       <IssuerNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         <div className="mb-8">
@@ -940,20 +940,19 @@ const CertificateGenerator = () => {
             </div>
           )}
         </div>
-         <div className="flex flex-col sm:flex-row justify-between sm:justify-end items-center gap-4 mb-8">
-            <button
-              onClick={generateCertificates}
-              disabled={!template || !excelData.length || !variables.length}
-              className={`px-6 py-3 rounded-lg font-medium ${
-                !template || !excelData.length || !variables.length
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-[#5f4b32] hover:bg-[#4a3a27] text-white"
-              } transition-colors w-full sm:w-auto`}
-            >
-              Generate Certificates
-            </button>
-          </div>
-
+        <div className="flex flex-col sm:flex-row justify-between sm:justify-end items-center gap-4 mb-8">
+          <button
+            onClick={generateCertificates}
+            disabled={!template || !excelData.length || !variables.length}
+            className={`px-6 py-3 rounded-lg font-medium ${
+              !template || !excelData.length || !variables.length
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-[#5f4b32] hover:bg-[#4a3a27] text-white"
+            } transition-colors w-full sm:w-auto`}
+          >
+            Generate Certificates
+          </button>
+        </div>
       </div>
     </div>
   );
