@@ -207,7 +207,7 @@ const UserHome = ({ onLogout }) => {
     <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] p-6 pt-24 flex flex-col items-center">
       <UserNavbar onLogout={handleLogout} />
 
-      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-24">
+      <div className="w-full mx-auto px-16 sm:px-24 lg:px-40 py-20">
         {/* Header Section */}
         <motion.div
           className="text-center mb-12"
@@ -277,13 +277,13 @@ const UserHome = ({ onLogout }) => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-[#e0c9a9]/30">
-                      <th className="text-left py-4 px-6 text-[#5f4b32] font-semibold">
+                      <th className="text-center py-4 px-6 text-[#5f4b32] font-semibold">
                         Event
                       </th>
-                      <th className="text-left py-4 px-6 text-[#5f4b32] font-semibold">
+                      <th className="text-center py-4 px-6 text-[#5f4b32] font-semibold">
                         Council
                       </th>
-                      <th className="text-left py-4 px-6 text-[#5f4b32] font-semibold">
+                      <th className="text-center py-4 px-6 text-[#5f4b32] font-semibold">
                         Date Issued
                       </th>
                       <th className="text-center py-4 px-6 text-[#5f4b32] font-semibold">
@@ -300,22 +300,22 @@ const UserHome = ({ onLogout }) => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
                       >
-                        <td className="py-4 px-6">
+                        <td className="py-4 px-6 text-center">
                           <div className="font-medium text-[#5f4b32]">
                             {cert.studentData.eventName || "N/A"}
                           </div>
                         </td>
-                        <td className="py-4 px-6 text-[#7d6954]">
+                        <td className="py-4 px-6 text-center text-[#7d6954]">
                           {getIssuerName(cert.issuerEmail)}
                         </td>
-                        <td className="py-4 px-6 text-[#7d6954]">
-                          <div className="flex items-center gap-2">
+                        <td className="py-4 px-6 text-center text-[#7d6954]">
+                          <div className="flex items-center gap-2 justify-center">
                             <Calendar className="w-4 h-4" />
                             {new Date(cert.createdAt).toLocaleDateString()}
                           </div>
                         </td>
-                        <td className="py-4 px-6">
-                          <div className="flex justify-center gap-2">
+                        <td className="py-4 px-6 text-center">
+                          <div className="flex justify-center items-center gap-8">
                             <motion.button
                               onClick={() => handleView(cert._id)}
                               disabled={actionLoading.view}
