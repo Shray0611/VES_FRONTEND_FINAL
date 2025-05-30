@@ -951,7 +951,7 @@ const EventView = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-[#e0c9a9]/30 p-8 max-w-md w-full max-h-[90vh] overflow-auto"
+            className="bg-[#ffedd4] backdrop-blur-md rounded-3xl shadow-2xl border border-[#e0c9a9]/30 p-8 max-w-md w-full max-h-[90vh] overflow-auto"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -987,7 +987,7 @@ const EventView = () => {
                         name={varConfig.name}
                         value={formData[varConfig.name] || ""}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 text-black bg-white/70 backdrop-blur-sm border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] focus:border-transparent transition-all duration-200"
                         placeholder={`Enter ${varConfig.name.toLowerCase()}`}
                       />
                     </div>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import IssuerNavbar from "../layout/IssuerNavbar";
 import { motion } from "framer-motion";
@@ -14,9 +13,9 @@ import {
   Eye,
   X,
   Loader2,
-  ArrowLeft,
   Clock,
   Badge,
+  Search,
 } from "lucide-react";
 
 const IssuerComplaints = () => {
@@ -25,6 +24,7 @@ const IssuerComplaints = () => {
   const [error, setError] = useState("");
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchComplaints = async () => {
@@ -43,7 +43,6 @@ const IssuerComplaints = () => {
           }
         );
 
-        // Sort complaints by createdAt ascending for numbering
         const sortedComplaints = response.data
           .slice()
           .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
@@ -87,7 +86,6 @@ const IssuerComplaints = () => {
         }
       );
 
-      // Update the complaint in the local state
       setComplaints(
         complaints.map((complaint) =>
           complaint._id === complaintId
@@ -96,7 +94,6 @@ const IssuerComplaints = () => {
         )
       );
 
-      // Update selected complaint if it's the one being viewed
       if (selectedComplaint && selectedComplaint._id === complaintId) {
         setSelectedComplaint({ ...selectedComplaint, status: newStatus });
       }
@@ -108,29 +105,22 @@ const IssuerComplaints = () => {
     }
   };
 
-  // Format date to display in the table
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
 
-  // Helper function to safely access nested properties
   const getStudentName = (complaint) => {
-    // Try to get from certificate data
     let name = complaint.certificateId?.studentData?.name;
     if (name && name.trim() !== "") return name;
 
-    // If not available, try to derive from email
     const email = complaint.userId?.email;
     if (email && email.includes("@")) {
-      // Example: 2022.avan.shetty@ves.ac.in -> avan shetty
       const local = email.split("@")[0];
       const parts = local.split(".");
-      // Remove year/roll if present (first part is all digits)
       const nameParts =
         parts.length > 2 && /^\d+$/.test(parts[0]) ? parts.slice(1) : parts;
-      // Capitalize each part
       return nameParts
         .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
         .join(" ");
@@ -138,16 +128,19 @@ const IssuerComplaints = () => {
     return "Unknown Student";
   };
 
-  // Helper to get event name
   const getEventName = (complaint) => {
-    // Try studentData.eventName first
     if (complaint.certificateId?.studentData?.eventName)
       return complaint.certificateId.studentData.eventName;
-    // Fallback to collectionId.eventName
     if (complaint.certificateId?.collectionId?.eventName)
       return complaint.certificateId.collectionId.eventName;
     return "N/A";
   };
+
+  const filteredComplaints = complaints.filter(
+    (complaint) =>
+      complaint.complaintId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      complaint.userId?.email?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (loading) {
     return (
@@ -172,12 +165,9 @@ const IssuerComplaints = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] p-6 pt-24">
-      {/* Top Navbar */}
       <IssuerNavbar />
 
-      {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header Section */}
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: -20 }}
@@ -192,7 +182,6 @@ const IssuerComplaints = () => {
           </p>
         </motion.div>
 
-        {/* Error Alert */}
         {error && (
           <motion.div
             className="mb-8 bg-red-50/80 backdrop-blur-md border border-red-200 rounded-2xl p-4 shadow-lg"
@@ -207,14 +196,12 @@ const IssuerComplaints = () => {
           </motion.div>
         )}
 
-        {/* Complaints Section */}
         <motion.div
           className="bg-white/80 backdrop-blur-md rounded-3xl shadow-xl border border-[#e0c9a9]/30 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          {/* Section Header */}
           <div className="bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] px-8 py-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -223,34 +210,53 @@ const IssuerComplaints = () => {
                   Received Complaints ({complaints.length})
                 </h2>
               </div>
-              <Link
-                to="/issuer-home"
-                className="bg-white/80 hover:bg-white text-[#5f4b32] font-medium py-2 px-4 rounded-xl transition-all duration-200 flex items-center gap-2 backdrop-blur-md"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Back To Dashboard
-              </Link>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search by Complaint ID or Email"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-4 py-2 bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] text-[#5f4b32] w-64"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#7d6954]" />
+              </div>
             </div>
           </div>
 
-          {complaints.length === 0 ? (
-            <motion.div
-              className="text-center py-16"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <MessageSquare className="w-16 h-16 text-[#e0c9a9] mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-[#5f4b32] mb-2">
-                No complaints received
-              </h3>
-              <p className="text-[#7d6954]">
-                All your certificates are working perfectly!
-              </p>
-            </motion.div>
+          {filteredComplaints.length === 0 ? (
+            searchQuery ? (
+              <motion.div
+                className="text-center py-16"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <MessageSquare className="w-16 h-16 text-[#e0c9a9] mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-[#5f4b32] mb-2">
+                  No complaints match your search
+                </h3>
+                <p className="text-[#7d6954]">
+                  Try adjusting your search terms
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div
+                className="text-center py-16"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <MessageSquare className="w-16 h-16 text-[#e0c9a9] mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-[#5f4b32] mb-2">
+                  No complaints received
+                </h3>
+                <p className="text-[#7d6954]">
+                  All your certificates are working perfectly!
+                </p>
+              </motion.div>
+            )
           ) : (
             <div className="p-8">
-              {/* Desktop Table View */}
               <div className="hidden lg:block">
                 <table className="w-full">
                   <thead>
@@ -276,7 +282,7 @@ const IssuerComplaints = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {complaints.map((complaint, index) => (
+                    {filteredComplaints.map((complaint, index) => (
                       <motion.tr
                         key={complaint._id}
                         className="border-b border-[#e0c9a9]/20 hover:bg-[#f8e5c5]/30 transition-colors"
@@ -339,9 +345,8 @@ const IssuerComplaints = () => {
                 </table>
               </div>
 
-              {/* Mobile Card View */}
               <div className="lg:hidden space-y-4">
-                {complaints.map((complaint, index) => (
+                {filteredComplaints.map((complaint, index) => (
                   <motion.div
                     key={complaint._id}
                     className="bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-[#e0c9a9]/30"
@@ -398,7 +403,6 @@ const IssuerComplaints = () => {
         </motion.div>
       </div>
 
-      {/* Modal for complaint details */}
       {selectedComplaint && (
         <motion.div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
@@ -413,7 +417,6 @@ const IssuerComplaints = () => {
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Modal Header */}
             <div className="bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] px-8 py-6 rounded-t-3xl">
               <div className="flex justify-between items-center">
                 <h3 className="text-2xl font-bold text-[#5f4b32] flex items-center gap-3">
@@ -432,7 +435,6 @@ const IssuerComplaints = () => {
             </div>
 
             <div className="p-8 space-y-8">
-              {/* Complaint Details */}
               <div className="bg-gradient-to-r from-[#f8e5c5]/30 to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/30">
                 <h4 className="text-xl font-semibold text-[#5f4b32] mb-4 flex items-center gap-2">
                   <FileText className="w-5 h-5" />
@@ -479,7 +481,6 @@ const IssuerComplaints = () => {
                 </div>
               </div>
 
-              {/* Message */}
               <div className="bg-white/60 rounded-2xl p-6 border border-[#e0c9a9]/30">
                 <h4 className="text-xl font-semibold text-[#5f4b32] mb-4 flex items-center gap-2">
                   <MessageSquare className="w-5 h-5" />
@@ -492,7 +493,6 @@ const IssuerComplaints = () => {
                 </div>
               </div>
 
-              {/* Certificate Information */}
               <div className="bg-white/60 rounded-2xl p-6 border border-[#e0c9a9]/30">
                 <h4 className="text-xl font-semibold text-[#5f4b32] mb-4 flex items-center gap-2">
                   <Badge className="w-5 h-5" />
@@ -530,7 +530,6 @@ const IssuerComplaints = () => {
               </div>
             </div>
 
-            {/* Modal Footer */}
             <div className="px-8 pb-8">
               <div className="flex flex-col sm:flex-row gap-3 justify-end">
                 {selectedComplaint.status === "open" ? (
