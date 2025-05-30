@@ -174,6 +174,14 @@ const UserHome = ({ onLogout }) => {
     navigate("/");
   };
 
+  // Helper function to extract and capitalize name from email
+  const getIssuerName = (email) => {
+    if (!email || typeof email !== "string") return "N/A";
+    const beforeAt = email.split("@")[0];
+    if (!beforeAt) return "N/A";
+    return beforeAt.toUpperCase();
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] flex flex-col">
@@ -298,7 +306,7 @@ const UserHome = ({ onLogout }) => {
                           </div>
                         </td>
                         <td className="py-4 px-6 text-[#7d6954]">
-                          {cert.collectionId?.name || "N/A"}
+                          {getIssuerName(cert.issuerEmail)}
                         </td>
                         <td className="py-4 px-6 text-[#7d6954]">
                           <div className="flex items-center gap-2">
@@ -371,7 +379,7 @@ const UserHome = ({ onLogout }) => {
                           {cert.studentData.eventName || "N/A"}
                         </h3>
                         <p className="text-[#7d6954]">
-                          {cert.collectionId?.name || "N/A"}
+                          {getIssuerName(cert.issuerEmail)}
                         </p>
                       </div>
 
