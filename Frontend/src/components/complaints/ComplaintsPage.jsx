@@ -45,10 +45,13 @@ const ComplaintsPage = () => {
           }
         );
 
-        // Add a complaint ID to each complaint for better display
-        const complaintsWithId = response.data.map((complaint, index) => ({
+        // Sort complaints by createdAt ascending before assigning displayId
+        const sortedComplaints = response.data
+          .slice()
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        const complaintsWithId = sortedComplaints.map((complaint, index) => ({
           ...complaint,
-          displayId: `#COMP-${789 + index}`,
+          displayId: `COMP#${index + 1}`,
         }));
 
         setComplaints(complaintsWithId);
