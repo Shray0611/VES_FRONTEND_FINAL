@@ -22,13 +22,13 @@ const Navbar = () => {
       className={`fixed top-0 left-0 w-full z-50 border-b-2 border-[#e0c9a9] transition-all duration-300 ${
         isScrolled
           ? "bg-[#f5f1e6]/80 backdrop-blur-md h-14 shadow-md"
-          : "bg-[#f5f1e6] h-16"
+          : "bg-[#eee3c6] h-16"
       }`}
     >
       <div className="max-w-screen-xl mx-auto px-6 flex items-center justify-between h-full">
         {/* Left Section */}
         <div className="flex items-center space-x-6">
-          <Link to="/" className="text-[#5f4b32] font-bold text-lg">
+          <Link to="/" className="text-[#5f4b32] hover:text-[#372a18] transition-colors font-bold text-lg">
             VESIT E-Certificate
           </Link>
 
