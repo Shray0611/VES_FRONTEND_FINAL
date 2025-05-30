@@ -413,7 +413,7 @@ const CertificateGenerator = () => {
       const responseData = await response.json();
       alert("Certificates generated successfully!");
       console.log("Certificates generated successfully:", responseData);
-      navigate("/generate");
+      navigate("/issuer-records");
     } catch (error) {
       console.error("Certificate generation error:", error);
       alert("Error generating certificates: " + error.message);
