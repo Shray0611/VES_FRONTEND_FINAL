@@ -45,10 +45,13 @@ const ComplaintsPage = () => {
           }
         );
 
-        // Add a complaint ID to each complaint for better display
-        const complaintsWithId = response.data.map((complaint, index) => ({
+        // Sort complaints by createdAt ascending before assigning displayId
+        const sortedComplaints = response.data
+          .slice()
+          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        const complaintsWithId = sortedComplaints.map((complaint, index) => ({
           ...complaint,
-          displayId: `#COMP-${789 + index}`,
+          displayId: `COMP#${index + 1}`,
         }));
 
         setComplaints(complaintsWithId);
@@ -66,19 +69,40 @@ const ComplaintsPage = () => {
     fetchUserComplaints();
   }, [navigate]);
 
+  // Helper function to safely access certificate data
+  const getCertificateInfo = (complaint, field) => {
+    try {
+      if (field === "eventName") {
+        const eventName = complaint.certificateId?.studentData?.eventName;
+        return eventName && eventName.trim() !== "" ? eventName : "";
+      } else if (field === "organization") {
+        const organization = complaint.certificateId?.collectionId?.name;
+        return organization && organization.trim() !== "" ? organization : "";
+      } else {
+        return "";
+      }
+    } catch (e) {
+      return "";
+    }
+  };
+
   const filteredComplaints = complaints
-    .filter(
-      (complaint) =>
-        (searchQuery === "" ||
-          complaint.displayId
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          complaint.message
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())) &&
+    .filter((complaint) => {
+      const search = searchQuery.toLowerCase();
+      const displayId = (complaint.displayId || "").toLowerCase();
+      const message = (complaint.message || "").toLowerCase();
+      const eventName = (
+        getCertificateInfo(complaint, "eventName") || ""
+      ).toLowerCase();
+      return (
+        (search === "" ||
+          displayId.includes(search) ||
+          message.includes(search) ||
+          eventName.includes(search)) &&
         (selectedStatus === "All" ||
           selectedStatus.toLowerCase() === complaint.status)
-    )
+      );
+    })
     .sort((a, b) => {
       if (sortConfig.key === "createdAt") {
         return sortConfig.direction === "asc"
@@ -108,23 +132,6 @@ const ComplaintsPage = () => {
     const date = new Date(dateString);
     const options = { year: "numeric", month: "short", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
-  };
-
-  // Helper function to safely access certificate data
-  const getCertificateInfo = (complaint, field) => {
-    try {
-      if (field === "eventName") {
-        const eventName = complaint.certificateId?.studentData?.eventName;
-        return eventName && eventName.trim() !== "" ? eventName : "";
-      } else if (field === "organization") {
-        const organization = complaint.certificateId?.collectionId?.name;
-        return organization && organization.trim() !== "" ? organization : "";
-      } else {
-        return "";
-      }
-    } catch (e) {
-      return "";
-    }
   };
 
   return (
@@ -224,9 +231,9 @@ const ComplaintsPage = () => {
                     <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
                       Sr.No
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
+                    <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
                       <button
-                        className="flex items-center gap-2 hover:text-[#7d6954] transition-colors"
+                        className="flex items-center gap-2 hover:text-[#7d6954] transition-colors justify-center w-full"
                         onClick={() => handleSort("createdAt")}
                       >
                         <Calendar className="w-4 h-4" />
@@ -240,8 +247,8 @@ const ComplaintsPage = () => {
                         )}
                       </button>
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
-                      <div className="flex items-center gap-2">
+                    <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
+                      <div className="flex items-center gap-2 justify-center">
                         <Award className="w-4 h-4" />
                         Certificate
                       </div>
@@ -273,11 +280,11 @@ const ComplaintsPage = () => {
                         <td className="px-6 py-5 text-[#7d6954] text-sm text-center font-medium">
                           {index + 1}
                         </td>
-                        <td className="px-6 py-5 text-[#5f4b32] text-sm font-medium whitespace-nowrap">
+                        <td className="px-6 py-5 text-center text-[#5f4b32] text-sm font-medium whitespace-nowrap align-middle">
                           {formatDate(complaint.createdAt)}
                         </td>
-                        <td className="px-6 py-5">
-                          <div className="flex flex-col space-y-1">
+                        <td className="px-6 py-5 text-center">
+                          <div className="flex flex-col space-y-1 items-center">
                             {eventName && (
                               <span className="text-[#5f4b32] text-sm font-semibold">
                                 {eventName}

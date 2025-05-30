@@ -16,6 +16,9 @@ import {
   AlertCircle,
   X,
   Save,
+  ChevronLeft,
+  ChevronRight,
+  Search,
 } from "lucide-react";
 import "./certificates.css";
 
@@ -36,6 +39,11 @@ const EventView = () => {
     delete: null,
     download: null,
   });
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
 
   // Fetch certificates for this collection
   useEffect(() => {
@@ -44,7 +52,6 @@ const EventView = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
 
-        // Using the correct endpoint from server.js
         const response = await fetch(
           `http://localhost:5000/api/collections/${collectionId}`,
           {
@@ -57,16 +64,13 @@ const EventView = () => {
         }
 
         const data = await response.json();
-        setCollection(data); // Save the full collection object
+        setCollection(data);
         console.log("Collection data:", data);
-
-        // Handle response - expecting certificates to be in data.certificates
         setCertificates(data.certificates || []);
       } catch (err) {
         console.error("Error fetching certificates:", err);
         setError(`${err.message}. Using sample data for development.`);
 
-        // Fallback to sample data if API fails
         setCertificates([
           {
             _id: "cert1",
@@ -125,6 +129,177 @@ const EventView = () => {
               },
             },
           },
+          {
+            _id: "cert4",
+            studentData: {
+              name: "Raj Patel",
+              rollNo: "VES101",
+              course: "Mechanical Engineering",
+              grade: "A-",
+            },
+            email: "raj.patel@example.com",
+            createdAt: "2023-05-18T14:20:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
+          {
+            _id: "cert5",
+            studentData: {
+              name: "Priya Sharma",
+              rollNo: "VES202",
+              course: "Civil Engineering",
+              grade: "B+",
+            },
+            email: "priya.sharma@example.com",
+            createdAt: "2023-05-19T16:45:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
+          {
+            _id: "cert6",
+            studentData: {
+              name: "Suresh Kumar",
+              rollNo: "VES303",
+              course: "Biotechnology",
+              grade: "A",
+            },
+            email: "suresh.kumar@example.com",
+            createdAt: "2023-05-20T08:30:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
+          {
+            _id: "cert7",
+            studentData: {
+              name: "Neha Gupta",
+              rollNo: "VES404",
+              course: "Chemical Engineering",
+              grade: "A+",
+            },
+            email: "neha.gupta@example.com",
+            createdAt: "2023-05-21T10:15:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
+          {
+            _id: "cert8",
+            studentData: {
+              name: "Vikram Singh",
+              rollNo: "VES505",
+              course: "Aerospace Engineering",
+              grade: "B",
+            },
+            email: "vikram.singh@example.com",
+            createdAt: "2023-05-22T13:50:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
+          {
+            _id: "cert9",
+            studentData: {
+              name: "Meera Desai",
+              rollNo: "VES606",
+              course: "Electrical Engineering",
+              grade: "A-",
+            },
+            email: "meera.desai@example.com",
+            createdAt: "2023-05-23T09:25:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
+          {
+            _id: "cert10",
+            studentData: {
+              name: "Arun Joshi",
+              rollNo: "VES707",
+              course: "Materials Science",
+              grade: "A",
+            },
+            email: "arun.joshi@example.com",
+            createdAt: "2023-05-24T11:40:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
+          {
+            _id: "cert11",
+            studentData: {
+              name: "Divya Reddy",
+              rollNo: "VES808",
+              course: "Environmental Engineering",
+              grade: "B+",
+            },
+            email: "divya.reddy@example.com",
+            createdAt: "2023-05-25T15:20:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
+          {
+            _id: "cert12",
+            studentData: {
+              name: "Karthik Iyer",
+              rollNo: "VES909",
+              course: "Industrial Engineering",
+              grade: "A+",
+            },
+            email: "karthik.iyer@example.com",
+            createdAt: "2023-05-26T17:05:00Z",
+            templateId: {
+              variables: {
+                name: { name: "Name" },
+                rollNo: { name: "Roll Number" },
+                course: { name: "Course" },
+                grade: { name: "Grade" },
+              },
+            },
+          },
         ]);
       } finally {
         setLoading(false);
@@ -134,11 +309,41 @@ const EventView = () => {
     if (collectionId) {
       fetchCertificates();
     } else {
-      // Handle case when no collection ID is provided
       setLoading(false);
       setCertificates([]);
     }
   }, [collectionId]);
+
+  // Filter certificates based on search query
+  const filteredCertificates = certificates.filter((cert) => {
+    const name = cert.studentData?.name?.toLowerCase() || "";
+    const email = cert.email?.toLowerCase() || "";
+    const query = searchQuery.toLowerCase();
+    return name.includes(query) || email.includes(query);
+  });
+
+  // Pagination calculations using filtered certificates
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = filteredCertificates.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
+  const totalPages = Math.ceil(filteredCertificates.length / recordsPerPage);
+
+  // Reset page to 1 when search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Handle records per page change
+  const handleRecordsPerPageChange = (e) => {
+    setRecordsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
 
   // Handle certificate edit click
   const handleEditClick = (certificate) => {
@@ -163,7 +368,6 @@ const EventView = () => {
       console.log("Attempting to update certificate:", editingCert._id);
       console.log("Update data:", formData);
 
-      // Using the correct endpoint from server.js
       const response = await fetch(
         `http://localhost:5000/api/certificates/${editingCert._id}`,
         {
@@ -186,7 +390,6 @@ const EventView = () => {
       const data = await response.json();
       console.log("Certificate updated successfully:", data);
 
-      // Update certificates state
       setCertificates((certs) =>
         certs.map((c) =>
           c._id === editingCert._id ? { ...c, studentData: formData } : c
@@ -198,7 +401,6 @@ const EventView = () => {
       console.error("Error updating certificate:", err);
       setError(`Error updating certificate: ${err.message}`);
 
-      // For development, simulate successful update even if API fails
       if (process.env.NODE_ENV !== "production") {
         console.log("Simulating successful update for development");
         setCertificates((certs) =>
@@ -226,7 +428,6 @@ const EventView = () => {
       );
 
       if (!response.ok) {
-        // Try to parse JSON error, but fallback to status text if it fails
         try {
           const errorData = await response.json();
           throw new Error(
@@ -260,7 +461,6 @@ const EventView = () => {
       );
 
       if (!response.ok) {
-        // Try to parse JSON error, but fallback to status text if it fails
         try {
           const errorData = await response.json();
           throw new Error(
@@ -277,7 +477,7 @@ const EventView = () => {
       const url = window.URL.createObjectURL(imageBlob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `certificate-${certId}.png`; // You might want a better filename
+      a.download = `certificate-${certId}.png`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -297,7 +497,6 @@ const EventView = () => {
     if (email && email.includes("@")) {
       const local = email.split("@")[0];
       const parts = local.split(".");
-      // Take the part after the first dot and before the second dot
       if (parts.length >= 3) {
         return (
           parts[1].charAt(0).toUpperCase() +
@@ -307,7 +506,6 @@ const EventView = () => {
           parts[2].slice(1)
         );
       }
-      // Fallback: just capitalize the local part
       return local.charAt(0).toUpperCase() + local.slice(1);
     }
     return "Unknown Student";
@@ -359,7 +557,7 @@ const EventView = () => {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold text-[#5f4b32] mb-4">
-            {collectionName} Certificates
+            {collection.eventName} Certificates
           </h1>
           <p className="text-[#7d6954] text-lg md:text-xl max-w-2xl mx-auto">
             Manage and track certificates for this event
@@ -383,6 +581,91 @@ const EventView = () => {
             Back to Events
           </motion.button>
         </motion.div>
+
+        {/* Records per page selector, search bar, and pagination controls */}
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <div className="flex items-center gap-2">
+              <label className="text-[#5f4b32] font-medium">Show</label>
+              <select
+                value={recordsPerPage}
+                onChange={handleRecordsPerPageChange}
+                className="bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl py-2 px-3 text-[#5f4b32] focus:outline-none focus:ring-2 focus:ring-[#e0c9a9]"
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+              <span className="text-[#5f4b32] font-medium">
+                records per page
+              </span>
+            </div>
+            <div className="relative w-full sm:w-64">
+              <input
+                type="text"
+                placeholder="Search by name or email"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] text-[#5f4b32]"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#7d6954]" />
+            </div>
+          </div>
+
+          {/* Desktop Pagination Controls */}
+          <div className="hidden md:flex items-center gap-2">
+            <motion.button
+              onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl p-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <ChevronLeft className="w-5 h-5 text-[#5f4b32]" />
+            </motion.button>
+            <div className="flex gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                return (
+                  <motion.button
+                    key={pageNum}
+                    onClick={() => paginate(pageNum)}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                      currentPage === pageNum
+                        ? "bg-[#e0c9a9] text-[#5f4b32] font-bold"
+                        : "bg-white/80 backdrop-blur-md text-[#7d6954]"
+                    } border border-[#e0c9a9]/50`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {pageNum}
+                  </motion.button>
+                );
+              })}
+            </div>
+            <motion.button
+              onClick={() =>
+                currentPage < totalPages && paginate(currentPage + 1)
+              }
+              disabled={currentPage === totalPages}
+              className="bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl p-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <ChevronRight className="w-5 h-5 text-[#5f4b32]" />
+            </motion.button>
+          </div>
+        </div>
 
         {/* Error Alert */}
         {error && (
@@ -412,13 +695,16 @@ const EventView = () => {
               <div className="flex items-center gap-3">
                 <FileText className="w-6 h-6 text-[#5f4b32]" />
                 <h2 className="text-2xl font-bold text-[#5f4b32]">
-                  Certificates ({certificates.length})
+                  Certificates ({filteredCertificates.length})
                 </h2>
+              </div>
+              <div className="text-[#5f4b32] font-medium">
+                Page {currentPage} of {totalPages}
               </div>
             </div>
           </div>
 
-          {certificates.length === 0 ? (
+          {filteredCertificates.length === 0 ? (
             <motion.div
               className="text-center py-16"
               initial={{ opacity: 0 }}
@@ -427,10 +713,14 @@ const EventView = () => {
             >
               <FileText className="w-16 h-16 text-[#e0c9a9] mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-[#5f4b32] mb-2">
-                No certificates found
+                {searchQuery
+                  ? "No certificates match your search"
+                  : "No certificates found"}
               </h3>
               <p className="text-[#7d6954]">
-                No certificates have been issued for this event yet
+                {searchQuery
+                  ? "Try adjusting your search terms"
+                  : "No certificates have been issued for this event yet"}
               </p>
             </motion.div>
           ) : (
@@ -458,7 +748,7 @@ const EventView = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {certificates.map((cert, index) => (
+                    {currentRecords.map((cert, index) => (
                       <motion.tr
                         key={cert._id}
                         className="border-b border-[#e0c9a9]/20 hover:bg-[#f8e5c5]/30 transition-colors"
@@ -467,7 +757,7 @@ const EventView = () => {
                         transition={{ delay: index * 0.1 }}
                       >
                         <td className="py-4 px-6 text-[#7d6954] font-medium">
-                          {index + 1}
+                          {indexOfFirstRecord + index + 1}
                         </td>
                         <td className="py-4 px-6">
                           <div className="flex items-center gap-2">
@@ -494,7 +784,9 @@ const EventView = () => {
                         <td className="py-4 px-6">
                           <div className="flex justify-center gap-2">
                             <motion.button
-                              onClick={() => handleDownloadCertificate(cert._id)}
+                              onClick={() =>
+                                handleDownloadCertificate(cert._id)
+                              }
                               disabled={actionLoading.download === cert._id}
                               className="bg-[#5f4b32] hover:bg-[#4a3a26] text-white font-medium py-2 px-4 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                               whileHover={{ scale: 1.05 }}
@@ -508,7 +800,6 @@ const EventView = () => {
                               )}
                               Download
                             </motion.button>
-
                             <motion.button
                               onClick={() => handleEditClick(cert)}
                               className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-2 px-4 rounded-xl transition-all duration-200 flex items-center gap-2"
@@ -519,7 +810,6 @@ const EventView = () => {
                               <Edit className="w-4 h-4" />
                               Edit
                             </motion.button>
-
                             <motion.button
                               onClick={() => handleDeleteCertificate(cert._id)}
                               disabled={actionLoading.delete === cert._id}
@@ -545,7 +835,7 @@ const EventView = () => {
 
               {/* Mobile Card View */}
               <div className="lg:hidden space-y-4">
-                {certificates.map((cert, index) => (
+                {currentRecords.map((cert, index) => (
                   <motion.div
                     key={cert._id}
                     className="bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-[#e0c9a9]/30"
@@ -573,8 +863,10 @@ const EventView = () => {
                               : "N/A"}
                           </div>
                         </div>
+                        <span className="text-[#7d6954] text-sm">
+                          #{indexOfFirstRecord + index + 1}
+                        </span>
                       </div>
-
                       <div className="flex gap-2">
                         <motion.button
                           onClick={() => handleDownloadCertificate(cert._id)}
@@ -590,7 +882,6 @@ const EventView = () => {
                           )}
                           Download
                         </motion.button>
-
                         <motion.button
                           onClick={() => handleEditClick(cert)}
                           className="flex-1 bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-2 px-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
@@ -601,7 +892,6 @@ const EventView = () => {
                           Edit
                         </motion.button>
                       </div>
-
                       <motion.button
                         onClick={() => handleDeleteCertificate(cert._id)}
                         disabled={actionLoading.delete === cert._id}
@@ -623,6 +913,33 @@ const EventView = () => {
             </div>
           )}
         </motion.div>
+
+        {/* Mobile Pagination Controls */}
+        <div className="flex md:hidden justify-center items-center gap-4 mt-8">
+          <motion.button
+            onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl p-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ChevronLeft className="w-5 h-5 text-[#5f4b32]" />
+          </motion.button>
+          <span className="text-[#5f4b32] font-medium">
+            Page {currentPage} of {totalPages}
+          </span>
+          <motion.button
+            onClick={() =>
+              currentPage < totalPages && paginate(currentPage + 1)
+            }
+            disabled={currentPage === totalPages}
+            className="bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl p-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <ChevronRight className="w-5 h-5 text-[#5f4b32]" />
+          </motion.button>
+        </div>
       </div>
 
       {/* Edit Modal */}
@@ -634,7 +951,7 @@ const EventView = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border border-[#e0c9a9]/30 p-8 max-w-md w-full max-h-[90vh] overflow-auto"
+            className="bg-[#ffedd4] backdrop-blur-md rounded-3xl shadow-2xl border border-[#e0c9a9]/30 p-8 max-w-md w-full max-h-[90vh] overflow-auto"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -653,7 +970,6 @@ const EventView = () => {
                 <X className="w-6 h-6" />
               </motion.button>
             </div>
-
             <form onSubmit={handleSubmit} className="space-y-6">
               {editingCert.templateId?.variables ? (
                 Object.entries(editingCert.templateId.variables)
@@ -671,7 +987,7 @@ const EventView = () => {
                         name={varConfig.name}
                         value={formData[varConfig.name] || ""}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 text-black bg-white/70 backdrop-blur-sm border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] focus:border-transparent transition-all duration-200"
                         placeholder={`Enter ${varConfig.name.toLowerCase()}`}
                       />
                     </div>
@@ -691,7 +1007,6 @@ const EventView = () => {
                   />
                 </div>
               )}
-
               <div className="flex gap-3 pt-4">
                 <motion.button
                   type="button"
