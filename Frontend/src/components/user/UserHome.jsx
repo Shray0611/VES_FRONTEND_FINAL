@@ -32,16 +32,12 @@ const UserHome = ({ onLogout }) => {
     const storedName = localStorage.getItem("userName");
     if (storedName) {
       if (storedName.endsWith("@ves.ac.in")) {
-        // Extract the name part (e.g., 2022.avan.shetty@ves.ac.in -> avan.shetty)
-        const namePart = storedName.split("@")[0].split(".").slice(1).join(".");
-        // Take only the first name (avan.shetty -> avan)
+        const namePart = storedName.split("@")[0].split(".").slice(1).join(".")
         const firstNamePart = namePart.split(".")[0];
-        // Capitalize the first name (avan -> Avan)
         const formattedFirstName =
           firstNamePart.charAt(0).toUpperCase() + firstNamePart.slice(1);
         setFirstName(formattedFirstName || "User");
       } else {
-        // If not a ves.ac.in email, use the stored name as-is
         setFirstName(storedName);
       }
     }
@@ -144,7 +140,7 @@ const UserHome = ({ onLogout }) => {
       // Get the certificate details to use in filename
       const cert = certificates.find((c) => c._id === certificateId);
       const eventName = cert?.studentData?.eventName || "certificate";
-      const filename = `${eventName}-${certificateId}.png`;
+      const filename = `${eventName}.png`;
 
       saveAs(response.data, filename);
     } catch (error) {

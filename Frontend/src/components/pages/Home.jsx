@@ -537,7 +537,7 @@ const Home = () => {
                       'Dimple Dalwani',
                       'Soham Thakur',
                       'Shakti Sankpal',
-                      'Om ',
+                      'Om Satam',
                     ].map((name, index) => (
                       <span
                         key={name}
