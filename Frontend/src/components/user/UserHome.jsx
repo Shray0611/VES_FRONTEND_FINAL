@@ -144,7 +144,7 @@ const UserHome = ({ onLogout }) => {
       // Get the certificate details to use in filename
       const cert = certificates.find((c) => c._id === certificateId);
       const eventName = cert?.studentData?.eventName || "certificate";
-      const filename = `${eventName}-${certificateId}.png`;
+      const filename = `${eventName}.png`;
 
       saveAs(response.data, filename);
     } catch (error) {
