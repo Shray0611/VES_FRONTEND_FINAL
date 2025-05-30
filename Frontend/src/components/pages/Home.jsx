@@ -537,7 +537,7 @@ const Home = () => {
                       'Dimple Dalwani',
                       'Soham Thakur',
                       'Shakti Sankpal',
-                      'Om ',
+                      'Om Satam',
                     ].map((name, index) => (
                       <span
                         key={name}
@@ -561,7 +561,7 @@ const Home = () => {
               <span>© {new Date().getFullYear()}</span>
               <span className="w-1 h-1 bg-white/40 rounded-full"></span>
               <span className="font-medium text-white/80">
-                VESIT-ECertificate
+                VESIT E-Certificate
               </span>
               <span className="w-1 h-1 bg-white/40 rounded-full"></span>
               <span>All rights reserved</span>

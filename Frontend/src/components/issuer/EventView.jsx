@@ -1009,15 +1009,6 @@ const EventView = () => {
               )}
               <div className="flex gap-3 pt-4">
                 <motion.button
-                  type="button"
-                  onClick={() => setEditingCert(null)}
-                  className="flex-1 px-6 py-3 bg-[#f1f5f9] hover:bg-[#e2e8f0] text-[#64748b] font-medium rounded-xl transition-all duration-200 border border-[#e0c9a9]/30"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Cancel
-                </motion.button>
-                <motion.button
                   type="submit"
                   className="flex-1 px-6 py-3 bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
                   whileHover={{ scale: 1.02 }}

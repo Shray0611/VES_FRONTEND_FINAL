@@ -231,9 +231,9 @@ const ComplaintsPage = () => {
                     <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
                       Sr.No
                     </th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
+                    <th className="px-6 py-4 text-center text-sm font-bold text-[#ead8c1] uppercase tracking-wider">
                       <button
-                        className="flex items-center gap-2 hover:text-[#7d6954] transition-colors justify-center w-full"
+                        className="flex items-center gap-2 hover:text-[#ad9a83] transition-colors justify-center w-full"
                         onClick={() => handleSort("createdAt")}
                       >
                         <Calendar className="w-4 h-4" />
@@ -249,8 +249,8 @@ const ComplaintsPage = () => {
                     </th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">
                       <div className="flex items-center gap-2 justify-center">
-                        <Award className="w-4 h-4" />
-                        Certificate
+                        <div className="w-4 h-4" />
+                        Event Name
                       </div>
                     </th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-[#5f4b32] uppercase tracking-wider">

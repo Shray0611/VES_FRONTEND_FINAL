@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import IssuerNavbar from "../layout/IssuerNavbar";
 import { motion } from "framer-motion";
@@ -13,9 +14,9 @@ import {
   Eye,
   X,
   Loader2,
+  ArrowLeft,
   Clock,
   Badge,
-  Search,
 } from "lucide-react";
 
 const IssuerComplaints = () => {
@@ -24,7 +25,6 @@ const IssuerComplaints = () => {
   const [error, setError] = useState("");
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchComplaints = async () => {
@@ -136,12 +136,6 @@ const IssuerComplaints = () => {
     return "N/A";
   };
 
-  const filteredComplaints = complaints.filter(
-    (complaint) =>
-      complaint.complaintId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      complaint.userId?.email?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] flex flex-col">
@@ -166,7 +160,6 @@ const IssuerComplaints = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] p-6 pt-24">
       <IssuerNavbar />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           className="text-center mb-12"
@@ -210,51 +203,31 @@ const IssuerComplaints = () => {
                   Received Complaints ({complaints.length})
                 </h2>
               </div>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search by Complaint ID or Email"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] text-[#5f4b32] w-64"
-                />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#7d6954]" />
-              </div>
+              <Link
+                to="/issuer-home"
+                className="bg-white/80 hover:bg-white text-[#5f4b32] font-medium py-2 px-4 rounded-xl transition-all duration-200 flex items-center gap-2 backdrop-blur-md"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back To Dashboard
+              </Link>
             </div>
           </div>
 
-          {filteredComplaints.length === 0 ? (
-            searchQuery ? (
-              <motion.div
-                className="text-center py-16"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                <MessageSquare className="w-16 h-16 text-[#e0c9a9] mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-[#5f4b32] mb-2">
-                  No complaints match your search
-                </h3>
-                <p className="text-[#7d6954]">
-                  Try adjusting your search terms
-                </p>
-              </motion.div>
-            ) : (
-              <motion.div
-                className="text-center py-16"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                <MessageSquare className="w-16 h-16 text-[#e0c9a9] mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-[#5f4b32] mb-2">
-                  No complaints received
-                </h3>
-                <p className="text-[#7d6954]">
-                  All your certificates are working perfectly!
-                </p>
-              </motion.div>
-            )
+          {complaints.length === 0 ? (
+            <motion.div
+              className="text-center py-16"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <MessageSquare className="w-16 h-16 text-[#e0c9a9] mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-[#5f4b32] mb-2">
+                No complaints received
+              </h3>
+              <p className="text-[#7d6954]">
+                All your certificates are working perfectly!
+              </p>
+            </motion.div>
           ) : (
             <div className="p-8">
               <div className="hidden lg:block">
@@ -282,7 +255,7 @@ const IssuerComplaints = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredComplaints.map((complaint, index) => (
+                    {complaints.map((complaint, index) => (
                       <motion.tr
                         key={complaint._id}
                         className="border-b border-[#e0c9a9]/20 hover:bg-[#f8e5c5]/30 transition-colors"
@@ -346,7 +319,7 @@ const IssuerComplaints = () => {
               </div>
 
               <div className="lg:hidden space-y-4">
-                {filteredComplaints.map((complaint, index) => (
+                {complaints.map((complaint, index) => (
                   <motion.div
                     key={complaint._id}
                     className="bg-white/60 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-[#e0c9a9]/30"
@@ -411,114 +384,108 @@ const IssuerComplaints = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-white/95 backdrop-blur-md rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-[#e0c9a9]/30"
+            className="bg-white/95 backdrop-blur-md rounded-3xl max-w-4xl w-full shadow-2xl border border-[#e0c9a9]/30 overflow-hidden"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] px-8 py-6 rounded-t-3xl">
-              <div className="flex justify-between items-center">
-                <h3 className="text-2xl font-bold text-[#5f4b32] flex items-center gap-3">
-                  <Badge className="w-6 h-6" />
-                  Complaint Report - {selectedComplaint.complaintId}
-                </h3>
-                <motion.button
-                  className="text-[#5f4b32] hover:text-[#4a3a26] text-2xl p-2 rounded-xl hover:bg-white/30 transition-all"
-                  onClick={closeReport}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <X className="w-6 h-6" />
-                </motion.button>
-              </div>
-            </div>
-
-            <div className="p-8 space-y-8">
-              <div className="bg-gradient-to-r from-[#f8e5c5]/30 to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/30">
-                <h4 className="text-xl font-semibold text-[#5f4b32] mb-4 flex items-center gap-2">
-                  <FileText className="w-5 h-5" />
-                  Complaint Details
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-2">
-                    <span className="block font-semibold text-[#7d6954] text-sm">
-                      Status:
-                    </span>
-                    <span
-                      className={`inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full ${
-                        selectedComplaint.status === "open"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-green-100 text-green-800"
-                      }`}
-                    >
-                      {selectedComplaint.status === "open" ? (
-                        <Clock className="w-4 h-4 mr-1" />
-                      ) : (
-                        <CheckCircle className="w-4 h-4 mr-1" />
-                      )}
-                      {selectedComplaint.status}
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    <span className="block font-semibold text-[#7d6954] text-sm">
-                      Date Submitted:
-                    </span>
-                    <span className="text-[#5f4b32] font-medium flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {formatDate(selectedComplaint.createdAt)}
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    <span className="block font-semibold text-[#7d6954] text-sm">
-                      Reported By:
-                    </span>
-                    <span className="text-[#5f4b32] font-medium flex items-center gap-2">
-                      <Mail className="w-4 h-4" />
-                      {selectedComplaint.userId?.email || "Unknown User"}
-                    </span>
-                  </div>
+            <div className="max-h-[90vh] overflow-y-auto">
+              <div className="bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] px-8 py-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-2xl font-bold text-[#5f4b32] flex items-center gap-3">
+                    <Badge className="w-6 h-6" />
+                    Complaint Report - {selectedComplaint.complaintId}
+                  </h3>
                 </div>
               </div>
 
-              <div className="bg-white/60 rounded-2xl p-6 border border-[#e0c9a9]/30">
-                <h4 className="text-xl font-semibold text-[#5f4b32] mb-4 flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5" />
-                  Message
-                </h4>
-                <div className="bg-gradient-to-r from-[#f8e5c5]/20 to-[#f1d5a4]/20 rounded-xl p-4 border border-[#e0c9a9]/20">
-                  <p className="text-[#5f4b32] whitespace-pre-wrap leading-relaxed">
-                    {selectedComplaint.message}
-                  </p>
+              <div className="p-8 space-y-8">
+                <div className="bg-gradient-to-r from-[#f8e5c5]/30 to-[#f1d5a4]/30 rounded-2xl p-6 border border-[#e0c9a9]/30">
+                  <h4 className="text-xl font-semibold text-[#5f4b32] mb-6 flex items-center gap-2">
+                    <FileText className="w-5 h-5" />
+                    Complaint Details
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <span className="w-32 font-semibold text-[#7d6954] text-sm shrink-0">
+                        Status:
+                      </span>
+                      <span className="flex items-center gap-2 text-[#5f4b32] font-medium">
+                        {selectedComplaint.status === "open" ? (
+                          <Clock className="w-4 h-4 text-yellow-600" />
+                        ) : (
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                        )}
+                        <span
+                          className={
+                            selectedComplaint.status === "open"
+                              ? "text-yellow-800"
+                              : "text-green-800"
+                          }
+                        >
+                          {selectedComplaint.status}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="w-32 font-semibold text-[#7d6954] text-sm shrink-0">
+                        Date Submitted:
+                      </span>
+                      <span className="flex items-center gap-2 text-[#5f4b32] font-medium">
+                        <Calendar className="w-4 h-4" />
+                        {formatDate(selectedComplaint.createdAt)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="w-32 font-semibold text-[#7d6954] text-sm shrink-0">
+                        Reported By:
+                      </span>
+                      <span className="flex items-center gap-2 text-[#5f4b32] font-medium">
+                        <Mail className="w-4 h-4" />
+                        {selectedComplaint.userId?.email || "Unknown User"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="bg-white/60 rounded-2xl p-6 border border-[#e0c9a9]/30">
-                <h4 className="text-xl font-semibold text-[#5f4b32] mb-4 flex items-center gap-2">
-                  <Badge className="w-5 h-5" />
-                  Certificate Information
-                </h4>
-                <div className="bg-gradient-to-r from-[#f8e5c5]/20 to-[#f1d5a4]/20 rounded-xl p-4 border border-[#e0c9a9]/20">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div className="space-y-2">
-                      <span className="block font-semibold text-[#7d6954] text-sm">
+                <div className="bg-white/60 rounded-2xl p-6 border border-[#e0c9a9]/30">
+                  <h4 className="text-xl font-semibold text-[#5f4b32] mb-6 flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
+                    Message
+                  </h4>
+                  <div className="bg-gradient-to-r from-[#f8e5c5]/20 to-[#f1d5a4]/20 rounded-xl p-4 border border-[#e0c9a9]/20">
+                    <p className="text-[#5f4b32] whitespace-pre-wrap leading-relaxed">
+                      {selectedComplaint.message}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-white/60 rounded-2xl p-6 border border-[#e0c9a9]/30">
+                  <h4 className="text-xl font-semibold text-[#5f4b32] mb-6 flex items-center gap-2">
+                    <Badge className="w-5 h-5" />
+                    Certificate Information
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <span className="w-32 font-semibold text-[#7d6954] text-sm shrink-0">
                         Certificate ID:
                       </span>
                       <span className="text-[#5f4b32] font-mono text-sm break-all">
                         {selectedComplaint.certificateId?._id || "N/A"}
                       </span>
                     </div>
-                    <div className="space-y-2">
-                      <span className="block font-semibold text-[#7d6954] text-sm">
+                    <div className="flex items-center gap-4">
+                      <span className="w-32 font-semibold text-[#7d6954] text-sm shrink-0">
                         Student Name:
                       </span>
-                      <span className="text-[#5f4b32] font-medium flex items-center gap-2">
+                      <span className="flex items-center gap-2 text-[#5f4b32] font-medium">
                         <User className="w-4 h-4" />
                         {getStudentName(selectedComplaint)}
                       </span>
                     </div>
-                    <div className="space-y-2">
-                      <span className="block font-semibold text-[#7d6954] text-sm">
+                    <div className="flex items-center gap-4">
+                      <span className="w-32 font-semibold text-[#7d6954] text-sm shrink-0">
                         Event Name:
                       </span>
                       <span className="text-[#5f4b32] font-medium">
@@ -528,53 +495,53 @@ const IssuerComplaints = () => {
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="px-8 pb-8">
-              <div className="flex flex-col sm:flex-row gap-3 justify-end">
-                {selectedComplaint.status === "open" ? (
+              <div className="px-8 pb-8">
+                <div className="flex flex-col sm:flex-row gap-3 justify-end">
+                  {selectedComplaint.status === "open" ? (
+                    <motion.button
+                      className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                      onClick={() =>
+                        handleUpdateStatus(selectedComplaint._id, "resolved")
+                      }
+                      disabled={actionLoading === selectedComplaint._id}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {actionLoading === selectedComplaint._id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4" />
+                      )}
+                      Mark as Resolved
+                    </motion.button>
+                  ) : (
+                    <motion.button
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
+                      onClick={() =>
+                        handleUpdateStatus(selectedComplaint._id, "open")
+                      }
+                      disabled={actionLoading === selectedComplaint._id}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {actionLoading === selectedComplaint._id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Clock className="w-4 h-4" />
+                      )}
+                      Reopen Complaint
+                    </motion.button>
+                  )}
                   <motion.button
-                    className="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
-                    onClick={() =>
-                      handleUpdateStatus(selectedComplaint._id, "resolved")
-                    }
-                    disabled={actionLoading === selectedComplaint._id}
+                    className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-3 px-6 rounded-xl transition-all duration-200"
+                    onClick={closeReport}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    {actionLoading === selectedComplaint._id ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <CheckCircle className="w-4 h-4" />
-                    )}
-                    Mark as Resolved
+                    Close
                   </motion.button>
-                ) : (
-                  <motion.button
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
-                    onClick={() =>
-                      handleUpdateStatus(selectedComplaint._id, "open")
-                    }
-                    disabled={actionLoading === selectedComplaint._id}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {actionLoading === selectedComplaint._id ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Clock className="w-4 h-4" />
-                    )}
-                    Reopen Complaint
-                  </motion.button>
-                )}
-                <motion.button
-                  className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-3 px-6 rounded-xl transition-all duration-200"
-                  onClick={closeReport}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Close
-                </motion.button>
+                </div>
               </div>
             </div>
           </motion.div>
