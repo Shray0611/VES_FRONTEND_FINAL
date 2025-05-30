@@ -94,7 +94,7 @@ const IssuerNavbar = ({ onLogout, handleQuery }) => {
                 className="h-10 w-10 rounded-full border-2 border-[#e0c9a9] shadow-sm"
               />
               <span className="text-[#5f4b32] font-semibold text-lg">
-                {councilName}
+                {councilName.toUpperCase()}
               </span>
             </div>
             <span
