@@ -86,9 +86,18 @@ exports.verifyCertificate = async (req, res) => {
 exports.getUserCertificates = async (req, res) => {
   try {
     const certificates = await Certificate.find({ email: req.user.email })
-      .populate("templateId")
+      .populate({
+        path: "templateId",
+        populate: { path: "createdBy", select: "email" },
+      })
       .populate("collectionId");
-    res.json(certificates);
+    // Add issuerEmail to each certificate
+    const certificatesWithIssuer = certificates.map((cert) => {
+      const certObj = cert.toObject();
+      certObj.issuerEmail = cert.templateId?.createdBy?.email || null;
+      return certObj;
+    });
+    res.json(certificatesWithIssuer);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
