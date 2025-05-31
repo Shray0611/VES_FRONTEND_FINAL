@@ -295,7 +295,11 @@ const VerifyCertificate = () => {
                           >
                             <div className="w-1.5 h-1.5 bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] rounded-full"></div>
                             <span className="font-bold text-[#5f4b32] capitalize text-sm">
-                              {key.replace(/_/g, " ")}:
+                              {key
+                                .replace(/_/g, " ")
+                                .replace(/([a-z])([A-Z])/g, "$1 $2")
+                                .replace(/\b\w/g, (c) => c.toUpperCase())}
+                              :
                             </span>
                             <span className="text-[#7d6954] font-semibold bg-gradient-to-r from-[#e0c9a9]/20 to-[#d4b88f]/20 px-2 py-0.5 rounded-full text-sm">
                               {value}
