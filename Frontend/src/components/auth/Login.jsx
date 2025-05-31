@@ -51,7 +51,7 @@ const Login = () => {
       const { token, user } = responseData.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
-      localStorage.setItem("userName", email); 
+      localStorage.setItem("userName", email);
 
       switch (user.role) {
         case "superadmin":
@@ -81,11 +81,14 @@ const Login = () => {
     try {
       const tokenId = response.credential;
 
-      const loginResponse = await fetch("http://localhost:5000/api/auth/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tokenId }),
-      });
+      const loginResponse = await fetch(
+        "http://localhost:5000/api/auth/google",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tokenId }),
+        }
+      );
 
       const responseData = await loginResponse.json();
 
@@ -96,7 +99,7 @@ const Login = () => {
       const { token, user, redirectTo } = responseData.data;
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
-      
+
       // Store user name or email from Google response
       localStorage.setItem("userName", user.name || user.email || "User");
 
@@ -119,13 +122,13 @@ const Login = () => {
       <div className="flex w-full max-w-4xl rounded-xl overflow-hidden shadow-md border border-gray-200 bg-white">
         {/* Left Section */}
         <div className="w-1/2 flex flex-col items-center justify-center bg-transparent p-10">
-          <img 
-            src="/assets/VES-logo.png" 
-            alt="VES Logo" 
-            className="w-20 mb-6" 
+          <img
+            src="/assets/VES-logo.png"
+            alt="VES Logo"
+            className="w-20 mb-6"
           />
           <h2 className="text-4xl font-semibold text-[#3b3b3b] text-center">
-            VESIT-Ecertificate
+            VESIT E-Certificate
           </h2>
           <p className="text-1.8xl font-light text-[#6b7280] mt-4 text-center">
             A trusted platform for managing and verifying digital certificates
@@ -143,7 +146,9 @@ const Login = () => {
             </h1>
 
             {error && (
-              <div className="mb-4 text-red-500 text-sm text-center">{error}</div>
+              <div className="mb-4 text-red-500 text-sm text-center">
+                {error}
+              </div>
             )}
 
             <form onSubmit={handleLocalLogin} className="space-y-4">
@@ -198,12 +203,11 @@ const Login = () => {
             </div>
 
             <p className="text-center mt-4 text-gray-600">
-              Don't have an account?{" "}
               <span
-                onClick={() => navigate("/signup")}
+                onClick={() => navigate("/")}
                 className="text-[#000000] hover:underline focus:outline-none font-medium cursor-pointer"
               >
-                Sign up here
+                Back To Home Page
               </span>
             </p>
           </div>

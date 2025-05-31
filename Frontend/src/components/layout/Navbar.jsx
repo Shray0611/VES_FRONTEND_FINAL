@@ -28,7 +28,10 @@ const Navbar = () => {
       <div className="max-w-screen-xl mx-auto px-6 flex items-center justify-between h-full">
         {/* Left Section */}
         <div className="flex items-center space-x-6">
-          <Link to="/" className="text-[#5f4b32] hover:text-[#372a18] transition-colors font-bold text-lg">
+          <Link
+            to="/"
+            className="text-[#5f4b32] hover:text-[#372a18] transition-colors font-bold text-lg"
+          >
             VESIT E-Certificate
           </Link>
 
@@ -39,12 +42,7 @@ const Navbar = () => {
             >
               About
             </Link>
-            <Link
-              to="/services"
-              className="text-[#7d6954] hover:text-[#5f4b32] transition-colors"
-            >
-              Services
-            </Link>
+
             <Link
               to="/contact"
               className="text-[#7d6954] hover:text-[#5f4b32] transition-colors"
