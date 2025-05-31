@@ -1,17 +1,17 @@
-import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion, useScroll, useInView, useAnimation } from 'framer-motion';
-import { ArrowRight, Award, CheckCircle, Clock, Shield } from 'lucide-react';
-import Navbar from '../layout/Navbar';
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, useScroll, useInView, useAnimation } from "framer-motion";
+import { ArrowRight, Award, CheckCircle, Clock, Shield } from "lucide-react";
+import Navbar from "../layout/Navbar";
 
-const FadeInSection = ({ children, delay = 0, className = '' }) => {
+const FadeInSection = ({ children, delay = 0, className = "" }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
   const controls = useAnimation();
 
   useEffect(() => {
     if (isInView) {
-      controls.start('visible');
+      controls.start("visible");
     }
   }, [isInView, controls]);
 
@@ -27,7 +27,7 @@ const FadeInSection = ({ children, delay = 0, className = '' }) => {
           y: 0,
           transition: {
             duration: 0.6,
-            ease: 'easeOut',
+            ease: "easeOut",
             delay,
           },
         },
@@ -46,25 +46,25 @@ const FeatureCard = ({ icon: Icon, title, description, iconCenter }) => {
       whileHover={{
         y: -5,
         boxShadow:
-          '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
       }}
-      transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
     >
       <div
         className={`bg-[#f8e5c5] w-12 h-12 rounded-full flex items-center justify-center mb-4 ${
-          iconCenter ? 'mx-auto' : ''
+          iconCenter ? "mx-auto" : ""
         }`}
       >
         <Icon className="text-[#5f4b32] w-6 h-6" />
       </div>
       <h3
         className={`text-xl font-bold text-[#5f4b32] mb-2 ${
-          iconCenter ? 'text-center' : ''
+          iconCenter ? "text-center" : ""
         }`}
       >
         {title}
       </h3>
-      <p className={`text-[#7d6954] ${iconCenter ? 'text-center' : ''}`}>
+      <p className={`text-[#7d6954] ${iconCenter ? "text-center" : ""}`}>
         {description}
       </p>
     </motion.div>
@@ -79,7 +79,7 @@ const TemplateCard = ({ imageSrc, index }) => {
         scale: 1.05,
         zIndex: 10,
         boxShadow:
-          '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
       }}
       initial={{ opacity: 0, y: 20 }}
       animate={{
@@ -92,7 +92,7 @@ const TemplateCard = ({ imageSrc, index }) => {
       }}
     >
       <img
-        src={imageSrc || '/placeholder.svg'}
+        src={imageSrc || "/placeholder.svg"}
         alt={`Template ${index + 1}`}
         className="w-full h-full object-cover"
       />
@@ -113,7 +113,7 @@ const Home = () => {
   const { scrollYProgress } = useScroll();
 
   const handleLogout = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -132,7 +132,7 @@ const Home = () => {
             className="bg-white/70 backdrop-blur-md rounded-3xl shadow-xl p-10 border border-[#e0c9a9]/30"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <motion.h1
               className="text-4xl md:text-3xl font-extrabold text-[#5f4b32] mb-6 leading-tight"
@@ -158,12 +158,12 @@ const Home = () => {
               transition={{ delay: 0.6, duration: 0.6 }}
             >
               <motion.button
-                onClick={() => navigate('/login')}
+                onClick={() => navigate("/login")}
                 className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-semibold py-3 px-8 rounded-full shadow-md transition-all duration-300"
                 whileHover={{
                   scale: 1.05,
                   boxShadow:
-                    '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
                 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -176,21 +176,21 @@ const Home = () => {
             className="relative w-full h-[400px] rounded-3xl overflow-hidden shadow-lg"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             <motion.div
               className="absolute inset-0 bg-[#e0c9a9]/20"
               animate={{
                 background: [
-                  'linear-gradient(45deg, rgba(224,201,169,0.2) 0%, rgba(224,201,169,0) 100%)',
-                  'linear-gradient(225deg, rgba(224,201,169,0.2) 0%, rgba(224,201,169,0) 100%)',
-                  'linear-gradient(45deg, rgba(224,201,169,0.2) 0%, rgba(224,201,169,0) 100%)',
+                  "linear-gradient(45deg, rgba(224,201,169,0.2) 0%, rgba(224,201,169,0) 100%)",
+                  "linear-gradient(225deg, rgba(224,201,169,0.2) 0%, rgba(224,201,169,0) 100%)",
+                  "linear-gradient(45deg, rgba(224,201,169,0.2) 0%, rgba(224,201,169,0) 100%)",
                 ],
               }}
               transition={{
                 duration: 10,
                 repeat: Number.POSITIVE_INFINITY,
-                repeatType: 'reverse',
+                repeatType: "reverse",
               }}
             />
             <motion.img
@@ -260,7 +260,7 @@ const Home = () => {
             <motion.div
               className="flex items-center justify-center rounded-3xl overflow-hidden shadow-lg bg-white/70 p-8"
               whileHover={{ y: -5 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <motion.img
                 src="/assets/excel_pic.png"
@@ -274,7 +274,7 @@ const Home = () => {
             <motion.div
               className="bg-white/70 backdrop-blur-md rounded-3xl shadow-xl p-10 border border-[#e0c9a9]/30"
               whileHover={{ y: -5 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <h2 className="text-3xl md:text-4xl font-bold text-[#5f4b32] mb-4">
                 Bulk Certificate Generation
@@ -286,10 +286,10 @@ const Home = () => {
               </p>
               <ul className="space-y-3">
                 {[
-                  'Upload your Excel file',
-                  'Map your columns',
-                  'Choose a template',
-                  'Generate all certificates',
+                  "Upload your Excel file",
+                  "Map your columns",
+                  "Choose a template",
+                  "Generate all certificates",
                 ].map((step, index) => (
                   <motion.li
                     key={index}
@@ -338,7 +338,7 @@ const Home = () => {
                 whileHover={{
                   scale: 1.05,
                   boxShadow:
-                    '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                    "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
                 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -354,7 +354,7 @@ const Home = () => {
           <motion.div
             className="bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] rounded-3xl shadow-xl p-10 text-center"
             whileHover={{ y: -5 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-[#5f4b32] mb-4">
               Ready to Get Started?
@@ -364,12 +364,12 @@ const Home = () => {
               professional certificates
             </p>
             <motion.button
-              onClick={() => navigate('/issuer-home')}
+              onClick={() => navigate("/issuer-home")}
               className="bg-[#5f4b32] text-white font-semibold py-3 px-8 rounded-full shadow-md transition-all duration-300 inline-flex items-center gap-2"
               whileHover={{
                 scale: 1.05,
                 boxShadow:
-                  '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                  "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
               }}
               whileTap={{ scale: 0.98 }}
             >
@@ -379,7 +379,6 @@ const Home = () => {
           </motion.div>
         </FadeInSection>
       </div>
-
 
       {/* Footer Section */}
       <footer className="bg-[#5f4b32] text-white py-12 mt-auto relative overflow-hidden">
@@ -419,13 +418,13 @@ const Home = () => {
               </h3>
               <ul className="space-y-3">
                 {[
-                  'Certificate Generation',
-                  'Bulk Processing',
-                  'Template Designer',
-                  'QR Code Verification System',
-                  'Complaint Resolver',
-                  'Data Analytics',
-                ].map(link => (
+                  "Certificate Generation",
+                  "Bulk Processing",
+                  "Template Designer",
+                  "QR Code Verification System",
+                  "Complaint Resolver",
+                  "Data Analytics",
+                ].map((link) => (
                   <li key={link}>
                     <a
                       href="#"
@@ -448,12 +447,12 @@ const Home = () => {
               </h3>
               <ul className="space-y-3">
                 {[
-                  'Privacy Policy',
-                  'Terms of Service',
-                  'Cookie Policy',
-                  'Data Protection',
-                  'Compliance',
-                ].map(link => (
+                  "Privacy Policy",
+                  "Terms of Service",
+                  "Cookie Policy",
+                  "Data Protection",
+                  "Compliance",
+                ].map((link) => (
                   <li key={link}>
                     <a
                       href="#"
@@ -477,18 +476,18 @@ const Home = () => {
               <div className="flex justify-center md:justify-start space-x-4">
                 {[
                   {
-                    name: 'Twitter',
-                    icon: 'M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z',
+                    name: "Twitter",
+                    icon: "M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z",
                   },
                   {
-                    name: 'LinkedIn',
-                    icon: 'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 2a2 2 0 11-4 0 2 2 0 014 0z',
+                    name: "LinkedIn",
+                    icon: "M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 2a2 2 0 11-4 0 2 2 0 014 0z",
                   },
                   {
-                    name: 'Instagram',
-                    icon: 'M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.65-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3z',
+                    name: "Instagram",
+                    icon: "M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.65-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3z",
                   },
-                ].map(social => (
+                ].map((social) => (
                   <a key={social.name} href="#" className="group relative">
                     <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white/20 transition-all duration-300 group-hover:scale-110">
                       <svg
@@ -532,12 +531,12 @@ const Home = () => {
                   </span>
                   <div className="flex flex-wrap justify-center gap-4 text-sm">
                     {[
-                      'Arjun Prabhu',
-                      'Avan Shetty',
-                      'Dimple Dalwani',
-                      'Soham Thakur',
-                      'Shakti Sankpal',
-                      'Om Satam',
+                      "Arjun Prabhu",
+                      "Avan Shetty",
+                      "Dimple Dalwani",
+                      "Soham Thakur",
+                      "Shakti Sankpal",
+                      "Om Satam",
                     ].map((name, index) => (
                       <span
                         key={name}
