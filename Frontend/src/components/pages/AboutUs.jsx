@@ -1,5 +1,5 @@
-import React from "react";
-import Navbar from "../layout/Navbar";
+import React from 'react';
+import Navbar from '../layout/Navbar';
 
 const AboutUs = () => {
   return (
@@ -8,11 +8,14 @@ const AboutUs = () => {
       <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] text-gray-900 py-16 px-6">
         {/* Hero */}
         <div className="max-w-6xl mx-auto text-center mb-20">
+          <br></br>
           <h1 className="text-5xl font-extrabold drop-shadow-xl mb-4 text-gray-900">
-            Seamless Digital Certification at Scale
+            Seamless Digital Certification
           </h1>
           <p className="text-lg text-gray-800 max-w-2xl mx-auto">
-            VESIT E-Certification provides secure, automated, and globally trusted digital certificates — combining advanced technology with user-friendly design.
+            Designed especially for VESIT students, the E-Certificate platform
+            offers a simple, secure, and reliable way to access your official
+            digital certificates anytime, anywhere.
           </p>
         </div>
 
@@ -36,14 +39,22 @@ const AboutUs = () => {
           />
         </div>
 
+
         {/* Features Section */}
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-14 text-gray-900">
             What We Offer
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {features.map((feature, i) => (
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9">
+            {features.slice(0, 3).map((feature, i) => (
               <FeatureCard key={i} {...feature} />
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-9 mt-6 justify-items-center">
+            {features.slice(3).map((feature, i) => (
+              <FeatureCard key={i + 3} {...feature} />
             ))}
           </div>
         </div>
@@ -53,9 +64,13 @@ const AboutUs = () => {
 };
 
 const GlassCard = ({ title, content }) => (
-  <div className="bg-white/40 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/30 hover:scale-105 transition-transform duration-300">
-    <h3 className="text-2xl font-semibold text-gray-900 mb-3">{title}</h3>
-    <p className="text-gray-700">{content}</p>
+  <div className="bg-white/30 backdrop-blur-lg rounded-3xl p-6 md:p-8 shadow-xl border border-white/20 hover:scale-[1.03] transition-transform duration-300 ease-in-out hover:shadow-[0_10px_30px_rgba(0,0,0,0.1)] hover:border-white/30">
+    <h3 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-4 tracking-tight">
+      {title}
+    </h3>
+    <p className="text-gray-800 text-sm md:text-base leading-relaxed">
+      {content}
+    </p>
   </div>
 );
 
@@ -70,40 +85,34 @@ const FeatureCard = ({ icon, title, description }) => (
 
 const features = [
   {
-    title: "Instant E-Certificate Generation",
+    title: 'Instant E-Certificate Generation',
     description:
-      "Automatically generate personalized certificates immediately after event or course completion.",
-    icon: "⚡",
+      'Automatically generate personalized certificates immediately after event or course completion.',
+    icon: '⚡',
   },
   {
-    title: "QR Code Verification",
+    title: 'QR Code Verification',
     description:
-      "Each certificate includes a unique QR code for instant, tamper-proof verification.",
-    icon: "🔐",
+      'Each certificate includes a unique QR code for instant, tamper-proof verification.',
+    icon: '🔐',
   },
   {
-    title: "Blockchain Security",
+    title: 'Bulk Certificate Upload',
     description:
-      "Leverage blockchain technology to secure credentials and prevent unauthorized edits.",
-    icon: "🛡️",
+      'Upload CSVs or spreadsheets to generate hundreds of certificates in a single action.',
+    icon: '🧾',
   },
   {
-    title: "Bulk Certificate Upload",
+    title: 'Custom Certificate Templates',
     description:
-      "Upload CSVs or spreadsheets to generate hundreds of certificates in a single action.",
-    icon: "🧾",
+      'Easily design certificates that match your brand with fully customizable layouts.',
+    icon: '🎨',
   },
   {
-    title: "Custom Certificate Templates",
+    title: 'Centralized Certificate Repository',
     description:
-      "Easily design certificates that match your brand with fully customizable layouts.",
-    icon: "🎨",
-  },
-  {
-    title: "Centralized Certificate Repository",
-    description:
-      "Access all issued certificates organized by year, event, or department — in one secure place.",
-    icon: "📁",
+      'Access all issued certificates organized by year, event, or department — in one secure place.',
+    icon: '📁',
   },
 ];
 

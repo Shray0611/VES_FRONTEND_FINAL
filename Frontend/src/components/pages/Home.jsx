@@ -402,7 +402,7 @@ const Home = () => {
                 />
               </div>
               <h3 className="text-2xl font-bold mb-3 bg-gradient-to-r from-white to-white/80 bg-clip-text">
-                VESIT-ECertificate
+                VESIT E-Certificate
               </h3>
               <p className="text-white/70 leading-relaxed">
                 Professional certificate generation and management platform for
