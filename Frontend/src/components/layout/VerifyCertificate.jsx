@@ -82,7 +82,7 @@ const VerifyCertificate = () => {
             </motion.div>
             <div className="text-[#5f4b32]">
               <h1 className="font-bold text-xl bg-gradient-to-r from-[#5f4b32] via-[#7d6954] to-[#5f4b32] bg-clip-text text-transparent">
-                VESIT Certificate Verification
+                VESIT E-Certificate Verification
               </h1>
               <div className="h-0.5 w-full bg-gradient-to-r from-[#e0c9a9] to-[#d4b88f] rounded-full mt-1"></div>
             </div>
@@ -365,15 +365,15 @@ const VerifyCertificate = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.8 }}
                       >
-                        <div className="w-6 h-6 bg-gradient-to-r from-[#5f4b32] to-[#7d6954] rounded-full flex items-center justify-center">
+                        {/* <div className="w-6 h-6 bg-gradient-to-r from-[#5f4b32] to-[#7d6954] rounded-full flex items-center justify-center">
                           <FileText className="w-3 h-3 text-white" />
-                        </div>
-                        <span className="font-bold text-[#5f4b32] text-sm">
+                        </div> */}
+                        {/* <span className="font-bold text-[#5f4b32] text-sm">
                           Council name:
                         </span>
                         <span className="text-[#7d6954] font-semibold bg-gradient-to-r from-[#e0c9a9]/20 to-[#d4b88f]/20 px-2 py-0.5 rounded-full text-sm">
                           {result.certificate.collection}
-                        </span>
+                        </span> */}
                       </motion.div>
                     )}
                   </div>
@@ -394,7 +394,7 @@ const VerifyCertificate = () => {
                   <Shield className="w-4 h-4 text-white" />
                 </div>
                 <p className="font-bold">
-                  Powered by VESIT Certificate Management System
+                  Powered by VESIT E-Certificate Management System
                 </p>
                 <Sparkles className="w-5 h-5 text-[#d4b88f]" />
               </div>
