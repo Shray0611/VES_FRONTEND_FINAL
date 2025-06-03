@@ -283,7 +283,7 @@ const IssuerRecords = ({ onLogout }) => {
                 Create your first event to start issuing certificates
               </p>
               <motion.button
-                onClick={handleCreateEvent}
+              onClick={() => navigate("/generate")}
                 className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center gap-2 mx-auto"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
