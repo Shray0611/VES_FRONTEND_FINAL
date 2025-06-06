@@ -470,89 +470,30 @@ const Home = () => {
             {/* Follow Us Section */}
             <div className="text-center md:text-left">
               <h3 className="text-lg font-semibold mb-6 relative">
-                Follow Us
+                Contact Us
                 <div className="absolute bottom-0 left-0 md:left-0 w-12 h-0.5 bg-white/40 mx-auto md:mx-0"></div>
               </h3>
               <div className="flex justify-center md:justify-start space-x-4">
+                 <ul className="space-y-3">
                 {[
-                  {
-                    name: "Twitter",
-                    icon: "M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z",
-                  },
-                  {
-                    name: "LinkedIn",
-                    icon: "M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 2a2 2 0 11-4 0 2 2 0 014 0z",
-                  },
-                  {
-                    name: "Instagram",
-                    icon: "M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.65-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3z",
-                  },
-                ].map((social) => (
-                  <a key={social.name} href="#" className="group relative">
-                    <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white/20 transition-all duration-300 group-hover:scale-110">
-                      <svg
-                        className="w-4 h-4 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d={social.icon} />
-                      </svg>
-                    </div>
-                    <span className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-white/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      {social.name}
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Development Team Section */}
-          <div className="border-t border-white/20 pt-8 mb-8">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-6 relative inline-block">
-                Development Team
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-white/40"></div>
-              </h3>
-
-              <div className="bg-white/5 rounded-lg p-6 backdrop-blur-sm border border-white/10">
-                <div className="mb-4">
-                  <span className="text-white/80 text-sm uppercase tracking-wider">
-                    Guided by
-                  </span>
-                  <div className="text-white font-semibold text-lg mt-1">
-                    Prof. Pooja Shetty
-                  </div>
-                </div>
-
-                <div className="border-t border-white/20 pt-4">
-                  <span className="text-white/80 text-sm uppercase tracking-wider block mb-3">
-                    Developed by
-                  </span>
-                  <div className="flex flex-wrap justify-center gap-4 text-sm">
-                    {[
-                      "Arjun Prabhu",
-                      "Avan Shetty",
-                      "Dimple Dalwani",
-                      "Soham Thakur",
-                      "Shakti Sankpal",
-                      "Om Satam",
-                    ].map((name, index) => (
-                      <span
-                        key={name}
-                        className="text-white/70 hover:text-white transition-colors duration-300 cursor-default"
-                      >
-                        {name}
-                        {index < 5 && (
-                          <span className="text-white/40 ml-4">•</span>
-                        )}
+                  "Email: superadmin@ves.ac.in",
+                ].map((link) => (
+                  <li key={link}>
+                    <a
+                      href="#"
+                      className="text-white/70 hover:text-white hover:translate-x-1 transition-all duration-300 inline-block group"
+                    >
+                      <span className="group-hover:border-b border-white/40 pb-1">
+                        {link}
                       </span>
-                    ))}
-                  </div>
-                </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
               </div>
             </div>
           </div>
+         
 
           {/* Copyright */}
           <div className="text-center border-t border-white/20 pt-6">
