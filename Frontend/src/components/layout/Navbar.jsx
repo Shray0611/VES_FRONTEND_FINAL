@@ -29,17 +29,17 @@ const Navbar = () => {
         {/* Left Section */}
         <div className="flex items-center space-x-6">
           <div className="flex items-center gap-2">
-          <img
-            src="/assets/VES-logo.png"
-            alt="VESIT-ECertificate Logo"
-            className="w-10 h-12 object-contain "
-          />
-          <Link
-            to="/"
-            className="text-[#5f4b32] hover:text-[#372a18] transition-colors font-bold text-lg"
-          >
-            VESIT E-Certificate
-          </Link>
+            <img
+              src="/assets/VES-logo.png"
+              alt="VESIT-ECertificate Logo"
+              className="w-10 h-12 object-contain "
+            />
+            <Link
+              to="/"
+              className="text-[#5f4b32] hover:text-[#372a18] transition-colors font-bold text-lg"
+            >
+              VESIT E-Certificate
+            </Link>
           </div>
           <div className="hidden md:flex items-center space-x-6">
             <Link
@@ -50,10 +50,10 @@ const Navbar = () => {
             </Link>
 
             <Link
-              to="/contact"
+              to="/development-team"
               className="text-[#7d6954] hover:text-[#5f4b32] transition-colors"
             >
-              Contact
+              Development Team
             </Link>
           </div>
         </div>
