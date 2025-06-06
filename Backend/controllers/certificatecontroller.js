@@ -145,6 +145,13 @@ exports.deleteCertificate = async (req, res) => {
       return res.status(404).json({ error: "Certificate not found" });
     }
 
+    // Remove certificate reference from its collection, if any
+    if (certificate.collectionId) {
+      await Collection.findByIdAndUpdate(certificate.collectionId, {
+        $pull: { certificates: certificate._id },
+      });
+    }
+
     // Optional: Add authorization check if needed, e.g., only the issuer who created the template can delete the certificate
     // if (certificate.templateId.createdBy.toString() !== req.user._id.toString()) {
     //   return res.status(403).json({ error: 'Not authorized to delete this certificate' });
@@ -153,6 +160,30 @@ exports.deleteCertificate = async (req, res) => {
     await certificate.deleteOne();
 
     res.json({ message: "Certificate deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Create a new certificate
+exports.createCertificate = async (req, res) => {
+  try {
+    const { templateId, studentData, email, collectionId } = req.body;
+    if (!templateId || !studentData || !email) {
+      return res
+        .status(400)
+        .json({ error: "templateId, studentData, and email are required" });
+    }
+    const verificationCode = uuid.v4();
+    const certificate = new Certificate({
+      templateId,
+      studentData,
+      email,
+      collectionId,
+      verificationCode,
+    });
+    await certificate.save();
+    res.status(201).json(certificate);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

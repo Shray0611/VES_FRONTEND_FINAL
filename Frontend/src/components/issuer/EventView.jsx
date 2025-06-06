@@ -21,6 +21,7 @@ import {
   Search,
 } from "lucide-react";
 import "./certificates.css";
+import { read, utils } from "xlsx";
 
 const EventView = () => {
   const { id } = useParams();
@@ -44,6 +45,12 @@ const EventView = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
+
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [excelData, setExcelData] = useState([]);
+  const [addLoading, setAddLoading] = useState(false);
+  const [addError, setAddError] = useState("");
+  const [excelLoading, setExcelLoading] = useState(false);
 
   // Fetch certificates for this collection
   useEffect(() => {
@@ -521,6 +528,100 @@ const EventView = () => {
     }
   }, [navigate]);
 
+  // Handle Excel file upload
+  const handleExcelUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setExcelLoading(true);
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const bstr = evt.target.result;
+      const wb = read(bstr, { type: "binary" });
+      const wsname = wb.SheetNames[0];
+      const ws = wb.Sheets[wsname];
+      const data = utils.sheet_to_json(ws);
+      setExcelData(data);
+      setExcelLoading(false);
+    };
+    reader.onerror = () => {
+      setExcelLoading(false);
+      setAddError("Failed to read the file. Please try again.");
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  // Handle submit to backend
+  const handleAddCertificates = async () => {
+    setAddLoading(true);
+    setAddError("");
+    try {
+      const token = localStorage.getItem("token");
+      const certIds = [];
+      for (const row of excelData) {
+        // Assume the templateId is available from collection or UI context
+        const templateId =
+          collection.certificates?.[0]?.templateId?._id ||
+          collection.certificates?.[0]?.templateId ||
+          collection.templateId ||
+          null;
+        if (!templateId)
+          throw new Error(
+            "No templateId found for this collection. Please ensure at least one certificate exists."
+          );
+        const res = await fetch("http://localhost:5000/api/certificates", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            templateId,
+            studentData: row,
+            email: row.email,
+            collectionId,
+          }),
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || "Failed to create certificate");
+        }
+        const cert = await res.json();
+        certIds.push(cert._id);
+      }
+      // 2. Add these certificates to the collection
+      const addRes = await fetch(
+        `http://localhost:5000/api/collections/${collectionId}/add-certificates`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ certificateIds: certIds }),
+        }
+      );
+      if (!addRes.ok)
+        throw new Error("Failed to add certificates to collection");
+      // 3. Refresh list
+      setShowAddModal(false);
+      setExcelData([]);
+      // Re-fetch certificates
+      const response = await fetch(
+        `http://localhost:5000/api/collections/${collectionId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const data = await response.json();
+      setCollection(data);
+      setCertificates(data.certificates || []);
+    } catch (err) {
+      setAddError(err.message);
+    } finally {
+      setAddLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] flex flex-col">
@@ -546,7 +647,126 @@ const EventView = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#f9f3e8] to-[#f1d5a4] p-6 pt-24">
       {/* Top Navbar */}
       <IssuerNavbar />
-
+      {/* Add Modal */}
+      {showAddModal && (
+        <div className="edit-modal">
+          <div
+            className="modal-content"
+            style={{
+              backgroundColor: "#f9f3e8",
+              color: "#5f4b32",
+              borderRadius: "1.5rem",
+              boxShadow: "0 8px 32px rgba(90, 70, 40, 0.15)",
+            }}
+          >
+            <h2
+              className="text-2xl font-bold mb-4 text-center"
+              style={{ color: "#5f4b32", letterSpacing: "0.02em" }}
+            >
+              Add Certificates to Collection
+            </h2>
+            <div className="flex flex-col items-center gap-4">
+              <input
+                type="file"
+                accept=".xlsx,.xls"
+                onChange={handleExcelUpload}
+                className="mb-2 border border-[#e0c9a9] rounded-lg px-3 py-2 text-[#5f4b32] bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] w-full max-w-xs"
+              />
+              {excelLoading && (
+                <div className="flex items-center gap-2 text-[#5f4b32] mt-2">
+                  <span className="loader spinner border-[#e0c9a9] border-t-[#5f4b32] w-5 h-5"></span>
+                  <span>Loading file...</span>
+                </div>
+              )}
+              {!excelLoading && excelData.length === 0 && (
+                <div className="text-[#7d6954] text-sm mt-2">
+                  Please upload an Excel file
+                </div>
+              )}
+              {!excelLoading && excelData.length > 0 && (
+                <div className="w-full mt-2 bg-[#fff7ec] rounded-lg p-4 shadow-inner border border-[#e0c9a9]/40">
+                  <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                    <span className="font-semibold text-[#5f4b32]">
+                      Rows: {excelData.length}
+                    </span>
+                    <span className="font-semibold text-[#5f4b32]">
+                      Columns: {Object.keys(excelData[0] || {}).length}
+                    </span>
+                  </div>
+                  <div className="overflow-x-auto rounded">
+                    <table className="min-w-full text-sm text-[#5f4b32] border border-[#e0c9a9]/30">
+                      <thead className="bg-[#e0c9a9]/40">
+                        <tr>
+                          {Object.keys(excelData[0] || {}).map((col) => (
+                            <th
+                              key={col}
+                              className="px-3 py-2 font-semibold border-b border-[#e0c9a9]/30 text-left"
+                            >
+                              {col}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {excelData.slice(0, 3).map((row, idx) => (
+                          <tr
+                            key={idx}
+                            className="hover:bg-[#f5e7d6] transition-colors"
+                          >
+                            {Object.keys(excelData[0] || {}).map((col) => (
+                              <td
+                                key={col}
+                                className="px-3 py-2 border-b border-[#e0c9a9]/20"
+                              >
+                                {row[col]}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                        {excelData.length > 3 && (
+                          <tr>
+                            <td
+                              colSpan={Object.keys(excelData[0] || {}).length}
+                              className="text-center text-xs text-[#7d6954] py-1"
+                            >
+                              ...and {excelData.length - 3} more rows
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+              {addError && (
+                <div className="error mt-2 w-full text-center">{addError}</div>
+              )}
+              <div className="modal-actions mt-4 flex justify-end w-full gap-4">
+                <button
+                  onClick={() => {
+                    setShowAddModal(false);
+                    setExcelData([]);
+                    setExcelLoading(false);
+                    setAddError("");
+                  }}
+                  className="bg-white border border-[#e0c9a9] text-[#5f4b32] px-4 py-2 rounded-lg hover:bg-[#f1f5f9] shadow-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddCertificates}
+                  className="bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] px-4 py-2 rounded-lg font-semibold shadow-md"
+                  disabled={
+                    addLoading || excelData.length === 0 || excelLoading
+                  }
+                >
+                  {addLoading ? "Adding..." : "Add Certificates"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header Section */}
@@ -601,15 +821,21 @@ const EventView = () => {
                 records per page
               </span>
             </div>
-            <div className="relative w-full sm:w-64">
+            <div className="relative w-full sm:w-96 flex items-center gap-8">
               <input
                 type="text"
                 placeholder="Search by name or email"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] text-[#5f4b32]"
+                className="w-full sm:w-96 pl-10 pr-4 py-2 bg-white/80 backdrop-blur-md border border-[#e0c9a9]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e0c9a9] text-[#5f4b32]"
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#7d6954]" />
+              <button
+                className="ml-2 bg-[#e0c9a9] hover:bg-[#d4b88f] text-[#5f4b32] font-medium px-4 py-2 rounded-xl transition-all duration-200 shadow-md"
+                onClick={() => setShowAddModal(true)}
+              >
+                Add More Certificates
+              </button>
             </div>
           </div>
 
