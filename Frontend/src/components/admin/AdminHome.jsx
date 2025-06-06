@@ -348,7 +348,7 @@ const AdminHome = () => {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-800">
-                    Admin Accounts
+                    Issuer Accounts
                   </h2>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -544,10 +544,10 @@ const AdminHome = () => {
                                 />
                               </svg>
                               <span className="text-lg font-medium">
-                                No admin accounts found
+                                No issuer accounts found
                               </span>
                               <p className="mt-1 text-gray-600 max-w-md">
-                                Create a new admin account using the form below
+                                Create a new issuer account using the form below
                               </p>
                             </div>
                           </td>
@@ -581,7 +581,7 @@ const AdminHome = () => {
                   </svg>
                 </div>
                 <h2 className="text-2xl font-bold text-gray-800">
-                  Add New Admin
+                  Add New Issuer
                 </h2>
               </div>
 
@@ -725,7 +725,7 @@ const AdminHome = () => {
                             clipRule="evenodd"
                           />
                         </svg>
-                        Add Admin
+                        Add Issuer
                       </>
                     )}
                   </motion.button>
