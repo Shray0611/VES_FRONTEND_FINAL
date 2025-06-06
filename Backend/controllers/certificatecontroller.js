@@ -174,6 +174,15 @@ exports.createCertificate = async (req, res) => {
         .status(400)
         .json({ error: "templateId, studentData, and email are required" });
     }
+    // Prevent duplicate certificate for same email in the same collection
+    const existing = await Certificate.findOne({ email, collectionId });
+    if (existing) {
+      return res
+        .status(409)
+        .json({
+          error: `Certificate for ${email} already exists in this collection.`,
+        });
+    }
     const verificationCode = uuid.v4();
     const certificate = new Certificate({
       templateId,

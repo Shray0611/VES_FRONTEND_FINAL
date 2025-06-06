@@ -556,9 +556,15 @@ const EventView = () => {
     setAddError("");
     try {
       const token = localStorage.getItem("token");
+      const existingEmails = new Set(
+        (certificates || []).map((cert) => cert.email?.toLowerCase())
+      );
       const certIds = [];
       for (const row of excelData) {
-        // Assume the templateId is available from collection or UI context
+        const email = row.email?.toLowerCase();
+        if (!email || existingEmails.has(email)) {
+          continue;
+        }
         const templateId =
           collection.certificates?.[0]?.templateId?._id ||
           collection.certificates?.[0]?.templateId ||
@@ -587,24 +593,26 @@ const EventView = () => {
         }
         const cert = await res.json();
         certIds.push(cert._id);
+        existingEmails.add(email);
       }
-      // 2. Add these certificates to the collection
-      const addRes = await fetch(
-        `http://localhost:5000/api/collections/${collectionId}/add-certificates`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ certificateIds: certIds }),
-        }
-      );
-      if (!addRes.ok)
-        throw new Error("Failed to add certificates to collection");
-      // 3. Refresh list
+      if (certIds.length > 0) {
+        const addRes = await fetch(
+          `http://localhost:5000/api/collections/${collectionId}/add-certificates`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ certificateIds: certIds }),
+          }
+        );
+        if (!addRes.ok)
+          throw new Error("Failed to add certificates to collection");
+      }
       setShowAddModal(false);
       setExcelData([]);
+      setExcelLoading(false);
       // Re-fetch certificates
       const response = await fetch(
         `http://localhost:5000/api/collections/${collectionId}`,
