@@ -71,16 +71,6 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token && !isPublicRoute(location.pathname)) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("userName");
-      navigate("/login");
-    }
-  }, [location, navigate]);
-
-  useEffect(() => {
     // If user is logged in and navigates to any public route, clear session and reload
     const token = localStorage.getItem("token");
     if (token && isPublicRoute(location.pathname)) {
@@ -225,7 +215,6 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
       </div>
 
       {/* Footer */}
-
     </>
   );
 };
