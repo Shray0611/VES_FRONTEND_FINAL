@@ -417,17 +417,10 @@ const Home = () => {
                 <div className="absolute bottom-0 left-0 md:left-0 w-12 h-0.5 bg-white/40 mx-auto md:mx-0"></div>
               </h3>
               <ul className="space-y-3">
-                {[
-                  "Certificate Generation",
-                  "Bulk Processing",
-                  "Template Designer",
-                  "QR Code Verification System",
-                  "Complaint Resolver",
-                  "Data Analytics",
-                ].map((link) => (
+                {["Certificate Generation"].map((link) => (
                   <li key={link}>
                     <a
-                      href="#"
+                      href="/about"
                       className="text-white/70 hover:text-white hover:translate-x-1 transition-all duration-300 inline-block group"
                     >
                       <span className="group-hover:border-b border-white/40 pb-1">
@@ -474,26 +467,23 @@ const Home = () => {
                 <div className="absolute bottom-0 left-0 md:left-0 w-12 h-0.5 bg-white/40 mx-auto md:mx-0"></div>
               </h3>
               <div className="flex justify-center md:justify-start space-x-4">
-                 <ul className="space-y-3">
-                {[
-                  "Email: superadmin@ves.ac.in",
-                ].map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-white/70 hover:text-white hover:translate-x-1 transition-all duration-300 inline-block group"
-                    >
-                      <span className="group-hover:border-b border-white/40 pb-1">
-                        {link}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+                <ul className="space-y-3">
+                  {["Email: superadmin@ves.ac.in"].map((link) => (
+                    <li key={link}>
+                      <a
+                        href="#"
+                        className="text-white/70 hover:text-white hover:translate-x-1 transition-all duration-300 inline-block group"
+                      >
+                        <span className="group-hover:border-b border-white/40 pb-1">
+                          {link}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
-         
 
           {/* Copyright */}
           <div className="text-center border-t border-white/20 pt-6">
