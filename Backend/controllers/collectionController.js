@@ -140,3 +140,37 @@ exports.downloadCollectionCertificates = async (req, res) => {
     res.status(500).json({ error: "Failed to generate collection zip file." });
   }
 };
+
+// Add certificates to an existing collection
+exports.addCertificatesToCollection = async (req, res) => {
+  try {
+    const collectionId = req.params.id;
+    const { certificateIds } = req.body;
+    if (!Array.isArray(certificateIds) || certificateIds.length === 0) {
+      return res.status(400).json({ error: "No certificate IDs provided" });
+    }
+
+    // Find the collection
+    const collection = await Collection.findById(collectionId);
+    if (!collection) {
+      return res.status(404).json({ error: "Collection not found" });
+    }
+
+    // Add new certificate IDs, avoiding duplicates
+    const uniqueIds = certificateIds.filter(
+      (id) => !collection.certificates.includes(id)
+    );
+    collection.certificates.push(...uniqueIds);
+    await collection.save();
+
+    // Update certificates' collectionId field
+    await Certificate.updateMany(
+      { _id: { $in: uniqueIds } },
+      { $set: { collectionId: collectionId } }
+    );
+
+    res.json({ message: "Certificates added to collection", collection });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -57,6 +57,11 @@ app.get(
   auth(["admin"]),
   certificateController.getAdminCertificates
 );
+app.post(
+  "/api/certificates",
+  auth(["admin"]),
+  certificateController.createCertificate
+);
 
 // Complaint Routes
 app.post("/api/complaints", auth(), complaintController.createComplaint);
@@ -96,6 +101,12 @@ app.get(
   "/api/collections/:id/certificates/download",
   auth(["admin"]),
   collectionController.downloadCollectionCertificates
+);
+// Route to add certificates to an existing collection
+app.post(
+  "/api/collections/:id/add-certificates",
+  auth(["admin"]),
+  collectionController.addCertificatesToCollection
 );
 //superadmin routes
 app.post("/api/auth/login-superadmin", userController.loginSuperAdmin);
