@@ -485,6 +485,12 @@ const CertificateGenerator = () => {
     saveAs(blob, "certificate-config.json");
   };
 
+  const handleRemoveTemplate = () => {
+    setTemplate(null);
+    // Clear the location state to prevent template from reappearing on refresh
+    navigate(location.pathname, { replace: true });
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -556,7 +562,7 @@ const CertificateGenerator = () => {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setTemplate(null)}
+                  onClick={handleRemoveTemplate}
                   className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg shadow-lg transition-colors flex items-center gap-2"
                 >
                   <svg
