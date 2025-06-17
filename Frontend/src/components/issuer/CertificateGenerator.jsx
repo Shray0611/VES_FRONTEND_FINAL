@@ -375,6 +375,34 @@ const CertificateGenerator = () => {
         return;
       }
 
+      // Validate all required fields
+      const missingFields = [];
+
+      if (!template) {
+        missingFields.push("Certificate Template");
+      }
+
+      if (!eventName.trim()) {
+        missingFields.push("Event Name");
+      }
+
+      if (variables.length === 0) {
+        missingFields.push("Certificate Fields");
+      }
+
+      if (excelData.length === 0) {
+        missingFields.push("Recipient Data (Excel file)");
+      }
+
+      if (missingFields.length > 0) {
+        alert(
+          `Please fill in the following required fields:\n${missingFields.join(
+            "\n"
+          )}`
+        );
+        return;
+      }
+
       let certificateVariables = [...variables];
 
       if (qrEnabled && !variables.some((v) => v.type === "qr")) {
@@ -496,16 +524,76 @@ const CertificateGenerator = () => {
           <h2 className="text-xl font-semibold text-[#5f4b32] mb-4">
             Upload Certificate Template
           </h2>
-          <div
-            {...getTemplateRootProps()}
-            className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#e0c9a9] transition-colors"
-          >
-            <input {...getTemplateInputProps()} />
-            <p className="text-gray-500">
-              Drag & drop certificate template image, or click to select
-            </p>
-            <p className="text-sm text-gray-400 mt-2">(PNG, JPG, JPEG)</p>
-          </div>
+          {!template ? (
+            <div
+              {...getTemplateRootProps()}
+              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#e0c9a9] transition-colors"
+            >
+              <input {...getTemplateInputProps()} />
+              <p className="text-gray-500">
+                Drag & drop certificate template image, or click to select
+              </p>
+              <p className="text-sm text-gray-400 mt-2">(PNG, JPG, JPEG)</p>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 text-green-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-gray-600">
+                  Template uploaded successfully
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setTemplate(null)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg shadow-lg transition-colors flex items-center gap-2"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  Remove
+                </button>
+                <div {...getTemplateRootProps()} className="cursor-pointer">
+                  <input {...getTemplateInputProps()} />
+                  <button className="bg-[#5f4b32] hover:bg-[#4a3a27] text-white px-4 py-2 rounded-lg shadow-lg transition-colors flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Upload Another Template
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {template && (

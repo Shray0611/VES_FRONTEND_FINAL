@@ -153,7 +153,7 @@ const AboutUs = () => {
                 {["Certificate Generation"].map((link) => (
                   <li key={link}>
                     <a
-                      href="/about"
+                      href="/login"
                       className="text-white/70 hover:text-white hover:translate-x-1 transition-all duration-300 inline-block group"
                     >
                       <span className="group-hover:border-b border-white/40 pb-1">
