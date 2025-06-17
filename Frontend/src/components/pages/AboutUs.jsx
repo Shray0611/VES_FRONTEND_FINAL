@@ -88,7 +88,11 @@ const AboutUs = () => {
                 Faculty Advisor
               </h3>
               <div className="flex justify-center">
-                <TeamMemberCard name="Ms. Pooja Shetty" delay={0} />
+                <TeamMemberCard
+                  name="Ms. Pooja Shetty"
+                  photo="https://randomuser.me/api/portraits/women/68.jpg"
+                  delay={0}
+                />
               </div>
             </div>
 
@@ -98,15 +102,13 @@ const AboutUs = () => {
                 Development Team
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {[
-                  "Arjun Prabhu",
-                  "Avan Shetty",
-                  "Dimple Dalwani",
-                  "Soham Thakur",
-                  "Shakti Sankpal",
-                  "Om Satam",
-                ].map((name, index) => (
-                  <TeamMemberCard key={name} name={name} delay={0.1 * index} />
+                {teamMembers.map((member, index) => (
+                  <TeamMemberCard
+                    key={member.name}
+                    name={member.name}
+                    photo={member.photo}
+                    delay={0.1 * index}
+                  />
                 ))}
               </div>
             </div>
@@ -268,7 +270,7 @@ const FeatureCard = ({ icon, title, description, delay = 0 }) => (
   </motion.div>
 );
 
-const TeamMemberCard = ({ name, delay = 0 }) => {
+const TeamMemberCard = ({ name, photo, delay = 0 }) => {
   return (
     <motion.div
       className="bg-white/80 backdrop-blur-md rounded-xl p-6 shadow-lg border border-[#e0c9a9]/30 flex flex-col items-center"
@@ -283,34 +285,52 @@ const TeamMemberCard = ({ name, delay = 0 }) => {
       }}
     >
       <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#e0c9a9] bg-[#f8e5c5] mb-4 flex items-center justify-center">
-        <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
+        <img
+          src={photo}
+          alt={name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.parentNode.innerHTML =
+              '<div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />';
+          }}
+        />
       </div>
       <h3 className="text-lg font-bold text-[#5f4b32] text-center">{name}</h3>
     </motion.div>
   );
 };
 
-const Footer = () => (
-  <footer className="bg-[#5f4b32] text-white py-12 relative overflow-hidden mt-16">
-    <div className="absolute inset-0 opacity-5">
-      <div className="absolute top-10 left-10 w-32 h-32 border border-white/20 rounded-full"></div>
-      <div className="absolute bottom-20 right-20 w-24 h-24 border border-white/20 rounded-full"></div>
-      <div className="absolute top-1/2 left-1/3 w-16 h-16 border border-white/20 rounded-full"></div>
-    </div>
+// Team members data with photos
+const teamMembers = [
+  {
+    name: "Arjun Prabhu",
+    photo: "https://randomuser.me/api/portraits/men/32.jpg",
+  },
+  {
+    name: "Avan Shetty",
+    photo: "https://randomuser.me/api/portraits/men/22.jpg",
+  },
+  {
+    name: "Dimple Dalwani",
+    photo: "https://randomuser.me/api/portraits/women/44.jpg",
+  },
+  {
+    name: "Soham Thakur",
+    photo: "https://randomuser.me/api/portraits/men/65.jpg",
+  },
+  {
+    name: "Shakti Sankpal",
+    photo:
+      "https://i.pinimg.com/736x/70/5e/d1/705ed1090f270ed99c90b2d312bd34bd.jpg",
+  },
+  {
+    name: "Om Satam",
+    photo: "https://randomuser.me/api/portraits/men/50.jpg",
+  },
+];
 
-    <div className="max-w-7xl mx-auto px-4 relative z-10">
-      <div className="text-center border-t border-white/20 pt-6">
-        <p className="text-sm text-white/60 flex flex-col sm:flex-row items-center justify-center gap-2">
-          <span>© {new Date().getFullYear()} VESIT E-Certificate</span>
-          <span className="hidden sm:inline">•</span>
-          <span>All rights reserved</span>
-        </p>
-      </div>
-    </div>
-  </footer>
-);
-
-// Data
+// Features data
 const features = [
   {
     title: "Instant E-Certificate Generation",
