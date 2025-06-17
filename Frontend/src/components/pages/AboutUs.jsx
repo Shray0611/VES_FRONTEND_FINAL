@@ -96,20 +96,19 @@ const AboutUs = () => {
               </div>
             </div>
 
-            {/* Development Team */}
+            {/* Development Team - Single container for all members */}
             <div>
-              <h3 className="text-2xl font-semibold text-[#5f4b32] text-center mb-8">
-                Development Team
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {teamMembers.map((member, index) => (
-                  <TeamMemberCard
-                    key={member.name}
-                    name={member.name}
-                    photo={member.photo}
-                    delay={0.1 * index}
-                  />
-                ))}
+              <div className="bg-[#f8f0e0] rounded-3xl p-8 shadow-lg">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                  {teamMembers.map((member, index) => (
+                    <TeamMemberCard
+                      key={member.name}
+                      name={member.name}
+                      photo={member.photo}
+                      delay={0.1 * index}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
@@ -273,18 +272,17 @@ const FeatureCard = ({ icon, title, description, delay = 0 }) => (
 const TeamMemberCard = ({ name, photo, delay = 0 }) => {
   return (
     <motion.div
-      className="bg-white/80 backdrop-blur-md rounded-xl p-6 shadow-lg border border-[#e0c9a9]/30 flex flex-col items-center"
+      className="flex flex-col items-center"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut", delay }}
       viewport={{ once: true }}
       whileHover={{
         y: -5,
-        boxShadow:
-          "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
       }}
     >
-      <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-[#e0c9a9] bg-[#f8e5c5] mb-4 flex items-center justify-center">
+      {/* Circular image with border */}
+      <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-[#e0c9a9] bg-[#f8e5c5] mb-4 flex items-center justify-center">
         <img
           src={photo}
           alt={name}
@@ -292,7 +290,7 @@ const TeamMemberCard = ({ name, photo, delay = 0 }) => {
           onError={(e) => {
             e.target.onerror = null;
             e.target.parentNode.innerHTML =
-              '<div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />';
+              '<div className="bg-gray-200 border-2 border-dashed rounded-xl w-20 h-20" />';
           }}
         />
       </div>
