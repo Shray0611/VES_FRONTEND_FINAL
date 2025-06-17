@@ -48,13 +48,6 @@ const Navbar = () => {
             >
               About
             </Link>
-
-            <Link
-              to="/development-team"
-              className="text-[#7d6954] hover:text-[#5f4b32] transition-colors"
-            >
-              Development Team
-            </Link>
           </div>
         </div>
 

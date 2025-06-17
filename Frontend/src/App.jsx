@@ -9,7 +9,6 @@ import {
 import Home from "./components/pages/Home";
 import AboutUs from "./components/pages/AboutUs";
 import Services from "./components/pages/Services";
-import DevelopmentTeam from "./components/pages/DevelopmentTeam";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import UserHome from "./components/user/UserHome";
@@ -55,7 +54,6 @@ const publicRoutes = [
   /^\/$/, // Home
   /^\/about$/, // About
   /^\/services$/, // Services
-  /^\/development-team$/, //DevelopmentTeam
   /^\/login$/, // Login
   /^\/signup$/, // Signup
   /^\/forgotPassword$/, // Forgot Password
@@ -107,7 +105,6 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/development-team" element={<DevelopmentTeam />} />
           <Route
             path="/login"
             element={<Login onLogin={() => setIsLoggedIn(true)} />}
@@ -225,7 +222,6 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
       </div>
 
       {/* Footer */}
-
     </>
   );
 };
