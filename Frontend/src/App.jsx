@@ -9,7 +9,6 @@ import {
 import Home from "./components/pages/Home";
 import AboutUs from "./components/pages/AboutUs";
 import Services from "./components/pages/Services";
-import DevelopmentTeam from "./components/pages/DevelopmentTeam";
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import UserHome from "./components/user/UserHome";
@@ -55,7 +54,6 @@ const publicRoutes = [
   /^\/$/, // Home
   /^\/about$/, // About
   /^\/services$/, // Services
-  /^\/development-team$/, //DevelopmentTeam
   /^\/login$/, // Login
   /^\/signup$/, // Signup
   /^\/forgotPassword$/, // Forgot Password
@@ -69,16 +67,6 @@ function isPublicRoute(pathname) {
 const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
   const location = useLocation(); // Get current location (pathname)
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token && !isPublicRoute(location.pathname)) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("role");
-      localStorage.removeItem("userName");
-      navigate("/login");
-    }
-  }, [location, navigate]);
 
   useEffect(() => {
     // If user is logged in and navigates to any public route, clear session and reload
@@ -107,7 +95,6 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<Services />} />
-          <Route path="/development-team" element={<DevelopmentTeam />} />
           <Route
             path="/login"
             element={<Login onLogin={() => setIsLoggedIn(true)} />}
@@ -225,7 +212,6 @@ const AppWithRouter = ({ isLoggedIn, onLogout, setIsLoggedIn }) => {
       </div>
 
       {/* Footer */}
-
     </>
   );
 };
