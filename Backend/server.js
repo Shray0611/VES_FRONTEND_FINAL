@@ -10,6 +10,7 @@ const collectionController = require("./controllers/collectionController");
 const templateController = require("./controllers/templateController");
 const userController = require("./controllers/userController");
 const complaintController = require("./controllers/complaintController");
+const User = require("./models/User");
 
 const app = express();
 
@@ -18,12 +19,42 @@ app.use(
   cors({
     origin: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
     credentials: true,
-  })
+  }),
 );
 app.use(express.json({ limit: "50mb" }));
 
 // Database Connection
-connectDB();
+const seedDefaultAdmin = async () => {
+  try {
+    const adminEmail = process.env.DEFAULT_ADMIN_EMAIL || "admin@ves.ac.in";
+    const adminPassword = process.env.DEFAULT_ADMIN_PASSWORD || "Admin@123";
+
+    const existingAdmin = await User.findOne({ email: adminEmail });
+
+    if (existingAdmin) {
+      if (existingAdmin.role !== "admin") {
+        await User.findByIdAndUpdate(existingAdmin._id, { role: "admin" });
+      }
+      console.log(`Default admin account ready: ${adminEmail}`);
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    await User.create({
+      email: adminEmail,
+      password: hashedPassword,
+      role: "admin",
+    });
+
+    console.log(`Default admin account created: ${adminEmail}`);
+  } catch (error) {
+    console.error("Default admin seeding error:", error.message);
+  }
+};
+
+connectDB().then(() => {
+  seedDefaultAdmin();
+});
 
 // Routes
 app.post("/api/login", authController.login);
@@ -38,29 +69,29 @@ app.post("/api/templates", auth(["admin"]), templateController.createTemplate);
 app.get(
   "/api/certificates/:id",
   auth(),
-  certificateController.generateCertificateImage
+  certificateController.generateCertificateImage,
 );
 app.get("/api/verify/:code", certificateController.verifyCertificate);
 app.get("/api/certificates", auth(), certificateController.getUserCertificates);
 app.put(
   "/api/certificates/:id",
   auth(["admin"]),
-  certificateController.updateCertificate
+  certificateController.updateCertificate,
 );
 app.delete(
   "/api/certificates/:id",
   auth(["admin"]),
-  certificateController.deleteCertificate
+  certificateController.deleteCertificate,
 );
 app.get(
   "/api/admin/certificates",
   auth(["admin"]),
-  certificateController.getAdminCertificates
+  certificateController.getAdminCertificates,
 );
 app.post(
   "/api/certificates",
   auth(["admin"]),
-  certificateController.createCertificate
+  certificateController.createCertificate,
 );
 
 // Complaint Routes
@@ -69,44 +100,44 @@ app.get("/api/complaints/user", auth(), complaintController.getUserComplaints);
 app.get(
   "/api/complaints/issuer",
   auth(["admin", "superadmin"]),
-  complaintController.getIssuerComplaints
+  complaintController.getIssuerComplaints,
 );
 app.put(
   "/api/complaints/:complaintId/status",
   auth(["admin", "superadmin"]),
-  complaintController.updateComplaintStatus
+  complaintController.updateComplaintStatus,
 );
 app.post(
   "/api/collections",
   auth(["admin"]),
-  collectionController.createCollection
+  collectionController.createCollection,
 );
 app.get(
   "/api/collections",
   auth(["admin"]),
-  collectionController.getCollections
+  collectionController.getCollections,
 );
 app.get(
   "/api/collections/:id",
   auth(["admin"]),
-  collectionController.getCollectionById
+  collectionController.getCollectionById,
 );
 app.delete(
   "/api/collections/:id",
   auth(["admin"]),
-  collectionController.deleteCollection
+  collectionController.deleteCollection,
 );
 // Route to download all certificates in a collection
 app.get(
   "/api/collections/:id/certificates/download",
   auth(["admin"]),
-  collectionController.downloadCollectionCertificates
+  collectionController.downloadCollectionCertificates,
 );
 // Route to add certificates to an existing collection
 app.post(
   "/api/collections/:id/add-certificates",
   auth(["admin"]),
-  collectionController.addCertificatesToCollection
+  collectionController.addCertificatesToCollection,
 );
 //superadmin routes
 app.post("/api/auth/login-superadmin", userController.loginSuperAdmin);
