@@ -1,1 +1,57 @@
-node_modules
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment files, including examples (never commit secrets or local config)
+.env
+.env.*
+**/.env
+**/.env.*
+*.env
+
+# Build output and test coverage
+dist/
+**/dist/
+dist-ssr/
+coverage/
+**/coverage/
+.nyc_output/
+
+# Logs and runtime files
+logs/
+**/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+pids/
+*.pid
+*.seed
+
+# Caches and generated metadata
+.cache/
+**/.cache/
+.vite/
+**/.vite/
+.eslintcache
+*.tsbuildinfo
+
+# Local-only configuration
+*.local
+
+# Editor and IDE files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sw?
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
