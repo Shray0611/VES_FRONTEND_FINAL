@@ -1,9 +1,6 @@
-<<<<<<<< HEAD:Frontend/src/components/issuer/ViewTemplate.jsx
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
-========
 import React, { useState } from "react";
->>>>>>>> b7d1a10c3412517b08603ba31f527570ed54859b:src/components/issuer/ViewTemplate.jsx
 import IssuerNavbar from "../layout/IssuerNavbar";
 import { FiPlus } from "react-icons/fi";
 
