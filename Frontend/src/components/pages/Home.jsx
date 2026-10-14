@@ -360,7 +360,11 @@ const Home = () => {
               Ready to Get Started?
             </h2>
             <p className="text-[#5f4b32]/80 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+<<<<<<<< HEAD:Frontend/src/components/pages/Home.jsx
               Join thousands of students that use our platform to create
+========
+              Join thousands of organizations that use our platform to create
+>>>>>>>> b7d1a10c3412517b08603ba31f527570ed54859b:src/components/pages/Home.jsx
               professional certificates
             </p>
             <motion.button
@@ -380,6 +384,7 @@ const Home = () => {
         </FadeInSection>
       </div>
 
+<<<<<<<< HEAD:Frontend/src/components/pages/Home.jsx
       {/* Footer Section */}
       <footer className="bg-[#5f4b32] text-white py-12 mt-auto relative overflow-hidden">
         {/* Background decorative elements */}
@@ -497,6 +502,57 @@ const Home = () => {
               <span>All rights reserved</span>
             </p>
           </div>
+========
+      {/* Footer */}
+      <footer className="bg-[#5f4b32] text-white py-8 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 className="text-xl font-semibold mb-4">VESIT-ECertificate</h3>
+            <p className="text-white/80">
+              Professional certificate generation and management platform
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-medium mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              {["Home", "Features", "Templates", "Pricing", "Contact"].map(
+                (link) => (
+                  <li key={link}>
+                    <a
+                      href="#"
+                      className="text-white/70 hover:text-white transition-colors"
+                    >
+                      {link}
+                    </a>
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-medium mb-4">Connect With Us</h3>
+            <div className="flex space-x-4">
+              {["Twitter", "LinkedIn", "Instagram"].map((social) => (
+                <a
+                  key={social}
+                  href="#"
+                  className="text-white/70 hover:text-white transition-colors"
+                >
+                  {social}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 pt-6 mt-6 border-t border-white/20 text-center">
+          <p className="text-sm md:text-base text-white/70">
+            © {new Date().getFullYear()} VESIT-ECertificate. All rights
+            reserved.
+          </p>
+>>>>>>>> b7d1a10c3412517b08603ba31f527570ed54859b:src/components/pages/Home.jsx
         </div>
       </footer>
     </div>
