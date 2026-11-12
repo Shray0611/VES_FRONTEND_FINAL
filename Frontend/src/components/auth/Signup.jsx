@@ -1,12 +1,44 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
-import { Shield, GraduationCap, User, UserPlus } from "lucide-react";
+import { Shield, GraduationCap, User, UserPlus, Mail, Lock } from "lucide-react";
 
 const Signup = () => {
   const navigate = useNavigate();
   const [error, setError] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
+  const handleSignup = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.message || "Signup failed");
+      }
+
+      const { token, user } = responseData.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("userName", user.email);
+      navigate("/user-home");
+    } catch (err) {
+      console.error("Signup Error:", err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleGoogleSuccess = async (response) => {
     setIsLoading(true);
@@ -139,6 +171,51 @@ const Signup = () => {
                     </div>
                   </div>
                 )}
+
+                <form onSubmit={handleSignup} className="space-y-4 mb-5">
+                  <label className="block text-sm font-semibold text-[#5f4b32]">
+                    VES Email Address
+                    <div className="relative mt-2">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#7d6954]" />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        required
+                        pattern="[a-zA-Z0-9._-]+@ves\.ac\.in"
+                        title="Use your ves.ac.in email address"
+                        autoComplete="email"
+                        placeholder="name@ves.ac.in"
+                        className="w-full pl-12 pr-4 py-3 border border-[#e0c9a9]/50 rounded-xl bg-white/80 text-[#5f4b32] focus:border-[#5f4b32] focus:ring-4 focus:ring-[#e0c9a9]/20 outline-none"
+                      />
+                    </div>
+                  </label>
+                  <label className="block text-sm font-semibold text-[#5f4b32]">
+                    Password
+                    <div className="relative mt-2">
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#7d6954]" />
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(event) => setPassword(event.target.value)}
+                        required
+                        minLength={1}
+                        autoComplete="new-password"
+                        placeholder="Create a password"
+                        className="w-full pl-12 pr-4 py-3 border border-[#e0c9a9]/50 rounded-xl bg-white/80 text-[#5f4b32] focus:border-[#5f4b32] focus:ring-4 focus:ring-[#e0c9a9]/20 outline-none"
+                      />
+                    </div>
+                  </label>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-yellow-900 py-3 px-6 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoading ? "Creating account..." : "Create Account"}
+                  </button>
+                </form>
+
+                <div className="text-center text-sm text-[#7d6954] mb-5">Or continue with Google</div>
 
                 {/* Google Signup Button */}
                 <div className="mb-6">

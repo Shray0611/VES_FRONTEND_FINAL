@@ -37,10 +37,13 @@ const Login = () => {
         throw new Error(responseData.message || "Login failed");
       }
 
-      const { token, user } = responseData.data;
+      const { token, user } = responseData.data || {};
+      if (!token || !user?.role) {
+        throw new Error(responseData.message || "Unexpected login response");
+      }
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
-      localStorage.setItem("userName", email);
+      localStorage.setItem("userName", user.email || email.trim());
 
       switch (user.role) {
         case "superadmin":
