@@ -7,7 +7,6 @@ import {
   CheckCircle,
   FileText,
   Calendar,
-  Building,
   ArrowLeft,
 } from "lucide-react";
 
@@ -137,7 +136,7 @@ const ReportIssue = () => {
                   </h2>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 sm:gap-12">
                   <div className="flex items-center gap-2">
                     <div className="bg-white/50 p-1.5 rounded-lg">
                       <FileText className="w-3 h-3 text-[#7d6954]" />
@@ -146,22 +145,8 @@ const ReportIssue = () => {
                       <p className="text-xs font-medium text-[#5f4b32]">
                         Event Name
                       </p>
-                      <p className="text-sm text-[#7d6954] font-semibold truncate max-w-[120px]">
+                      <p className="text-sm text-[#7d6954] font-semibold truncate max-w-[200px]">
                         {certificateDetails.studentData?.eventName || "N/A"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <div className="bg-white/50 p-1.5 rounded-lg">
-                      <Building className="w-3 h-3 text-[#7d6954]" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-[#5f4b32]">
-                        Council
-                      </p>
-                      <p className="text-sm text-[#7d6954] font-semibold truncate max-w-[120px]">
-                        {certificateDetails.collectionId?.name || "N/A"}
                       </p>
                     </div>
                   </div>
